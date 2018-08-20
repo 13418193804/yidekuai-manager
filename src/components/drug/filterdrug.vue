@@ -54,15 +54,19 @@
       label="供应商">
    </el-table-column>
    
-
-
+   
+<el-table-column
+      prop="department"
+      label="科室">
+   </el-table-column>
 <el-table-column
       prop="manufacturer"
       label="厂家">
    </el-table-column>
-   
-
-
+<el-table-column
+      prop="adaptability"
+      label="适应症">
+   </el-table-column>
    
 
 <el-table-column
@@ -153,7 +157,15 @@
   </el-select>
               					<!-- <el-input v-model="addDrug.partnerName"  placeholder="请输入供应商" style="max-width:400px;min-width:200px" ></el-input> -->
 				</el-form-item>	
-
+   <el-form-item label="所在科室" prop="department">
+            <el-cascader
+            v-model="addDrug.department"
+            :options="tableTree"
+            @change="changedepartmentId()"
+            change-on-select
+            clearable
+            ></el-cascader>
+        </el-form-item>
 
 			<el-form-item label="批准文号："  prop="hisCode">
               					<el-input v-model="addDrug.hisCode"  placeholder="请输入批准文号" style="max-width:400px;min-width:200px" ></el-input>
@@ -190,6 +202,12 @@
               					<el-input v-model="addDrug.instructions"  placeholder="请输入使用方法" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
 
+
+
+            	<el-form-item label="适应症：" prop="adaptability" >
+              					<el-input v-model="addDrug.adaptability"  placeholder="请输入适应症" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
          
 
                     </el-form >
@@ -209,6 +227,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import axios from "axios";
 import * as indexApi from "../../api/indexApi";
+import * as doctorApi from "../../api/doctorApi";
 import { Prop } from "vue-property-decorator";
 
 @Component({
@@ -463,8 +482,21 @@ this.partnerList = res.data
       }
     });
 }
-  
+      tableTree=[];
+    getdepartmenttree(){
+            doctorApi.querytree().then(res => {
+      console.log(res);
+      if (res["retCode"]) {
+        this.tableTree = res.data.children;
+        console.log("获取科室树", res.data);
+      } else {
+        this.$alert(res["message"]);
+        console.error("数据查询错误");
+      }
+    });
+        }
   mounted() {
+    this.getdepartmenttree()
 this.getGrugList();
 
   }

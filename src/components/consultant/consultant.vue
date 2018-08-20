@@ -130,7 +130,7 @@
              <el-button
           size="mini"
           type="text" @click="cleanConsultantItemShelf(scope.row)"
-      >医生详情</el-button>
+      >医生统计</el-button>
 
 				<el-button size="small" type="text" @click="openNotBindDoctorModel(scope.row)" >新增医生</el-button>
 
@@ -227,7 +227,7 @@
 			        	</el-form-item>	 -->
 
 <!-- ==============         医生列表   ================================== -->
-		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="shelfModel" v-loading="shelfObj.loading" title="医生详情">
+		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="shelfModel" v-loading="shelfObj.loading" title="医生统计">
     
     
 <el-row :gutter="10" style="margin-bottom:20px;">
