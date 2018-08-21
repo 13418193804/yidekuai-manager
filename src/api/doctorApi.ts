@@ -275,3 +275,12 @@ export const checkidcard = (idcard) => {
     return Api.requestForm2('/api/member/checkidcard', params)
         .then(res => res);
 }
+
+export const deleteYdkDoctorExamine = (doctorId) => {
+
+    let params = {
+        doctorId: doctorId,
+    }
+    return Api.requestForm2('/api/doctor/deleteYdkDoctorExamine', params)
+        .then(res => res);
+}
