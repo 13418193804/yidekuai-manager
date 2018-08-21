@@ -162,14 +162,14 @@ export default class App extends Vue {
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-    text-align: center;
+    width: 100px!important;
+    height: 100px!important;
+    line-height:100px!important;
+    text-align: center!important;
   }
   .avatar {
-    width: 100px;
-    height: 100px;
+    width: 100px!important;
+    height: 100px!important;
     display: block;
   }
 

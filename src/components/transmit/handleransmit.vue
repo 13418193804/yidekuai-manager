@@ -181,12 +181,15 @@
 </el-input> -->
           
                   <el-form-item label="供应商：" >
-                    <el-select style="width:100%;"
-    v-model="drug.partnerObj"
+
+
+
+                    <!-- <el-select style="width:100%;"
     placeholder="请输入供应商"
-    :loading="loading" @change="changePartnerName"
+    :loading="loading" 
+    @change="changePartnerName"
     >
-    <!-- @change="selectSpecification" -->
+    @change="selectSpecification"
     <el-option
       v-for="item in partnerNameList"
       :key="item"
@@ -194,8 +197,17 @@
       :value="item">
     </el-option>
     
-  </el-select>
+  </el-select> -->
 
+
+<el-autocomplete style="width:100%;"
+      class="inline-input"
+       v-model="drug.partnerObj"
+      value-key="partnerName"
+
+      :fetch-suggestions="querySearch4"
+      placeholder="请输入供应商"
+    ></el-autocomplete>
 
 
 <!-- 
@@ -409,6 +421,7 @@
       prop="drugName"
       label="药品名称">
    </el-table-column>
+
   <el-table-column
       prop="partnerName"
       label="供应商">
@@ -562,22 +575,42 @@ import corpperlabel from "./corpperlabel";
   }
 })
 export default class AddGoods extends Vue {
-
-    
-//频次建议
-querySearch3(queryString, cb) {
-    var restaurants = this.frequencyList;
+  //供应商
+  querySearch4(queryString, cb) {
+    var restaurants = this.partnerNameList;
     var results = queryString
       ? restaurants.filter(this.createFilter(queryString))
       : restaurants;
+
     // 调用 callback 返回建议列表的数据
     let a = results.map(item => {
-      return { value: item, label: item };
+      return { value: item, partnerName: item.partnerName };
     });
     cb(a);
   }
-//单次用量建议
-querySearch2(queryString, cb) {
+
+  //频次建议
+  querySearch3(queryString, cb) {
+    var restaurants = this.frequencyList;
+    var results = queryString
+      ? restaurants.filter(queryString => {
+          return restaurant => {
+            return (
+              restaurant.partnerName
+                .toLowerCase()
+                .indexOf(queryString.toLowerCase()) === 0
+            );
+          };
+        })
+      : restaurants;
+    // 调用 callback 返回建议列表的数据
+    let a = results.map(item => {
+      return { value: item.partnerName, label: item.partnerName };
+    });
+    cb(a);
+  }
+  //单次用量建议
+  querySearch2(queryString, cb) {
     var restaurants = this.dosageList;
     var results = queryString
       ? restaurants.filter(this.createFilter(queryString))
@@ -588,7 +621,7 @@ querySearch2(queryString, cb) {
     });
     cb(a);
   }
-//用法建议
+  //用法建议
   querySearch1(queryString, cb) {
     var restaurants = this.usagesList;
     var results = queryString
@@ -600,10 +633,6 @@ querySearch2(queryString, cb) {
     });
     cb(a);
   }
-
-
-
-
 
   createFilter(queryString) {
     return restaurant => {
@@ -627,7 +656,7 @@ querySearch2(queryString, cb) {
       { title: "科室：", value: "docterDept" },
       { title: "医生姓名：", value: "docterName" },
       { title: "医生电话：", value: "doctorMobile" },
-         {title:'诊断：',value:'diagnose'},
+      { title: "诊断：", value: "diagnose" }
     ]
   ];
 
@@ -672,7 +701,7 @@ querySearch2(queryString, cb) {
     }
 
     if (this.drug.partnerObj) {
-      Object.assign(data, { partnerName: this.drug.partnerObj.partnerName });
+      Object.assign(data, { partnerName: this.drug.partnerObj });
     }
 
     indexApi.getGrugListZhuanFang(data).then(res => {
@@ -691,7 +720,7 @@ querySearch2(queryString, cb) {
         if (res.data.partnerNameList) {
           this.partnerNameList = res.data.partnerNameList;
           if (res.data.partnerNameList[0] && !this.drug.partnerObj) {
-            this.drug.partnerObj = res.data.partnerNameList[0];
+            this.drug.partnerObj = res.data.partnerNameList[0].partnerName;
             this.commonList();
           }
         }
@@ -894,34 +923,30 @@ querySearch2(queryString, cb) {
 
   loading = false;
   docreateDrug() {
-
-
-
-    if (!this.drug["quantity"] ) {
+    if (!this.drug["quantity"]) {
       this.$alert("请输入药品数量");
       return;
     }
 
-   let b = this.drug["quantity"] >0
- 
-    if (!b ) {
+    let b = this.drug["quantity"] > 0;
+
+    if (!b) {
       this.$alert("请输入正确的药品数量");
       return;
     }
 
-    if (!this.drug["price"] ) {
+    if (!this.drug["price"]) {
       this.$alert("请输入药品金额");
       return;
     }
-    let a = this.drug["price"] >0
-    if (!a ) {
+    let a = this.drug["price"] > 0;
+    if (!a) {
       this.$alert("请输入正确的药品金额");
       return;
     }
-    
 
-    this.drug["partnerName"] = this.drug.partnerObj["partnerName"];
-    this.drug["partnerId"] = this.drug.partnerObj["partnerId"];
+    this.drug["partnerName"] = this.drug.partnerObj;
+    // this.drug["partnerId"] = this.drug.partnerObj["partnerId"];
     this.drug["preId"] = this.presId;
     this.drug["drugName"] = this.drug["commonName"];
     this.drug["guidance"] = this.drug["price"];
@@ -934,7 +959,7 @@ querySearch2(queryString, cb) {
         this.drug = {};
         this.instructions = "";
         this.queryPresDrug();
-        this.editPrice = true
+        this.editPrice = true;
         console.log(res);
       } else {
         if (!res["islogin"]) {
@@ -944,7 +969,7 @@ querySearch2(queryString, cb) {
       }
     });
   }
-  presscriptionMoney=0
+  presscriptionMoney = 0;
   orderMoney = 0;
   serviceMoney = 0;
   preIndex = 0;
@@ -966,7 +991,7 @@ querySearch2(queryString, cb) {
   }
 
   tranRemake = "";
-diagnosis = "";
+  diagnosis = "";
   dotransmit() {
     //验证
 
@@ -977,12 +1002,10 @@ diagnosis = "";
       this.$alert("至少添加一条药品信息");
       return;
     }
-if((this.diagnosis||'')==''){
-  this.$alert('请填写诊断');
-  return
-}
-
-  
+    if ((this.diagnosis || "") == "") {
+      this.$alert("请填写诊断");
+      return;
+    }
 
     this.$confirm("药品填写完成?现在开始转方?", "提示", {
       confirmButtonText: "确定",
@@ -1004,7 +1027,7 @@ if((this.diagnosis||'')==''){
                 tranRemake: this.tranRemake,
                 changeName: sessionStorage.name,
                 changeId: sessionStorage.merchantUserId,
-                diagnosis:this.diagnosis
+                diagnosis: this.diagnosis
                 // serviceMoney:0,
               })
               .then(res => {
@@ -1059,7 +1082,7 @@ if((this.diagnosis||'')==''){
     indexApi.queryPresDetatil({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.prodetail = res.data;
-        this.diagnosis = res.data.diagnose
+        this.diagnosis = res.data.diagnose;
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);

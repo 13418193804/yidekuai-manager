@@ -203,11 +203,11 @@
            <el-form-item  >
 				<el-button type="primary" size="mini" @click="doSend(item,order.presId)">保 存</el-button>
 				</el-form-item>
-               <el-form-item  >
-        		<el-button type="primary" size="mini" @click="recvGood(item)" v-if="order.paymentMode =='ORDER_PAY_ONDEV' &&  order.orderStatue == 'ORDER_WAIT_RECVGOODS' && pagetype =='afterorder'">确认收货</el-button>
+        <el-form-item>
+        		<el-button type="primary" size="mini" @click="recvGood(item)" v-if="order.orderStatue == 'ORDER_WAIT_RECVGOODS' && pagetype =='afterorder'">确认收货</el-button>
 				</el-form-item>
 </el-form>
-
+<!-- order.paymentMode =='ORDER_PAY_ONDEV' &&  -->
 </span>
 
       </span>
@@ -463,7 +463,9 @@
            <el-form-item  >
 				<el-button type="primary" size="mini" @click="doSend(item,updateOrder.presId)">保 存</el-button>
 				</el-form-item>
- 
+     <el-form-item>
+        		<el-button type="primary" size="mini" @click="recvGood(item)" v-if="updateOrder.orderStatue == 'ORDER_WAIT_RECVGOODS' && pagetype =='afterorder'">确认收货</el-button>
+				</el-form-item>
 </el-form>
 </span>
       </span>
