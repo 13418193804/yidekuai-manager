@@ -37,13 +37,14 @@
                             <el-table-column prop="age" label="年龄"></el-table-column>
                             <el-table-column prop="dsex" label="性别"></el-table-column>                            
                             <el-table-column prop="createrTime" label="医生注册时间" width="150"></el-table-column>
-                        <el-table-column label="操作" fixed="right"  width="350">
+                        <el-table-column label="操作" fixed="right"  width="400">
                             <template slot-scope="scope">
-                                <el-button type="info" @click="detailsdoctor(scope.$index, scope.row)">查看详情</el-button>                                
-                                <el-button type="primary" v-if="scope.row.doctorStatus=='UNANDITED'" @click="handlepassDoctor(scope.$index, scope.row)">通过</el-button>
+                                <el-button type="text" @click="detailsdoctor(scope.$index, scope.row)">查看详情</el-button>                                
+                                <el-button type="text" v-if="scope.row.doctorStatus=='UNANDITED'" @click="handlepassDoctor(scope.$index, scope.row)">通过</el-button>
                                 <el-button type="text" v-if="scope.row.doctorStatus=='UNANDITED'"  @click="handlenotPassDoctor(scope.$index, scope.row)">不通过</el-button>
-                                <el-button v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'" @click="handleEdit(scope.$index, scope.row,'notPassUpdate')">修改</el-button>
-                                <el-button type="primary" v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'"  @click="handlepassDoctor(scope.$index, scope.row)">再通过</el-button>
+                                <el-button type="text" v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'" @click="handleEdit(scope.$index, scope.row,'notPassUpdate')">修改</el-button>
+                                <el-button type="text" v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'"  @click="handlepassDoctor(scope.$index, scope.row)">再通过</el-button>
+                                <el-button type="text"  @click="deleteDoctor(scope.$index, scope.row)">删除</el-button>
                             </template>
                             </el-table-column>
                 </el-table>
@@ -1516,6 +1517,31 @@ updatedoctor(){
                 this.$message({
                     type: 'info',
                     message: '已取消通过'
+                });          
+            });
+        }
+        deleteDoctor(index, row){
+            this.$confirm('是否让该医生删除?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                    doctorApi.deleteYdkDoctorExamine(row.doctorId).then(res => {
+                        if (res["retCode"]) {
+                            this.getDoctorExamineList();
+                            this.$message({
+                                type: 'success',
+                                message: '成功删除!'
+                            });
+                        } else {
+                            if(!res['islogin']){this.$alert(res["message"]);}
+                            console.error("数据查询错误");
+                        }
+                    });
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
                 });          
             });
         }
