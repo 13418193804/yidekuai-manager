@@ -66,7 +66,7 @@
 </div>
 
 
-<el-table border
+<el-table border @sort-change="sortChange"
     :data="DoctorInfo"
     stripe height="600"
     style="width: 100%;">
@@ -84,10 +84,10 @@
                     <!-- <el-tag v-if="scope.row.doctorStatus=='HIDE'" type="info">隐藏</el-tag> -->
                 </template>
             </el-table-column>
-               <el-table-column prop="prescriptionNum" label="医生处方数量" width="150"></el-table-column>
-            <el-table-column prop="orderNum" label="医生订单数量" width="150"></el-table-column>
-            <el-table-column prop="orderMoney" label="医生订单金额" width="150"></el-table-column>
-            <el-table-column prop="memberNum" label="医生患者数量" width="150"></el-table-column>
+               <el-table-column prop="prescriptionNum" label="医生处方数量" sortable="custom" width="150"></el-table-column>
+            <el-table-column prop="orderNum" label="医生订单数量" sortable="custom" width="150"></el-table-column>
+            <el-table-column prop="orderMoney" label="医生订单金额" sortable="custom" width="150"></el-table-column>
+            <el-table-column prop="memberNum" label="医生患者数量" sortable="custom" width="150"></el-table-column>
   <el-table-column
       prop="nowAdviser"
       label="现任顾问"  width="120">
@@ -320,7 +320,7 @@ export default class AddGoods extends Vue {
   }
 
   loading = false;
-
+orderByStr="";
   page = 0;
   pageSize = 10;
   total = 0;
@@ -357,7 +357,8 @@ export default class AddGoods extends Vue {
         phone: this.phone,
         startcreateDate: startCreatTime,
         endcreateDate: endCreatTime,
-        doctorStatus: this.doctorStatus
+        doctorStatus: this.doctorStatus,
+      orderByStr:this.orderByStr
       }
     indexApi
       .getDoctorList(data)
@@ -586,6 +587,38 @@ drugNum= 0
           message: "已取消启用"
         });
       });
+  }
+ /**
+  排序
+ */
+  sortChange({ column, prop, order }) {
+    let desc = "";
+    if (order == "descending") {
+      desc += " desc";
+    }
+// 医生处方数量 prescription_num 、
+// 医生订单数量order_num、
+// 医生订单金额order_money、
+// 医生患者数量doctorPatientNum、
+// 时间null
+    switch (prop) {
+      case "prescriptionNum":
+        this.orderByStr = "prescription_num" + desc;
+        break;
+      case "orderNum":
+        this.orderByStr = "order_num" + desc;
+        break;
+      case "orderMoney":
+        this.orderByStr = "order_money" + desc;
+        break;
+      case "memberNum":
+        this.orderByStr = "doctorPatientNum" + desc;
+        break;
+      default:
+        this.orderByStr = "";
+        break;
+    }
+    this.getDoctorList(true);
   }
 
   mounted() {

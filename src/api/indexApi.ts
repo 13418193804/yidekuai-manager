@@ -1141,7 +1141,7 @@ export const adviserBindDoctor = (model) => {
         }
     
         Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/bindingDoctorAdviser', params)
+        return Api.requestForm2('/docAdviser/bindingAdviser', params)
             .then(res => res);
     }
     
