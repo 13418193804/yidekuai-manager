@@ -90,7 +90,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
         </div>
-        <el-form-item label="执业药师资格证号">
+        <el-form-item label="医师执业证号">
             <el-input v-model="formLabelAlign1.qualificationCertificateNum"></el-input>
         </el-form-item>
         <div class="flex">
