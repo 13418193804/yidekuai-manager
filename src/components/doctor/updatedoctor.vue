@@ -94,7 +94,7 @@
             <el-input v-model="formLabelAlign1.qualificationCertificateNum"></el-input>
         </el-form-item>
         <div class="flex">
-            <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医师职业证</div>
+            <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医师执业证</div>
         <el-upload
             class="avatar-uploader"
             :action="g_news_url"

@@ -37,7 +37,7 @@
                             <el-table-column prop="age" label="年龄"></el-table-column>
                             <el-table-column prop="dsex" label="性别"></el-table-column>                            
                             <el-table-column prop="createrTime" label="医生注册时间" width="150"></el-table-column>
-                        <el-table-column label="操作" fixed="right"  width="400">
+                        <el-table-column label="操作" fixed="right"  width="300">
                             <template slot-scope="scope">
                                 <el-button type="text" @click="detailsdoctor(scope.$index, scope.row)">查看详情</el-button>                                
                                 <el-button type="text" v-if="scope.row.doctorStatus=='UNANDITED'" @click="handlepassDoctor(scope.$index, scope.row)">通过</el-button>
