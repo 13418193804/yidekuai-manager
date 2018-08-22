@@ -37,7 +37,7 @@
                             <el-table-column prop="age" label="年龄"></el-table-column>
                             <el-table-column prop="dsex" label="性别"></el-table-column>                            
                             <el-table-column prop="createrTime" label="医生注册时间" width="150"></el-table-column>
-                        <el-table-column label="操作" fixed="right"  width="400">
+                        <el-table-column label="操作" fixed="right"  width="300">
                             <template slot-scope="scope">
                                 <el-button type="text" @click="detailsdoctor(scope.$index, scope.row)">查看详情</el-button>                                
                                 <el-button type="text" v-if="scope.row.doctorStatus=='UNANDITED'" @click="handlepassDoctor(scope.$index, scope.row)">通过</el-button>
@@ -241,11 +241,11 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
         </div>
-        <el-form-item label="执业药师资格证号">
+        <el-form-item label="医师执业证号">
             <el-input v-model="qualificationCertificateNum"></el-input>
         </el-form-item>
         <div class="flex">
-            <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医师职业证</div>
+            <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医师执业证</div>
         <el-upload
             class="avatar-uploader"
             :action="g_news_url"
