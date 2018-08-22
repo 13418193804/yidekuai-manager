@@ -88,13 +88,23 @@
             <el-table-column prop="orderNum" label="医生订单数量" sortable="custom" width="150"></el-table-column>
             <el-table-column prop="orderMoney" label="医生订单金额" sortable="custom" width="150"></el-table-column>
             <el-table-column prop="memberNum" label="医生患者数量" sortable="custom" width="150"></el-table-column>
+ 
   <el-table-column
-      prop="nowAdviser"
-      label="现任顾问"  width="120">
+      prop="creater_name"
+      label="外部顾问"  width="120">
    </el-table-column>
      <el-table-column
-      prop="adviserPhone"
-      label="现顾问手机号" width="150">
+      prop="creater_phone"
+      label="外部顾问手机号" width="150">
+   </el-table-column>
+
+  <el-table-column
+      prop="up_adviser_name"
+      label="内部顾问"  width="120">
+   </el-table-column>
+     <el-table-column
+      prop="up_adviser_phone"
+      label="内部顾问手机号" width="150">
    </el-table-column>
 
   <el-table-column
@@ -119,9 +129,15 @@
 
    </el-table-column>
      <el-table-column
-      prop="oldAdviser"
-      label="注册顾问"  width="120">
+      prop="resource_adviser_name"
+      label="来源顾问"  width="120">
    </el-table-column>
+
+     <el-table-column
+      prop="resource_adviser_phone"
+      label="来源顾问手机号"  width="120">
+   </el-table-column>
+
   <el-table-column
       prop="createrTime"
       label="注册日期" width="180">
