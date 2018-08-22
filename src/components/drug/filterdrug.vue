@@ -157,14 +157,17 @@
   </el-select>
               					<!-- <el-input v-model="addDrug.partnerName"  placeholder="请输入供应商" style="max-width:400px;min-width:200px" ></el-input> -->
 				</el-form-item>	
-   <el-form-item label="所在科室" prop="department">
-            <el-cascader
+   <el-form-item label="科室" prop="department">
+            <!-- <el-cascader
             v-model="addDrug.department"
             :options="tableTree"
             @change="changedepartmentId()"
             change-on-select
             clearable
-            ></el-cascader>
+            ></el-cascader> -->
+
+              					<el-input v-model="addDrug.department"  placeholder="请输入科室" style="max-width:400px;min-width:200px" ></el-input>
+            
         </el-form-item>
 
 			<el-form-item label="批准文号："  prop="hisCode">
@@ -496,7 +499,7 @@ this.partnerList = res.data
     });
         }
   mounted() {
-    this.getdepartmenttree()
+    // this.getdepartmenttree()
 this.getGrugList();
 
   }

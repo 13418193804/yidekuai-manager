@@ -52,7 +52,7 @@
 </div>
 
    <el-row>
-<el-table border
+<el-table border @sort-change="sortChange"
 :data="DrugInfo"
    stripe height="600"
    style="width: 100%;">
@@ -66,19 +66,19 @@
           label="商品名" width="170">
       </el-table-column>
            <el-table-column
-      prop="doctorNum"
+      prop="doctorNum" sortable="custom"
       label="货架号数量" width="150">
    </el-table-column>
         <el-table-column
-      prop="memberNum"
+      prop="memberNum" sortable="custom"
       label="购药人次"  width="150">
    </el-table-column>
            <el-table-column
-      prop="orderNum"
+      prop="orderNum" sortable="custom"
       label="订单数"  width="150">
    </el-table-column>
            <el-table-column
-      prop="totalMoney"
+      prop="totalMoney" sortable="custom"
       label="总金额"  width="150">
    </el-table-column>
       <el-table-column
@@ -295,7 +295,7 @@ export default class getDrugByKeyword extends Vue {
 
 startDate=""
 endDate=""
-
+orderByStr=""
 
   name="";
   drug="";
@@ -321,6 +321,7 @@ endDate=
               name: this.name,
               page:this.page,
               pageSize:this.pageSize,
+              orderByStr:this.orderByStr,
                startcreateDate:startDate,
         endcreateDate:endDate
       }
@@ -499,6 +500,35 @@ this.countDrug = res.data.num
           console.error("数据查询错误");
         }
       });
+}
+/**
+  排序
+ */
+sortChange( {column, prop, order}){
+
+  let desc = ''
+  if(order =='descending'){
+    desc += ' desc'
+  }
+  
+    switch(prop){
+      case'doctorNum':
+        this.orderByStr ='doctor_num' + desc
+      break;
+     case'memberNum':
+        this.orderByStr ='member_num' + desc
+      break;
+     case'orderNum':
+        this.orderByStr ='order_num' + desc
+      break;
+     case'totalMoney':
+        this.orderByStr ='total_money' + desc
+      break;
+      default: 
+  this.orderByStr =''
+      break;
+    }
+   this.adviserdrug(true);
 }
 
 

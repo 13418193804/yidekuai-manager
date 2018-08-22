@@ -63,7 +63,7 @@
 </el-row>
 </div>
 
-<el-table border
+<el-table border @sort-change="sortChange"
     :data="YdkAdviser"
     stripe height="600"
     style="width: 100%;">
@@ -74,27 +74,35 @@
    </el-table-column>
    
  <el-table-column
-      prop="doctorNum"
+      prop="doctorNum" sortable="custom"
       label="管理医生数量"  width="150">
    </el-table-column>
  <el-table-column
-      prop="orderNum"
-      label="总订单数量"  width="150">
+      prop="orderNum" sortable="custom"
+      label="总订单数量"  width="150" >
    </el-table-column>
  <el-table-column
-      prop="orderMoney"
+      prop="orderMoney" sortable="custom"
       label="总订单金额"  width="150">
    </el-table-column>
  <el-table-column
-      prop="prescriptionNum"
+      prop="prescriptionNum" sortable="custom"
       label="总处方数量"  width="150">
    </el-table-column>
    
  <el-table-column
-      prop="drugNum"
+      prop="drugNum" sortable="custom"
       label="药品种类数量"  width="150">
    </el-table-column>
 
+
+ <el-table-column
+      label="顾问类型">
+      <template slot-scope="scope">
+           {{scope.row.adviser_type=='OUTSIDE'?'外部顾问':''}}
+           {{scope.row.adviser_type=='INSIDE'?'内部顾问':''}}
+      </template>
+   </el-table-column>
   <el-table-column
       prop="userName"
       label="手机号" width="150">
@@ -180,6 +188,15 @@
   <el-radio v-model="adviserObj.adviserSex" label="女"></el-radio>
               					<!-- <el-input v-model="adviserObj.adviserAge"  placeholder="请输入年龄" style="max-width:400px;min-width:200px" ></el-input> -->
 			        	</el-form-item>	
+
+
+		<el-form-item label="类型" prop="adviserTypeEnums" >
+             <el-radio v-model="adviserTypeEnums" label="INSIDE">内部顾问</el-radio>
+  <el-radio v-model="adviserTypeEnums" label="OUTSIDE">外部顾问</el-radio>
+              					<!-- <el-input v-model="adviserObj.adviserAge"  placeholder="请输入年龄" style="max-width:400px;min-width:200px" ></el-input> -->
+			        	</el-form-item>	
+
+                
                        
                         		<el-form-item label="备注" >
               					<el-input type="textarea" v-model="adviserObj.remark"  placeholder="备注"  :rows="4" style="max-width:400px;min-width:200px" ></el-input>
@@ -527,14 +544,15 @@ import * as indexApi from "../../api/indexApi";
 })
 export default class AddGoods extends Vue {
   loading = false;
-    viewBigIcon(qrcode) {
-   this.bigIcon = qrcode;
+  viewBigIcon(qrcode) {
+    this.bigIcon = qrcode;
     this.viewBig = true;
-    }
-      bigIcon = "";
+  }
+  bigIcon = "";
   viewBig = false;
   page = 0;
   pageSize = 10;
+  orderByStr = "";
   total = 0;
   name = "";
   drug = "";
@@ -543,8 +561,8 @@ export default class AddGoods extends Vue {
     this.page = page - 1;
     this.getConsultantList();
   }
-startDate=""
-endDate=""
+  startDate = "";
+  endDate = "";
   YdkAdviser = [];
   getConsultantList(filter = null) {
     this.loading = true;
@@ -552,79 +570,82 @@ endDate=""
       this.page = 0;
     }
 
- let startDate =''
-  let endDate =''
-    if ((this.startDate|| "") != "") {
-      startDate =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
+    let startDate = "";
+    let endDate = "";
+    if ((this.startDate || "") != "") {
+      startDate = moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
     }
 
     if ((this.endDate || "") != "") {
-endDate=
-        moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
+      endDate = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
     }
 
-
-let data ={
-        page: this.page,
-        pageSize: this.pageSize,
-        userStatus: this.userStatus,
-        name: this.name,
-        drug: this.drug,
-        startcreateDate:startDate,
-        endcreateDate:endDate
-}
-    indexApi
-      .getConsultantList1(data)
-      .then(res => {
-        this.loading = false;
-        if (res["retCode"]) {
-          this.YdkAdviser = res.data.AdviserInfo;
-          this.total = res.data.page.total;
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
+    let data = {
+      page: this.page,
+      pageSize: this.pageSize,
+      userStatus: this.userStatus,
+      name: this.name,
+      drug: this.drug,
+      startcreateDate: startDate,
+      endcreateDate: endDate,
+      orderByStr: this.orderByStr
+    };
+    indexApi.getConsultantList1(data).then(res => {
+      this.loading = false;
+      if (res["retCode"]) {
+        this.YdkAdviser = res.data.AdviserInfo;
+        this.total = res.data.page.total;
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
         }
-      });
-this.ypStartcreateDate(data)
+        console.error("数据查询错误");
+      }
+    });
+    this.ypStartcreateDate(data);
   }
 
-orderMoney= 0
-prescriptionNum= 0
-orderNum= 0
-allAdviserNum= 0
-drugNum= 0
-  ypStartcreateDate (data){
-
-  data.ypdStartcreateDate = data.startcreateDate
-    data.ypdEndcreateDate = data.endcreateDate
-  indexApi
-      .ypStartcreateDate(data)
-      .then(res => {
-        this.loading = false;
-        if (res["retCode"]) {
-          if(res.data.AdviserInfo.length>0){
-          this.orderMoney =   res.data.AdviserInfo[0].orderMoney?res.data.AdviserInfo[0].orderMoney:0
-          this.prescriptionNum =   res.data.AdviserInfo[0].prescriptionNum?res.data.AdviserInfo[0].prescriptionNum:0
-          this.orderNum =   res.data.AdviserInfo[0].orderNum?res.data.AdviserInfo[0].orderNum:0
-          this.allAdviserNum =   res.data.AdviserInfo[0].allAdviserNum?res.data.AdviserInfo[0].allAdviserNum:0
-          this.drugNum =   res.data.AdviserInfo[0].drugNum?res.data.AdviserInfo[0].drugNum:0
-          }
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
+  orderMoney = 0;
+  prescriptionNum = 0;
+  orderNum = 0;
+  allAdviserNum = 0;
+  drugNum = 0;
+  ypStartcreateDate(data) {
+    data.ypdStartcreateDate = data.startcreateDate;
+    data.ypdEndcreateDate = data.endcreateDate;
+    indexApi.ypStartcreateDate(data).then(res => {
+      this.loading = false;
+      if (res["retCode"]) {
+        if (res.data.AdviserInfo.length > 0) {
+          this.orderMoney = res.data.AdviserInfo[0].orderMoney
+            ? res.data.AdviserInfo[0].orderMoney
+            : 0;
+          this.prescriptionNum = res.data.AdviserInfo[0].prescriptionNum
+            ? res.data.AdviserInfo[0].prescriptionNum
+            : 0;
+          this.orderNum = res.data.AdviserInfo[0].orderNum
+            ? res.data.AdviserInfo[0].orderNum
+            : 0;
+          this.allAdviserNum = res.data.AdviserInfo[0].allAdviserNum
+            ? res.data.AdviserInfo[0].allAdviserNum
+            : 0;
+          this.drugNum = res.data.AdviserInfo[0].drugNum
+            ? res.data.AdviserInfo[0].drugNum
+            : 0;
         }
-      });
-  
-}
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
+        console.error("数据查询错误");
+      }
+    });
+  }
   adviserObj: any = {};
   type = "add";
   adviserModel = false;
   changeModel(type, row) {
+    this.adviserTypeEnums = "";
     this.type = type;
     if (type == "add") {
       this.adviserObj = {};
@@ -633,14 +654,31 @@ drugNum= 0
       Object.assign(a, row);
       this.adviserObj = a;
       this.userStatus1 = this.adviserObj.userStatus == "1" ? true : false;
+      this.adviserTypeEnums = row.adviser_type;
     }
     this.adviserModel = true;
   }
+  adviserTypeEnums: string = "";
   userStatus1: boolean = false;
   doSubmit() {
-    this.loading =true
+    if ((this.adviserObj.adviserName || "") == "") {
+      this.$alert("请填写顾问姓名");
+      return;
+    }
+    if ((this.adviserObj.userName || "") == "") {
+      this.$alert("请填写顾问手机号码");
+      return;
+    }
+    if ((this.adviserTypeEnums || "") == "") {
+      this.$alert("请选择顾问类型");
+      return;
+    }
+
+    this.loading = true;
     this.adviserObj["userPassword"] = "123456";
     this.adviserObj.userStatus = this.userStatus1 ? "1" : "0";
+    this.adviserObj.adviserTypeEnums = this.adviserTypeEnums;
+
     if (this.type == "add") {
       this.adviserObj["userStatus"] = "";
       indexApi.addConsultantItem(this.adviserObj).then(res => {
@@ -801,7 +839,7 @@ drugNum= 0
   shelfObj = {
     DocterInfo: [],
     loading: false,
-    name:"",
+    name: "",
     page: 0,
     pageSize: 10,
     total: 0,
@@ -813,11 +851,11 @@ drugNum= 0
     },
     row: {}
   };
-  cleanConsultantItemShelf(row){
-    this.shelfObj.startcreateDate = ""
-    this.shelfObj.endcreateDate = ""
-    this.shelfObj.name = ""
-      this.consultantItemShelf(row);
+  cleanConsultantItemShelf(row) {
+    this.shelfObj.startcreateDate = "";
+    this.shelfObj.endcreateDate = "";
+    this.shelfObj.name = "";
+    this.consultantItemShelf(row);
   }
   consultantItemShelf(row, filter = null) {
     this.shelfObj.loading = true;
@@ -840,7 +878,7 @@ drugNum= 0
     indexApi
       .adviserGetDoctor({
         adviserId: row.adviserId,
-       name : this.shelfObj.name,
+        name: this.shelfObj.name,
         page: this.shelfObj.page,
         pageSize: this.shelfObj.pageSize,
         startcreateDate: startCreatTime,
@@ -879,8 +917,7 @@ drugNum= 0
             if (res["retCode"]) {
               this.$message("取消绑定成功");
               this.consultantItemShelf(this.shelfObj.row);
-this.getConsultantList();
-
+              this.getConsultantList();
             } else {
               if (!res["islogin"]) {
                 this.$alert(res["message"]);
@@ -908,7 +945,7 @@ this.getConsultantList();
     addloading: false,
     doctorObj: null,
     YdkDoctor: [],
-      phone:"",
+    phone: "",
     labelList: [
       {
         label: "医生姓名",
@@ -940,13 +977,14 @@ this.getConsultantList();
     },
     row: {}
   };
-cleanOpenNotBindDoctorModel(row){
-   this.notBindDoctorObj["phone"] = ""
-      this.openNotBindDoctorModel(row);
-}
-  openNotBindDoctorModel(row,filter=null) {
-    if(filter){
-      this.notBindDoctorObj.page =0
+
+  cleanOpenNotBindDoctorModel(row) {
+    this.notBindDoctorObj["phone"] = "";
+    this.openNotBindDoctorModel(row);
+  }
+  openNotBindDoctorModel(row, filter = null) {
+    if (filter) {
+      this.notBindDoctorObj.page = 0;
     }
     this.notBindDoctorObj.row = row;
     this.notBindDoctorObj.model = true;
@@ -954,8 +992,9 @@ cleanOpenNotBindDoctorModel(row){
     indexApi
       .notBindDoctor({
         phone: this.notBindDoctorObj["phone"],
-        page:this.notBindDoctorObj.page,
-        pageSize:this.notBindDoctorObj.pageSize,
+        adviserTypeEnums:row.adviser_type,
+        page: this.notBindDoctorObj.page,
+        pageSize: this.notBindDoctorObj.pageSize
       })
       .then(res => {
         this.notBindDoctorObj.loading = false;
@@ -985,16 +1024,17 @@ cleanOpenNotBindDoctorModel(row){
         this.notBindDoctorObj.addloading = true;
         indexApi
           .adviserBindDoctor({
-            adviserId: this.notBindDoctorObj.row["adviserId"],
-            doctorId: row["doctorId"]
+            adviserid: this.notBindDoctorObj.row["adviserId"],
+            doctorid: row["doctorId"],
+            adviserTypeEnums:this.notBindDoctorObj.row['adviser_type']
           })
           .then(res => {
             this.notBindDoctorObj.addloading = false;
             if (res["retCode"]) {
               this.$message("绑定成功");
               this.openNotBindDoctorModel(this.notBindDoctorObj.row);
-          this.getConsultantList();
-           } else {
+              this.getConsultantList();
+            } else {
               if (!res["islogin"]) {
                 this.$alert(res["message"]);
               }
@@ -1022,52 +1062,53 @@ cleanOpenNotBindDoctorModel(row){
     page: 0,
     pageSize: 10,
     total: 0,
-  
+
     onPageChange: page => {
       this.drugObj.page = page - 1;
       this.adviserGetDrug(this.drugObj.row);
     },
     row: {}
   };
-checkTime(fontType){
-  this.fontType = fontType
-this.adviserGetDrug(this.drugObj.row)
-}
+  checkTime(fontType) {
+    this.fontType = fontType;
+    this.adviserGetDrug(this.drugObj.row);
+  }
 
-adviserGetDrugDoRow(row){
-      this.fontType =""
-      this.drugObj.startcreateDate=""
-this.drugObj.endcreateDate = ""
-this.adviserGetDrug(row)
-}
+  adviserGetDrugDoRow(row) {
+    this.fontType = "";
+    this.drugObj.startcreateDate = "";
+    this.drugObj.endcreateDate = "";
+    this.adviserGetDrug(row);
+  }
   adviserGetDrug(row, filter = null) {
     this.loading = true;
     this.drugObj.row = row;
 
     if (filter) {
       this.drugObj.page = 0;
-      this.fontType =""
+      this.fontType = "";
     }
-        let startCreatTime = "";
+    let startCreatTime = "";
     let endCreatTime = "";
-    if(this.fontType=="day"){
-startCreatTime= this.getToday();
-endCreatTime =    moment(new Date()).format("YYYY-MM-DD") + " 23:59:59";
-    }else if(this.fontType=="week"){
-startCreatTime= this.getWeek();
-endCreatTime =    moment(new Date()).format("YYYY-MM-DD") + " 23:59:59";
-      }else  if(this.fontType=="month"){
-startCreatTime= this.getMonth1();
-endCreatTime =    moment(new Date()).format("YYYY-MM-DD") + " 23:59:59";
-      }else{
-    if ((this.drugObj.startcreateDate || "") != "") {
-      startCreatTime =
-        moment(this.drugObj.startcreateDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
-    if ((this.drugObj.endcreateDate || "") != "") {
-      endCreatTime =
-        moment(this.drugObj.endcreateDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
+    if (this.fontType == "day") {
+      startCreatTime = this.getToday();
+      endCreatTime = moment(new Date()).format("YYYY-MM-DD") + " 23:59:59";
+    } else if (this.fontType == "week") {
+      startCreatTime = this.getWeek();
+      endCreatTime = moment(new Date()).format("YYYY-MM-DD") + " 23:59:59";
+    } else if (this.fontType == "month") {
+      startCreatTime = this.getMonth1();
+      endCreatTime = moment(new Date()).format("YYYY-MM-DD") + " 23:59:59";
+    } else {
+      if ((this.drugObj.startcreateDate || "") != "") {
+        startCreatTime =
+          moment(this.drugObj.startcreateDate).format("YYYY-MM-DD") +
+          " 00:00:00";
+      }
+      if ((this.drugObj.endcreateDate || "") != "") {
+        endCreatTime =
+          moment(this.drugObj.endcreateDate).format("YYYY-MM-DD") + " 23:59:59";
+      }
     }
     indexApi
       .adviserGetDrug({
@@ -1104,79 +1145,105 @@ endCreatTime =    moment(new Date()).format("YYYY-MM-DD") + " 23:59:59";
     });
   }
 
- getWeek() {
+  getWeek() {
     //按周日为一周的最后一天计算
     var date = new Date();
- 
+
     //今天是这周的第几天
     var today = date.getDay();
- 
+
     //上周日距离今天的天数（负数表示）
     var stepSunDay = -today + 1;
- 
+
     // 如果今天是周日
     if (today == 0) {
- 
-        stepSunDay = -7;
+      stepSunDay = -7;
     }
- 
+
     // 周一距离今天的天数（负数表示）
     var stepMonday = 7 - today;
- 
+
     var time = date.getTime();
- 
+
     var monday = new Date(time + stepSunDay * 24 * 3600 * 1000);
     var sunday = new Date(time + stepMonday * 24 * 3600 * 1000);
- 
+
     //本周一的日期 （起始日期）
     var startDate = this.transferDate(monday); // 日期变换
 
- 
- 
-    return startDate+ " 00:00:00";
-}
+    return startDate + " 00:00:00";
+  }
 
-getToday(){
-  return moment(new Date()).format("YYYY-MM-DD") + " 00:00:00"
-}
-getMonth1(){
-  
- 
+  getToday() {
+    return moment(new Date()).format("YYYY-MM-DD") + " 00:00:00";
+  }
+  getMonth1() {
     // 获取当前月的第一天
     var start = new Date();
     start.setDate(1);
-   var startDate = this.transferDate(start); 
-  return startDate +" 00:00:00"
-}
-transferDate(date) {
- 
+    var startDate = this.transferDate(start);
+    return startDate + " 00:00:00";
+  }
+  transferDate(date) {
     // 年
     var year = date.getFullYear();
     // 月
     var month = date.getMonth() + 1;
     // 日
     var day = date.getDate();
- 
+
     if (month >= 1 && month <= 9) {
- 
-        month = "0" + month;
+      month = "0" + month;
     }
     if (day >= 0 && day <= 9) {
- 
-        day = "0" + day;
+      day = "0" + day;
     }
- 
-    var dateString = year + '-' + month + '-' + day;
- 
-    return dateString;
-}
-fontType =""
 
+    var dateString = year + "-" + month + "-" + day;
+
+    return dateString;
+  }
+  fontType = "";
+  /**
+  排序
+ */
+  sortChange({ column, prop, order }) {
+    let desc = "";
+    if (order == "descending") {
+      desc += " desc";
+    }
+
+    // 管理医生数量 doctor_num 、
+    // 总订单数量 order_num 、
+    // 总订单金额 order_money 、
+    // 总处方数量 prescription_num 、
+    // 药品种类数量 drug_num 。
+    switch (prop) {
+      case "doctorNum":
+        this.orderByStr = "doctor_num" + desc;
+        break;
+      case "orderNum":
+        this.orderByStr = "order_num" + desc;
+        break;
+      case "orderMoney":
+        this.orderByStr = "order_money" + desc;
+        break;
+      case "prescriptionNum":
+        this.orderByStr = "prescription_num" + desc;
+        break;
+      case "drugNum":
+        this.orderByStr = "drug_num" + desc;
+        break;
+      default:
+        this.orderByStr = "";
+        break;
+    }
+    this.getConsultantList(true);
+  }
 
   mounted() {
     this.getAdviserCount();
     this.getConsultantList();
-    
   }
 }
 </script>
@@ -1199,22 +1266,22 @@ fontType =""
   background: #fff;
   border: 1px solid #eaeaea;
 }
-.fontfilter{
-    height: 26px;
-    width: 40px;
-    border: 1px rgb(229, 229, 229) solid;
-    border-radius: 5px;
-    text-align: center;
-    line-height: 26px;
-    margin-right: 15px;
+.fontfilter {
+  height: 26px;
+  width: 40px;
+  border: 1px rgb(229, 229, 229) solid;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 26px;
+  margin-right: 15px;
 }
-.fontfilter:hover{
-          color: rgb(255, 0, 0);
-    border-color: rgb(255, 0, 0);
-    cursor: pointer;
-    }
-    .filtercheck {
-          color: rgb(255, 0, 0);
-    border-color: rgb(255, 0, 0);
-    }
+.fontfilter:hover {
+  color: rgb(255, 0, 0);
+  border-color: rgb(255, 0, 0);
+  cursor: pointer;
+}
+.filtercheck {
+  color: rgb(255, 0, 0);
+  border-color: rgb(255, 0, 0);
+}
 </style>
