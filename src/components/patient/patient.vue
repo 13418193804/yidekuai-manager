@@ -23,7 +23,7 @@
 </el-row>
 </div>
         </div>
-<el-table height="600"
+<el-table height="600" @sort-change="sortChange"
     :data="patientList"
     stripe border
     style="width: 100%;">
@@ -111,7 +111,7 @@
       label="注册日期" width="180">
    </el-table-column>
    <el-table-column
-      prop="maxCreateDate"
+      prop="maxCreateDate" sortable="custom"
       label="最新处方创建时间" width="180">
    </el-table-column>
    
@@ -591,20 +591,21 @@ this.updateModel = false
     // this.form.memberId = row.memberId;
   }
 loading = false
+orderByStr = "";
   getpatientList(filter=null) {
+    
     if(filter){
       this.page = 0
     }
     this.loading = true
-    patientApi.queryUserList(this.page,this.pageSize, this.keyname).then(res => {
-      this.loading = false
+    patientApi.queryUserList(this.page,this.pageSize, this.keyname,this.orderByStr).then(res => {
       if (res["retCode"]) {
         this.patientList = res.data.list;
                     this.total = res.data.page.total
       } else {
         if(!res['islogin']){this.$alert(res["message"]);}
-        console.error("数据查询错误");
       }
+      this.loading = false
     });
   }
   patientList = [];
@@ -625,6 +626,32 @@ loading = false
         console.error("数据查询错误");
       }
     });
+  }
+   /**
+  排序
+ */
+  sortChange({ column, prop, order }) {
+    let desc = "";
+    if (order == "descending") {
+      desc += " desc";
+    }
+
+    // 医生处方数量 prescription_num 、
+    // 医生订单数量order_num、
+    // 医生订单金额order_money、
+    // 医生患者数量doctorPatientNum、
+    // 时间null
+
+    switch (prop) {
+      case "maxCreateDate":
+        this.orderByStr = "maxCreateDate" + desc;
+        break;
+    
+      default:
+        this.orderByStr = "";
+        break;
+    }
+    this.getpatientList(true);
   }
 
   mounted() {

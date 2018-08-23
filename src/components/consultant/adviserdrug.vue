@@ -1,5 +1,5 @@
 <template>
-    <div > 
+    <div v-loading="loading"> 
     
          <div style="">
           <h3>药品数据
@@ -68,31 +68,55 @@
            <el-table-column
       prop="doctorNum" sortable="custom"
       label="货架号数量" width="150">
+           <template slot-scope="scope">
+           {{scope.row.doctorNum?scope.row.doctorNum:0}}
+      </template>
    </el-table-column>
+   
+  <el-table-column
+      prop="adviserNum"
+      label="顾问数量"  width="150">
+          <template slot-scope="scope">
+           {{scope.row.adviserNum?scope.row.adviserNum:0}}
+      </template>
+   </el-table-column>
+
         <el-table-column
       prop="memberNum" sortable="custom"
       label="购药人次"  width="150">
+               <template slot-scope="scope">
+           {{scope.row.memberNum?scope.row.memberNum:0}}
+      </template>
    </el-table-column>
            <el-table-column
       prop="orderNum" sortable="custom"
       label="订单数"  width="150">
+     <template slot-scope="scope">
+           {{scope.row.orderNum?scope.row.orderNum:0}}
+      </template>
    </el-table-column>
            <el-table-column
       prop="totalMoney" sortable="custom"
       label="总金额"  width="150">
+               <template slot-scope="scope">
+           {{scope.row.totalMoney?scope.row.totalMoney:0}}
+      </template>
    </el-table-column>
       <el-table-column
       prop="totalQuantity"
       label="销售数量"  width="150">
+             <template slot-scope="scope">
+           {{scope.row.totalQuantity?scope.row.totalQuantity:0}}
+      </template>
    </el-table-column>
   <el-table-column
       prop="shouldpay"
       label="销售金额"  width="150">
+                <template slot-scope="scope">
+           {{scope.row.shouldpay?scope.row.shouldpay:0}}
+      </template>
    </el-table-column>
-  <el-table-column
-      prop="doctorNum"
-      label="代理人数量"  width="150">
-   </el-table-column>
+
   <el-table-column
       prop="manufacturer"
       label="生产厂家"  width="150">
@@ -239,7 +263,6 @@
             <el-table-column prop="doctorGood" label="医生主治" width="180" show-overflow-tooltip></el-table-column>
             <el-table-column prop="doctorBrief" label="医生简介" width="180" show-overflow-tooltip></el-table-column>
             <el-table-column prop="consultingFee" label="咨询价格"></el-table-column>
-
             <el-table-column prop="remark" label="备注"></el-table-column>
             <el-table-column prop="doctorStatus" label="使用状态">
                 <template slot-scope="scope">
@@ -271,11 +294,6 @@ import axios from "axios";
 import moment from "moment";
 import * as indexApi from "../../api/indexApi";
 
-
-
-
-
-
 @Component({
   props: {},
   components: {
@@ -293,128 +311,127 @@ export default class getDrugByKeyword extends Vue {
     this.adviserdrug();
   }
 
-startDate=""
-endDate=""
-orderByStr=""
+  startDate = "";
+  endDate = "";
+  orderByStr = "";
 
-  name="";
-  drug="";
-  adviserdrug(filter=null) {
-    if(filter){
-      this.page = 0
+  name = "";
+  drug = "";
+  adviserdrug(filter = null) {
+    this.loading = true;
+    if (filter) {
+      this.page = 0;
     }
-
- let startDate =''
-  let endDate =''
-    if ((this.startDate|| "") != "") {
-      startDate =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
+    let startDate = "";
+    let endDate = "";
+    if ((this.startDate || "") != "") {
+      startDate = moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
     }
 
     if ((this.endDate || "") != "") {
-endDate=
-        moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
+      endDate = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
     }
 
-   let data = {
-        drug: this.drug,
-              name: this.name,
-              page:this.page,
-              pageSize:this.pageSize,
-              orderByStr:this.orderByStr,
-               startcreateDate:startDate,
-        endcreateDate:endDate
+    let data = {
+      drug: this.drug,
+      name: this.name,
+      page: this.page,
+      pageSize: this.pageSize,
+      orderByStr: this.orderByStr,
+      startcreateDate: startDate,
+      endcreateDate: endDate
+    };
+    indexApi.getDrugByKeyword(data).then(res => {
+      if (res["retCode"]) {
+        this.DrugInfo = res.data.DrugInfo;
+        this.total = res.data.page.total;
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
+        this.loading = false;
+        return;
       }
+    });
+    this.ypStartcreateDate(data);
+  }
+
+  orderMoney = 0;
+  prescriptionNum = 0;
+  orderNum = 0;
+  allAdviserNum = 0;
+  drugNum = 0;
+  ypStartcreateDate(data) {
+    data.ypStartcreateDate = data.startcreateDate;
+    data.ypEndcreateDate = data.endcreateDate;
+    indexApi.ypStartcreateDate(data).then(res => {
+      if (res["retCode"]) {
+        if (res.data.AdviserInfo.length > 0) {
+          this.orderMoney = res.data.AdviserInfo[0].orderMoney
+            ? res.data.AdviserInfo[0].orderMoney
+            : 0;
+          this.prescriptionNum = res.data.AdviserInfo[0].prescriptionNum
+            ? res.data.AdviserInfo[0].prescriptionNum
+            : 0;
+          this.orderNum = res.data.AdviserInfo[0].orderNum
+            ? res.data.AdviserInfo[0].orderNum
+            : 0;
+          this.allAdviserNum = res.data.AdviserInfo[0].allAdviserNum
+            ? res.data.AdviserInfo[0].allAdviserNum
+            : 0;
+          this.drugNum = res.data.AdviserInfo[0].drugNum
+            ? res.data.AdviserInfo[0].drugNum
+            : 0;
+        }
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
+      }
+      this.loading = false;
+    });
+  }
+
+  /**
+   * 查顾问
+   */
+
+  drugAdvObj = {
+    model: false,
+    loading: false,
+    AdviserInfo: [],
+    page: 0,
+    pageSize: 10,
+    total: 0,
+    onPageChange: page => {
+      this.drugAdvObj.page = page - 1;
+      this.drugGetAdviser(this.drugAdvObj.row);
+    },
+    row: {}
+  };
+  drugGetAdviser(row) {
+    this.drugAdvObj.loading = true;
+    this.drugAdvObj.model = true;
+    this.drugAdvObj.row = row;
 
     indexApi
-      .getDrugByKeyword(data)
-      .then(res => {
-        if (res["retCode"]) {
-             console.log("total");
-          this.DrugInfo = res.data.DrugInfo;
-  this.total = res.data.page.total;
-
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
-        }
-      });
-this.ypStartcreateDate(data)
-  }
-
-orderMoney= 0
-prescriptionNum= 0
-orderNum= 0
-allAdviserNum= 0
-drugNum= 0
-  ypStartcreateDate (data){
-    data.ypStartcreateDate = data.startcreateDate
-    data.ypEndcreateDate = data.endcreateDate
-  indexApi
-      .ypStartcreateDate(data)
-      .then(res => {
-        this.loading = false;
-        if (res["retCode"]) {
-          if(res.data.AdviserInfo.length>0){
-          this.orderMoney =   res.data.AdviserInfo[0].orderMoney?res.data.AdviserInfo[0].orderMoney:0
-          this.prescriptionNum =   res.data.AdviserInfo[0].prescriptionNum?res.data.AdviserInfo[0].prescriptionNum:0
-          this.orderNum =   res.data.AdviserInfo[0].orderNum?res.data.AdviserInfo[0].orderNum:0
-          this.allAdviserNum =   res.data.AdviserInfo[0].allAdviserNum?res.data.AdviserInfo[0].allAdviserNum:0
-          this.drugNum =   res.data.AdviserInfo[0].drugNum?res.data.AdviserInfo[0].drugNum:0
-          }
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
-        }
-      });
-  
-}
-
-
-/**
- * 查顾问
- */
-
-drugAdvObj =  {
-  model: false,
-  loading: false,
- AdviserInfo : [],
-  page : 0,
-  pageSize : 10,
-  total : 0,
-  onPageChange : page => {
-    this.drugAdvObj.page = page - 1;
-    this.drugGetAdviser(this.drugAdvObj.row);
-  },
-  row : {}
-  }
-drugGetAdviser(row){
-  this.drugAdvObj.loading= true   
-   this.drugAdvObj.model = true;
-   this.drugAdvObj.row = row;
-
- indexApi
       .drugGetAdviser({
-          manufacturer:  row.manufacturer,
-specification:row.specification,
-productName:row.productName,
-packingUnit:row.packingUnit,
-drugName:row.drugName,
-partnerId:row.partnerId,
-price:row.price,
-              page:this.drugAdvObj.page,
-              pageSize:this.drugAdvObj.pageSize
+        manufacturer: row.manufacturer,
+        specification: row.specification,
+        productName: row.productName,
+        packingUnit: row.packingUnit,
+        drugName: row.drugName,
+        partnerId: row.partnerId,
+        price: row.price,
+        page: this.drugAdvObj.page,
+        pageSize: this.drugAdvObj.pageSize
       })
       .then(res => {
-  this.drugAdvObj.loading= false
+        this.drugAdvObj.loading = false;
         if (res["retCode"]) {
-  console.log(res.data)
-this.drugAdvObj.AdviserInfo =  res.data.AdviserInfo
-this.drugAdvObj.total = res.data.page.total
+          console.log(res.data);
+          this.drugAdvObj.AdviserInfo = res.data.AdviserInfo;
+          this.drugAdvObj.total = res.data.page.total;
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -422,54 +439,51 @@ this.drugAdvObj.total = res.data.page.total
           console.error("数据查询错误");
         }
       });
-}
-
-
-/**
- * 
- * 查看医生
- * 
- */
-
-drugDocObj =  {
-  model: false,
-  loading: false,
- DocterInfo : [],
-  page : 0,
-  pageSize : 10,
-  total : 0,
-  onPageChange : page => {
-    this.drugDocObj.page = page - 1;
-    this.drugGetDoctor(this.drugDocObj.row);
-  },
-  row : {}
   }
 
+  /**
+   *
+   * 查看医生
+   *
+   */
 
-drugGetDoctor(row){
-  this.drugDocObj.loading= true   
-   this.drugDocObj.model = true;
-   this.drugDocObj.row = row;
+  drugDocObj = {
+    model: false,
+    loading: false,
+    DocterInfo: [],
+    page: 0,
+    pageSize: 10,
+    total: 0,
+    onPageChange: page => {
+      this.drugDocObj.page = page - 1;
+      this.drugGetDoctor(this.drugDocObj.row);
+    },
+    row: {}
+  };
 
- indexApi
+  drugGetDoctor(row) {
+    this.drugDocObj.loading = true;
+    this.drugDocObj.model = true;
+    this.drugDocObj.row = row;
+
+    indexApi
       .drugGetDoctor({
-      
-            manufacturer:  row.manufacturer,
-specification:row.specification,
-productName:row.productName,
-packingUnit:row.packingUnit,
-drugName:row.drugName,
-partnerId:row.partnerId,
-price:row.price,
-              page:this.drugDocObj.page,
-              pageSize:this.drugDocObj.pageSize
+        manufacturer: row.manufacturer,
+        specification: row.specification,
+        productName: row.productName,
+        packingUnit: row.packingUnit,
+        drugName: row.drugName,
+        partnerId: row.partnerId,
+        price: row.price,
+        page: this.drugDocObj.page,
+        pageSize: this.drugDocObj.pageSize
       })
       .then(res => {
-  this.drugDocObj.loading= false
+        this.drugDocObj.loading = false;
         if (res["retCode"]) {
-  console.log(res.data)
-this.drugDocObj.DocterInfo = res.data.DocterInfo
-this.drugDocObj.total = res.data.page.total
+          console.log(res.data);
+          this.drugDocObj.DocterInfo = res.data.DocterInfo;
+          this.drugDocObj.total = res.data.page.total;
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -477,68 +491,60 @@ this.drugDocObj.total = res.data.page.total
           console.error("数据查询错误");
         }
       });
-}
+  }
 
+  /**
+   * 统计药品数
+   */
+  countDrug = 0;
 
-/**
- * 统计药品数
- */
-countDrug=0;
-
-getcountDrug(){
-indexApi
-      .countDrug({
-      })
-      .then(res => {
-        if (res["retCode"]) {
-
-this.countDrug = res.data.num
-} else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
+  getcountDrug() {
+    indexApi.countDrug({}).then(res => {
+      if (res["retCode"]) {
+        this.countDrug = res.data.num;
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
         }
-      });
-}
-/**
+        console.error("数据查询错误");
+      }
+    });
+  }
+  /**
   排序
  */
-sortChange( {column, prop, order}){
-
-  let desc = ''
-  if(order =='descending'){
-    desc += ' desc'
-  }
-  
-    switch(prop){
-      case'doctorNum':
-        this.orderByStr ='doctor_num' + desc
-      break;
-     case'memberNum':
-        this.orderByStr ='member_num' + desc
-      break;
-     case'orderNum':
-        this.orderByStr ='order_num' + desc
-      break;
-     case'totalMoney':
-        this.orderByStr ='total_money' + desc
-      break;
-      default: 
-  this.orderByStr =''
-      break;
+  sortChange({ column, prop, order }) {
+    let desc = "";
+    if (order == "descending") {
+      desc += " desc";
     }
-   this.adviserdrug(true);
-}
 
+    switch (prop) {
+      case "doctorNum":
+        this.orderByStr = "doctor_num" + desc;
+        break;
+      case "memberNum":
+        this.orderByStr = "member_num" + desc;
+        break;
+      case "orderNum":
+        this.orderByStr = "order_num" + desc;
+        break;
+      case "totalMoney":
+        this.orderByStr = "total_money" + desc;
+        break;
+      default:
+        this.orderByStr = "";
+        break;
+    }
+    this.adviserdrug(true);
+  }
 
   mounted() {
     this.adviserdrug();
-    this.getcountDrug()
+    this.getcountDrug();
   }
 }
-
- </script>
+</script>
 
 <style  scoped>
 .flex-space {
