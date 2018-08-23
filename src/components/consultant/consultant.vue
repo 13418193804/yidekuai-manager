@@ -73,27 +73,45 @@
       label="顾问姓名"  width="150">
    </el-table-column>
    
+
  <el-table-column
       prop="doctorNum" sortable="custom"
       label="管理医生数量"  width="150">
+                <template slot-scope="scope">
+           {{scope.row.doctorNum?scope.row.doctorNum:0}}
+      </template>
    </el-table-column>
  <el-table-column
       prop="orderNum" sortable="custom"
       label="总订单数量"  width="150" >
+                <template slot-scope="scope">
+           {{scope.row.orderNum?scope.row.orderNum:0}}
+      </template>
    </el-table-column>
  <el-table-column
       prop="orderMoney" sortable="custom"
       label="总订单金额"  width="150">
+             <template slot-scope="scope">
+           {{scope.row.orderMoney?scope.row.orderMoney:0}}
+      </template>
    </el-table-column>
  <el-table-column
       prop="prescriptionNum" sortable="custom"
       label="总处方数量"  width="150">
+            <template slot-scope="scope">
+           {{scope.row.prescriptionNum?scope.row.prescriptionNum:0}}
+      </template>
    </el-table-column>
    
  <el-table-column
       prop="drugNum" sortable="custom"
       label="药品种类数量"  width="150">
+              <template slot-scope="scope">
+           {{scope.row.drugNum?scope.row.drugNum:0}}
+      </template>
    </el-table-column>
+
+
 
 
  <el-table-column
@@ -140,7 +158,7 @@
           type="text" @click="cleanConsultantItemShelf(scope.row)"
       >医生统计</el-button>
 
-				<el-button size="small" type="text" @click="openNotBindDoctorModel(scope.row)" >新增医生</el-button>
+				<el-button size="small" type="text" @click="openNotBindDoctorModel(scope.row)" >分配医生</el-button>
 
                       <el-button
           size="mini"
@@ -344,7 +362,7 @@
 
 
 <!-- =============      添加绑定的医生   ================ -->
-		<el-dialog width= "70vw" :close-on-click-modal="false" v-loading="notBindDoctorObj.addloading"  :append-to-body="true" :visible.sync="notBindDoctorObj.model"  title="新增医生">
+		<el-dialog width= "70vw" :close-on-click-modal="false" v-loading="notBindDoctorObj.addloading"  :append-to-body="true" :visible.sync="notBindDoctorObj.model"  title="分配医生">
 
 
  <el-row :gutter="10" style="margin-bottom:20px;">
@@ -591,7 +609,7 @@ export default class AddGoods extends Vue {
       orderByStr: this.orderByStr
     };
     indexApi.getConsultantList1(data).then(res => {
-      this.loading = false;
+ 
       if (res["retCode"]) {
         this.YdkAdviser = res.data.AdviserInfo;
         this.total = res.data.page.total;
@@ -599,7 +617,8 @@ export default class AddGoods extends Vue {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
         }
-        console.error("数据查询错误");
+             this.loading = false;
+   return
       }
     });
     this.ypStartcreateDate(data);
@@ -637,8 +656,8 @@ export default class AddGoods extends Vue {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
         }
-        console.error("数据查询错误");
       }
+           this.loading = false;
     });
   }
   adviserObj: any = {};
@@ -1011,7 +1030,7 @@ export default class AddGoods extends Vue {
 
   /**
    *
-   * 新增医生
+   * 分配医生
    */
 
   addDoctorbind(row) {

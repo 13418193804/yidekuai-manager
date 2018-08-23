@@ -84,10 +84,26 @@
                     <!-- <el-tag v-if="scope.row.doctorStatus=='HIDE'" type="info">隐藏</el-tag> -->
                 </template>
             </el-table-column>
-               <el-table-column prop="prescriptionNum" label="医生处方数量" sortable="custom" width="150"></el-table-column>
-            <el-table-column prop="orderNum" label="医生订单数量" sortable="custom" width="150"></el-table-column>
-            <el-table-column prop="orderMoney" label="医生订单金额" sortable="custom" width="150"></el-table-column>
-            <el-table-column prop="memberNum" label="医生患者数量" sortable="custom" width="150"></el-table-column>
+               <el-table-column prop="prescriptionNum" label="医生处方数量" sortable="custom" width="150">
+                <template slot-scope="scope">
+                    {{scope.row.prescriptionNum?scope.row.prescriptionNum:0}}
+                </template>
+               </el-table-column>
+            <el-table-column prop="orderNum" label="医生订单数量" sortable="custom" width="150">
+            <template slot-scope="scope">
+                {{scope.row.orderNum?scope.row.orderNum:0}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="orderMoney" label="医生订单金额" sortable="custom" width="150">
+            <template slot-scope="scope">
+                 {{scope.row.orderMoney?scope.row.orderMoney:0}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="memberNum" label="医生患者数量" sortable="custom" width="150">
+               <template slot-scope="scope">
+              {{scope.row.memberNum?scope.row.memberNum:0}}
+             </template>
+            </el-table-column>
  
   <el-table-column
       prop="creater_name"
@@ -304,7 +320,7 @@ export default class AddGoods extends Vue {
       case "CHIEF_PHYSICIAN":
         return "主任医师";
       default:
-       return "";
+        return "";
     }
   }
 
@@ -336,7 +352,7 @@ export default class AddGoods extends Vue {
   }
 
   loading = false;
-orderByStr="";
+  orderByStr = "";
   page = 0;
   pageSize = 10;
   total = 0;
@@ -367,62 +383,66 @@ orderByStr="";
       endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
     }
     let data = {
-        page: this.page,
-        pageSize: this.pageSize,
-        keyword: this.keyword,
-        phone: this.phone,
-        startcreateDate: startCreatTime,
-        endcreateDate: endCreatTime,
-        doctorStatus: this.doctorStatus,
-      orderByStr:this.orderByStr
-      }
-    indexApi
-      .getDoctorList(data)
-      .then(res => {
-        this.loading = false;
-        if (res["retCode"]) {
-          console.log(res.data);
-          this.DoctorInfo = res.data.DoctorInfo;
-          this.total = res.data.page.total;
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
+      page: this.page,
+      pageSize: this.pageSize,
+      keyword: this.keyword,
+      phone: this.phone,
+      startcreateDate: startCreatTime,
+      endcreateDate: endCreatTime,
+      doctorStatus: this.doctorStatus,
+      orderByStr: this.orderByStr
+    };
+    indexApi.getDoctorList(data).then(res => {
+      if (res["retCode"]) {
+        console.log(res.data);
+        this.DoctorInfo = res.data.DoctorInfo;
+        this.total = res.data.page.total;
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
         }
-      });
-this.ypStartcreateDate(data)
+        this.loading = false;
+        return;
+      }
+    });
+    this.ypStartcreateDate(data);
   }
 
-orderMoney= 0
-prescriptionNum= 0
-orderNum= 0
-allAdviserNum= 0
-drugNum= 0
-  ypStartcreateDate (data){
-        data.ydStartcreateDate = data.startcreateDate
-    data.ydEndcreateDate = data.endcreateDate
-  indexApi
-      .ypStartcreateDate(data)
-      .then(res => {
-        this.loading = false;
-        if (res["retCode"]) {
-          if(res.data.AdviserInfo.length>0){
-          this.orderMoney =   res.data.AdviserInfo[0].orderMoney?res.data.AdviserInfo[0].orderMoney:0
-          this.prescriptionNum =   res.data.AdviserInfo[0].prescriptionNum?res.data.AdviserInfo[0].prescriptionNum:0
-          this.orderNum =   res.data.AdviserInfo[0].orderNum?res.data.AdviserInfo[0].orderNum:0
-          this.allAdviserNum =   res.data.AdviserInfo[0].allAdviserNum?res.data.AdviserInfo[0].allAdviserNum:0
-          this.drugNum =   res.data.AdviserInfo[0].drugNum?res.data.AdviserInfo[0].drugNum:0
-          }
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
+  orderMoney = 0;
+  prescriptionNum = 0;
+  orderNum = 0;
+  allAdviserNum = 0;
+  drugNum = 0;
+  ypStartcreateDate(data) {
+    data.ydStartcreateDate = data.startcreateDate;
+    data.ydEndcreateDate = data.endcreateDate;
+    indexApi.ypStartcreateDate(data).then(res => {
+      if (res["retCode"]) {
+        if (res.data.AdviserInfo.length > 0) {
+          this.orderMoney = res.data.AdviserInfo[0].orderMoney
+            ? res.data.AdviserInfo[0].orderMoney
+            : 0;
+          this.prescriptionNum = res.data.AdviserInfo[0].prescriptionNum
+            ? res.data.AdviserInfo[0].prescriptionNum
+            : 0;
+          this.orderNum = res.data.AdviserInfo[0].orderNum
+            ? res.data.AdviserInfo[0].orderNum
+            : 0;
+          this.allAdviserNum = res.data.AdviserInfo[0].allAdviserNum
+            ? res.data.AdviserInfo[0].allAdviserNum
+            : 0;
+          this.drugNum = res.data.AdviserInfo[0].drugNum
+            ? res.data.AdviserInfo[0].drugNum
+            : 0;
         }
-      });
-  
-}
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
+      }
+      this.loading = false;
+    });
+  }
 
   /**
    * 医生数量
@@ -604,7 +624,7 @@ drugNum= 0
         });
       });
   }
- /**
+  /**
   排序
  */
   sortChange({ column, prop, order }) {
@@ -612,11 +632,11 @@ drugNum= 0
     if (order == "descending") {
       desc += " desc";
     }
-// 医生处方数量 prescription_num 、
-// 医生订单数量order_num、
-// 医生订单金额order_money、
-// 医生患者数量doctorPatientNum、
-// 时间null
+    // 医生处方数量 prescription_num 、
+    // 医生订单数量order_num、
+    // 医生订单金额order_money、
+    // 医生患者数量doctorPatientNum、
+    // 时间null
     switch (prop) {
       case "prescriptionNum":
         this.orderByStr = "prescription_num" + desc;

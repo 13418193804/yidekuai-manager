@@ -9,14 +9,15 @@ import * as Api from './api';
 let base = Config.g_base_url;
 
 
-export const queryUserList = (page,pageSize, keyname) => {
+export const queryUserList = (page,pageSize, keyname,orderByStr) => {
 
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
         keyname: keyname,
         page: page,
-        pageSize: pageSize
+        pageSize: pageSize,
+        orderByStr:orderByStr
     }
     return Api.requestForm2('/api/member/findmember', params)
         .then(res => res);
