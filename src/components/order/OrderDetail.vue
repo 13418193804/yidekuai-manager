@@ -25,7 +25,7 @@
 				<span>{{orderDetail.provinceName}}{{orderDetail.cityName}}{{orderDetail.countryName}}{{orderDetail.address}}</span>
 			</div>
 
-			<div >
+			<div>
 				<span style="width:100px;">客户留言：</span>
 				<span style="color:#999;">
           {{orderDetail.orderRemark}}
@@ -64,7 +64,7 @@
 
 			<div class="step-panel backBody" v-if="orderDetail.detailList[0].refundStatus != 'WITHOUT_REFUND'">
 			<h3>退货退款</h3>
-      <div v-for="(item,index) in orderDetail.detailList[0].refundOrderList">
+      <div v-for="(item,index) in orderDetail.detailList[0].refundOrderList" :key="index">
 			<div style="height:30px;">
 				<span>类型：</span>
 				<span> {{item.refundType=='REFUND' ?'仅退款':"退货退款"}}
@@ -92,7 +92,7 @@
 				<span> {{item.refundReason}}</span>
 			</div>
   <div >
-    <img v-for="items in item.refundImg ?item.refundImg.split(','):[]" :src="items" @click="viewBigIcon(items)" style="width:220px;height:220px;margin:10px;    cursor: pointer;" alt="" >
+    <img v-for="(items,index) in item.refundImg ?item.refundImg.split(','):[]" :key="index" :src="items" @click="viewBigIcon(items)" style="width:220px;height:220px;margin:10px;    cursor: pointer;" alt="" >
 
   </div>
 		<div style="height:30px;">
@@ -169,7 +169,7 @@
 				<el-table-column align="center" header-align="center" prop="goodsNum" label="数量" width="100" sortable >
 				</el-table-column>
 
-				<el-table-column align="center" header-align="center" prop="goodsPrice" label="商品价格" width="120" sortable />
+				<el-table-column align="center" header-align="center" prop="goodsPrice" label="商品价格" width="120" sortable >
 				</el-table-column>
 
 				<el-table-column align="center" header-align="center"  label="小计" width="120" >
@@ -265,7 +265,7 @@
 				<el-form-item label="物流公司名">
 
 					<el-select v-model="rowObject.transCode" filterable  @change="changeAdd" style="float:left;width:100%;">
-						<el-option v-for="(item,index) in transportModel.options" :value="index" :label="item.transportName"></el-option>
+						<el-option v-for="(item,index) in transportModel.options" :key="index" :value="index" :label="item.transportName"></el-option>
 					</el-select>
 				</el-form-item>
 
@@ -308,7 +308,7 @@
   <el-button @click="$router.push('/refundaddress')">添加地址</el-button>
 </div>
 <div  style="max-height:200px;    overflow: auto;"  v-else>
-    <div v-for="n in addressList" style="display:flex;    line-height: 20px;">
+    <div v-for="(n,index) in addressList" :key="index" style="display:flex;line-height: 20px;">
     <div>
       <el-radio v-model="addressId" :label="n.id">
           {{' '}}
@@ -351,7 +351,7 @@
     </el-dialog>
    <el-dialog v-loading="transLoading" :visible.sync="transport.model" width="1050px" center size="tiny"  title="物流信息" :close-on-click-modal="false" top="40px">
   <div style="height:500px;overflow-y: scroll;">
-    <div v-for="n in transport.transportList" style="    padding: 10px 0 10px 20px;">
+    <div v-for="(n,index) in transport.transportList" :key="index" style="padding: 10px 0 10px 20px;">
 <div style="padding:5px 0">
   {{n.context}}
 </div>
@@ -367,7 +367,7 @@
       <img :src="bigIcon" style="width:400px;height:400px;margin:-55px -20px -40px" >
     </el-dialog>
 
-		</div>
+		<!-- </div> -->
 
 	</section>
  </template>

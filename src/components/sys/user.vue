@@ -10,7 +10,7 @@
        <el-select v-model="modelObj.roleId">
          <el-option  value="" label="全部"></el-option>
          
-         <el-option v-for="n in roleList" :value="n.id" :label="n.roleName"></el-option>
+         <el-option v-for="(n,index) in roleList" :key="index" :value="n.id" :label="n.roleName"></el-option>
        </el-select>
     </div>
 
@@ -115,7 +115,7 @@
 <el-form-item label="角色" style="max-width:400px;float:left;">
     <el-select v-model="obj.roleId">
          <el-option  value="" label="请选择"></el-option>
-         <el-option v-for="n in roleList" :value="n.id" :label="n.roleName"></el-option>
+         <el-option v-for="(n,index) in roleList" :key="index" :value="n.id" :label="n.roleName"></el-option>
        </el-select>
 				</el-form-item>
 

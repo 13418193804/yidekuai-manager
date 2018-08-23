@@ -86,7 +86,7 @@
   <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6" style="    margin-bottom: 22px;">
   
 <el-select v-model="rowObject.provinceId" @change="queryCityList()">
-<el-option v-for="n in provinceList" :label="n.name" :value="n.id" ></el-option>
+<el-option v-for="(n,index) in provinceList" :key="index" :label="n.name" :value="n.id" ></el-option>
 </el-select>
   </el-col>
 
@@ -94,7 +94,7 @@
 
 
         <el-select v-model="rowObject.cityId" @change="queryCountryList()">
-<el-option v-for="n in cityList" :label="n.name" :value="n.id"></el-option>
+<el-option v-for="(n,index) in cityList" :key="index" :label="n.name" :value="n.id"></el-option>
 </el-select>
 
   </el-col>
@@ -102,7 +102,7 @@
   <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6" style="    margin-bottom: 22px;">
 
         <el-select v-model="rowObject.countryId" >
-<el-option v-for="n in countryList" :label="n.name" :value="n.id"></el-option>
+<el-option v-for="(n,index) in countryList" :key="index" :label="n.name" :value="n.id"></el-option>
 </el-select>
   </el-col>
 </el-row>

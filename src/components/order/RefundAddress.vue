@@ -80,14 +80,14 @@
 		<el-form-item label="地区">
 <div style="    white-space: nowrap;overflow:hidden;">
 <el-select v-model="rowObject.provinceId" @change="queryCityList()">
-<el-option v-for="n in provinceList" :label="n.name" :value="n.id" ></el-option>
+<el-option v-for="(n,index) in provinceList" :label="n.name" :key="index" :value="n.id" ></el-option>
 </el-select>
 
         <el-select v-model="rowObject.cityId" @change="queryCountryList()">
-<el-option v-for="n in cityList" :label="n.name" :value="n.id"></el-option>
+<el-option v-for="(n,index) in cityList" :label="n.name" :key="index" :value="n.id"></el-option>
 </el-select>
         <el-select v-model="rowObject.countryId" >
-<el-option v-for="n in countryList" :label="n.name" :value="n.id"></el-option>
+<el-option v-for="(n,index) in countryList" :label="n.name" :key="index" :value="n.id"></el-option>
 </el-select>
 		</div>
     		</el-form-item>

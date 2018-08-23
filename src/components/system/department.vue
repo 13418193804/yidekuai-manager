@@ -103,7 +103,7 @@
 		<el-form-item label="职位名称">
         <div >
     <el-checkbox-group v-model="checkboxGroup6" size="mini" >
-      <el-checkbox v-for="(item,index) in options" :label="item.roleId" border>{{item.roleName}}</el-checkbox>
+      <el-checkbox v-for="(item,index) in options" :key="index" :label="item.roleId" border>{{item.roleName}}</el-checkbox>
     </el-checkbox-group>
   </div>
 				</el-form-item>
