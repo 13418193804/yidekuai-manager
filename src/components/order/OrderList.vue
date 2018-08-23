@@ -68,7 +68,7 @@
 
 				<el-form-item label="物流公司名">
 					<el-select v-model="rowObject.transCode" filterable @change="changeAdd" style="float:left;width:100%;">
-						<el-option v-for="(item,index) in options" :value="index" :label="item.transportName"></el-option>
+						<el-option v-for="(item,index) in options" :key="index" :value="index" :label="item.transportName"></el-option>
 					</el-select>
 				</el-form-item>
 

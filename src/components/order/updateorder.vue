@@ -176,7 +176,7 @@
 
 
 
-<div v-for="(item,index) in order.YdkOrderDetailList">
+<div v-for="(item,index) in order.YdkOrderDetailList" :key="index">
 
 
 <div class="flex flex-warp-justify" style="margin-top:20px;">
@@ -194,7 +194,7 @@
         <el-form-item  label="物流公司：">
 					<!-- <el-input v-model="item.logistics"   size="mini" style="max-width:400px;min-width:200px;"></el-input> -->
 					<el-select v-model="item.logistics"  size="mini" filterable  style="max-width:400px;min-width:200px;">
-						<el-option v-for="(item,index) in shipList" :value="item.comName" :label="item.comName"></el-option>
+						<el-option v-for="(item,index) in shipList" :value="item.comName" :label="item.comName" :key="index"></el-option>
 					</el-select>
       	</el-form-item>
           <el-form-item  label="运单号：">
@@ -436,7 +436,7 @@
 				</el-form-item>
 </el-form>
 
-<div v-for="(item,index) in updateOrder.YdkOrderDetailList">
+<div v-for="(item,index) in updateOrder.YdkOrderDetailList" :key="index">
 
 <div class="flex flex-warp-justify" style="margin-top:20px;">
   <h4 style="margin:0;    height: 40px;
@@ -454,7 +454,7 @@
         <el-form-item  label="物流公司：">
 					<!-- <el-input v-model="item.logistics" size="mini" style="max-width:400px;min-width:200px;"></el-input> -->
 						<el-select v-model="item.logistics"  size="mini" filterable  style="max-width:400px;min-width:200px;">
-						<el-option v-for="(item,index) in shipList" :value="item.comName" :label="item.comName"></el-option>
+						<el-option v-for="(item,index) in shipList" :key="index" :value="item.comName" :label="item.comName"></el-option>
 					</el-select>
         </el-form-item>
           <el-form-item  label="运单号：">
@@ -549,7 +549,7 @@
 
 		<el-dialog width= "70vw" :close-on-click-modal="false"   append-to-body :visible.sync="shipInfoModel"  title="物流追踪" >
          <div style="margin-left:20px;margin-bottom:10px;font-size:15px;height:500px;" v-loading="shipInfoLoading">
-            <div v-for="(item,index) in shipInfo">
+            <div v-for="(item,index) in shipInfo" :key="index">
               {{item.AcceptStation}}{{item.AcceptTime}}
           </div>
           <div v-if="shipInfo.length==0" style="margin:40px 0;text-align:center;color:#999;font-size:14.8px">暂无物流信息</div>

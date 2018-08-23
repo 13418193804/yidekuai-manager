@@ -171,7 +171,7 @@
   <el-option v-for="item in roleList" :label="item.roleName" :value="item.roleId" :key="item.roleId"></el-option>
   </el-select> -->
     <el-checkbox-group v-model="roleIdModel" size="mini" >
-      <el-checkbox v-for="(item,index) in roleList" :label="item.roleId" border>{{item.roleName}}</el-checkbox>
+      <el-checkbox v-for="(item,index) in roleList" :key="index" :label="item.roleId" border>{{item.roleName}}</el-checkbox>
     </el-checkbox-group>
 
 
