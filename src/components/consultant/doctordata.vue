@@ -4,14 +4,13 @@
         
          <div style="">
           <h3>医生数据</h3>
-          
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">平台医生数量：{{countDoctor}} 个</span>
 <span style="margin-right:20px;">订单金额：{{orderMoney}} 元</span>       
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
 <span style="margin-right:20px;">订单数量：{{orderNum}} </span>       
 <span style="margin-right:20px;">全部顾问数量：{{allAdviserNum }} </span>             
-<span style="margin-right:20px;">药品数量：{{drugNum}} </span>               
+<span style="margin-right:20px;">药品种类：{{drugNum}} </span>               
             </div>
         </div>
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
