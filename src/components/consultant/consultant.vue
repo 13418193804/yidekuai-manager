@@ -6,10 +6,15 @@
           <h3>顾问数据</h3>
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">顾问人数：{{adviserCount}} 个</span>             
-<span style="margin-right:20px;">订单金额：{{orderMoney}} 元</span>       
+<span style="margin-right:20px;">订单金额(已支付)：{{payOrderMoney}} 元</span>       
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
+<<<<<<< HEAD
 <span style="margin-right:20px;">订单数量：{{orderNum}} </span>       
 <span style="margin-right:20px;">药品种类：{{drugNum}} </span>             
+=======
+<span style="margin-right:20px;">订单数量(已支付)：{{payOrderNum}} </span>       
+<span style="margin-right:20px;">药品数量：{{drugQuantityTotal}} </span>             
+>>>>>>> e525d81fc3db2b5d31a56e0a5868d0ae2e4a5ae7
             </div>
         </div>
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
@@ -623,12 +628,14 @@ export default class AddGoods extends Vue {
     });
     this.ypStartcreateDate(data);
   }
-
+  payOrderMoney = 0;
   orderMoney = 0;
   prescriptionNum = 0;
+  payOrderNum = 0;
   orderNum = 0;
   allAdviserNum = 0;
   drugNum = 0;
+  drugQuantityTotal = 0;
   ypStartcreateDate(data) {
     data.ypdStartcreateDate = data.startcreateDate;
     data.ypdEndcreateDate = data.endcreateDate;
@@ -639,17 +646,26 @@ export default class AddGoods extends Vue {
           this.orderMoney = res.data.AdviserInfo[0].orderMoney
             ? res.data.AdviserInfo[0].orderMoney
             : 0;
+          this.payOrderMoney = res.data.AdviserInfo[0].payOrderMoney
+            ? res.data.AdviserInfo[0].payOrderMoney
+            : 0;
           this.prescriptionNum = res.data.AdviserInfo[0].prescriptionNum
             ? res.data.AdviserInfo[0].prescriptionNum
             : 0;
           this.orderNum = res.data.AdviserInfo[0].orderNum
             ? res.data.AdviserInfo[0].orderNum
             : 0;
+          this.payOrderNum = res.data.AdviserInfo[0].payOrderNum
+            ? res.data.AdviserInfo[0].payOrderNum
+            : 0;
           this.allAdviserNum = res.data.AdviserInfo[0].allAdviserNum
             ? res.data.AdviserInfo[0].allAdviserNum
             : 0;
           this.drugNum = res.data.AdviserInfo[0].drugNum
             ? res.data.AdviserInfo[0].drugNum
+            : 0;
+          this.drugQuantityTotal = res.data.AdviserInfo[0].drugQuantityTotal
+            ? res.data.AdviserInfo[0].drugQuantityTotal
             : 0;
         }
       } else {

@@ -7,11 +7,15 @@
           
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">药品总数：{{countDrug}} 个</span>    
-<span style="margin-right:20px;">订单金额：{{orderMoney}} 元</span>       
+<span style="margin-right:20px;">订单金额(已支付)：{{payOrderMoney}} 元</span>       
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
-<span style="margin-right:20px;">订单数量：{{orderNum}} </span>       
+<span style="margin-right:20px;">订单数量(已支付)：{{payOrderNum}} </span>       
 <span style="margin-right:20px;">全部顾问数量：{{allAdviserNum }} </span>             
+<<<<<<< HEAD
 <span style="margin-right:20px;">药品种类：{{drugNum}} </span>             
+=======
+<span style="margin-right:20px;">药品数量：{{drugQuantityTotal}}</span>             
+>>>>>>> e525d81fc3db2b5d31a56e0a5868d0ae2e4a5ae7
             </div>
         </div>
      
@@ -361,6 +365,9 @@ export default class getDrugByKeyword extends Vue {
   orderNum = 0;
   allAdviserNum = 0;
   drugNum = 0;
+  payOrderMoney = 0;
+  payOrderNum = 0;
+  drugQuantityTotal = 0;
   ypStartcreateDate(data) {
     data.ypStartcreateDate = data.startcreateDate;
     data.ypEndcreateDate = data.endcreateDate;
@@ -381,6 +388,15 @@ export default class getDrugByKeyword extends Vue {
             : 0;
           this.drugNum = res.data.AdviserInfo[0].drugNum
             ? res.data.AdviserInfo[0].drugNum
+            : 0;
+          this.payOrderMoney = res.data.AdviserInfo[0].payOrderMoney
+            ? res.data.AdviserInfo[0].payOrderMoney
+            : 0;
+          this.payOrderNum = res.data.AdviserInfo[0].payOrderNum
+            ? res.data.AdviserInfo[0].payOrderNum
+            : 0;
+          this.drugQuantityTotal = res.data.AdviserInfo[0].drugQuantityTotal
+            ? res.data.AdviserInfo[0].drugQuantityTotal
             : 0;
         }
       } else {
