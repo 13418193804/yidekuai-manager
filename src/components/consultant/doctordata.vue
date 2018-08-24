@@ -1,7 +1,5 @@
 <template>
     <div v-loading="loading">
-    
-        
          <div style="">
           <h3>医生数据</h3>
  <div style="padding-bottom:20px;">
@@ -21,17 +19,12 @@
   clearable>
 </el-input>
   </el-col>
-
-
   <el-col :xs="16" :sm="12" :md="10" :lg="5" :xl="3">
    <el-input v-model="phone"
   placeholder="手机号码" style="margin-top:20px;" 
   clearable>
 </el-input>
   </el-col>
-
-
-
  <el-col :xs="16" :sm="24" :md="6" :lg="8" :xl="5" style="min-width:470px;">
   	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
 						</el-date-picker>

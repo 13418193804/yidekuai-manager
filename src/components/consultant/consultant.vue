@@ -948,7 +948,8 @@ export default class AddGoods extends Vue {
 
         indexApi
           .adviserNotBindDoctor({
-            doctorId: row.doctorId
+            doctorId: row.doctorId,
+                    adviserTypeEnums:row.adviser_type,
           })
           .then(res => {
             this.shelfObj.loading = false;
