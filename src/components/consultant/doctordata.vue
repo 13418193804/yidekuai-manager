@@ -7,11 +7,11 @@
           
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">平台医生数量：{{countDoctor}} 个</span>
-<span style="margin-right:20px;">订单金额：{{orderMoney}} 元</span>       
+<span style="margin-right:20px;">订单金额(已支付)：{{payOrderMoney}} 元</span>       
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
-<span style="margin-right:20px;">订单数量：{{orderNum}} </span>       
+<span style="margin-right:20px;">订单数量(已支付)：{{payOrderNum}} </span>       
 <span style="margin-right:20px;">全部顾问数量：{{allAdviserNum }} </span>             
-<span style="margin-right:20px;">药品数量：{{drugNum}} </span>               
+<span style="margin-right:20px;">药品数量：{{drugQuantityTotal}} </span>               
             </div>
         </div>
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
@@ -413,6 +413,9 @@ export default class AddGoods extends Vue {
   orderNum = 0;
   allAdviserNum = 0;
   drugNum = 0;
+  payOrderMoney = 0;
+  payOrderNum = 0;
+  drugQuantityTotal = 0;
   ypStartcreateDate(data) {
     data.ydStartcreateDate = data.startcreateDate;
     data.ydEndcreateDate = data.endcreateDate;
@@ -433,6 +436,15 @@ export default class AddGoods extends Vue {
             : 0;
           this.drugNum = res.data.AdviserInfo[0].drugNum
             ? res.data.AdviserInfo[0].drugNum
+            : 0;
+          this.payOrderMoney = res.data.AdviserInfo[0].payOrderMoney
+            ? res.data.AdviserInfo[0].payOrderMoney
+            : 0;
+          this.payOrderNum = res.data.AdviserInfo[0].payOrderNum
+            ? res.data.AdviserInfo[0].payOrderNum
+            : 0;
+          this.drugQuantityTotal = res.data.AdviserInfo[0].drugQuantityTotal
+            ? res.data.AdviserInfo[0].drugQuantityTotal
             : 0;
         }
       } else {
