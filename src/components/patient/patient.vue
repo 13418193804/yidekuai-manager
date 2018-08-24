@@ -32,6 +32,12 @@
       prop="name"
       label="患者姓名" width="150">
    </el-table-column>
+
+      <el-table-column
+      prop="maxCreateDate" sortable="custom"
+      label="最新处方创建时间" width="180">
+   </el-table-column>
+   
   <el-table-column
       prop="sex"
       label="患者性别"  width="120">
@@ -110,10 +116,7 @@
       prop="register_date"
       label="注册日期" width="180">
    </el-table-column>
-   <el-table-column
-      prop="maxCreateDate" sortable="custom"
-      label="最新处方创建时间" width="180">
-   </el-table-column>
+
    
    <el-table-column label="操作" fixed="right"  width="300">
       <template slot-scope="scope">

@@ -7,11 +7,11 @@
           
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">药品总数：{{countDrug}} 个</span>    
-<span style="margin-right:20px;">订单金额(已支付)：{{payOrderMoney}} 元</span>       
+<span style="margin-right:20px;">药品成交金额：{{payOrderMoney}} 元</span>       
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
-<span style="margin-right:20px;">订单数量(已支付)：{{payOrderNum}} </span>       
-<span style="margin-right:20px;">全部顾问数量：{{allAdviserNum }} </span>             
-<span style="margin-right:20px;">药品数量：{{drugQuantityTotal}}</span>             
+<span style="margin-right:20px;">订单数量（已成交）{{payOrderNum}} </span>       
+<span style="margin-right:20px;">全部顾问数量：{{allAdviserNum}} </span>             
+<span style="margin-right:20px;">药品销售数量：{{drugQuantityTotal}} </span>           
             </div>
         </div>
      
