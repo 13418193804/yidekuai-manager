@@ -427,7 +427,8 @@ formLabeldetails={};
     this.$confirm('是否删除该医院?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          closeOnClickModal:false
         }).then(() => {
                 hospitalApi.delethospital(row.hospitalId).then(res => {
             if (res["retCode"]) {

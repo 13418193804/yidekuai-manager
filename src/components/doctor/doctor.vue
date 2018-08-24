@@ -1057,7 +1057,8 @@ updatedoctor(){
       this.$confirm('是否停用该医生?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          closeOnClickModal:false
         }).then(() => {
             doctorApi.setDoctorSTOPstatus(row.doctorId).then(res => {
             if (res["retCode"]) {
@@ -1084,7 +1085,8 @@ updatedoctor(){
       this.$confirm('是否启用该医生?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          closeOnClickModal:false
         }).then(() => {
             doctorApi.setDoctorUSEstatus(row.doctorId).then(res => {
             if (res["retCode"]) {
@@ -1112,7 +1114,8 @@ updatedoctor(){
       this.$confirm('是否隐藏该医生?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          closeOnClickModal:false
         }).then(() => {
             doctorApi.setDoctorHIDEstatus(row.doctorId).then(res => {
             if (res["retCode"]) {
@@ -1510,7 +1513,8 @@ updatedoctor(){
             this.$confirm('是否让该医生通过?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
-                type: 'warning'
+                type: 'warning',
+                closeOnClickModal:false
                 }).then(() => {
                     doctorApi.passDoctor(row.doctorId).then(res => {
                         if (res["retCode"]) {
@@ -1535,7 +1539,8 @@ updatedoctor(){
             this.$confirm('是否让该医生删除?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
-                type: 'warning'
+                type: 'warning',
+                closeOnClickModal:false
                 }).then(() => {
                     doctorApi.deleteYdkDoctorExamine(row.doctorId).then(res => {
                         if (res["retCode"]) {
@@ -1560,7 +1565,8 @@ updatedoctor(){
             this.$confirm('是否让该医生不通过?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
-                type: 'warning'
+                type: 'warning',
+                closeOnClickModal:false
                 }).then(() => {
                     doctorApi.notPassDoctor(row.doctorId).then(res => {
                     if (res["retCode"]) {
