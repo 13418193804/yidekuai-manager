@@ -10,7 +10,7 @@
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
 <span style="margin-right:20px;">订单数量（已成交）{{payOrderNum}} </span>       
 <span style="margin-right:20px;">全部顾问数量：{{allAdviserNum}} </span>             
-<span style="margin-right:20px;">药品数量：{{drugQuantityTotal}} </span>               
+<span style="margin-right:20px;">药品销售数量：{{drugQuantityTotal}} </span>               
             </div>
         </div>
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">

@@ -9,7 +9,7 @@
 <span style="margin-right:20px;">药品成交金额：{{payOrderMoney}} 元</span>       
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
 <span style="margin-right:20px;">订单数量（已成交）{{payOrderNum}} </span>         
-<span style="margin-right:20px;">药品数量：{{drugQuantityTotal}} </span>            
+<span style="margin-right:20px;">药品销售数量：{{drugQuantityTotal}} </span>             
             </div>
         </div>
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
@@ -297,22 +297,7 @@
       prop="name"
       label="医生姓名">
    </el-table-column>
-  <el-table-column
-      prop="phone"
-      label="电话号码" width="150">
-   </el-table-column>
-  <el-table-column
-      prop="hspCode"
-      label="医疗机构代码">
-   </el-table-column>
-     <el-table-column
-      prop="hospitalName"
-      label="医院" width="150">
-   </el-table-column>
-  <el-table-column
-      prop="hospitalDepartment"
-      label="科室">
-   </el-table-column>
+
   <el-table-column
       prop="orderMoney"
       label="订单金额" width="150">
@@ -329,6 +314,29 @@
       prop="memberNum"
       label="总患者数">
    </el-table-column>
+
+     <el-table-column
+      prop="shelfNumber"
+      label="货架号">
+   </el-table-column>
+
+  <el-table-column
+      prop="phone"
+      label="电话号码" width="150">
+   </el-table-column>
+  <el-table-column
+      prop="hspCode"
+      label="医疗机构代码">
+   </el-table-column>
+     <el-table-column
+      prop="hospitalName"
+      label="医院" width="150">
+   </el-table-column>
+  <el-table-column
+      prop="hospitalDepartment"
+      label="科室">
+   </el-table-column>
+
 
 
      <el-table-column
