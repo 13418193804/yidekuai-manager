@@ -19,7 +19,8 @@
                                     <el-tag v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'" type="text">未通过</el-tag>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="adviser.adviserName" label="来源顾问"></el-table-column>
+                            <el-table-column prop="resourceAdviserName" label="来源顾问"></el-table-column>
+                            <el-table-column prop="resourceAdviserPhone" label="顾问手机"></el-table-column>
                             <el-table-column prop="hospitalDepartment" label="所在科室"></el-table-column>
                             <el-table-column prop="hspCode" label="医院机构代码" width="150"></el-table-column>
                             <el-table-column prop="doctorGood" label="医生擅长" width="120" show-overflow-tooltip></el-table-column>
@@ -105,8 +106,8 @@
                                     <span v-if="scope.row.doctorTitle=='CHIEF_PHYSICIAN'">主任医师</span>
                                 </template>
             </el-table-column>
-            <el-table-column prop="adviserName" label="来源顾问"></el-table-column>
-            <el-table-column prop="adviserPhone" label="顾问手机"></el-table-column>
+            <el-table-column prop="resourceAdviserName" label="来源顾问"></el-table-column>
+            <el-table-column prop="resourceAdviserPhone" label="顾问手机"></el-table-column>
             <el-table-column prop="resource" label="来源">
                 <template slot-scope="scope">
                     <span v-if="scope.row.resource=='H5'">医生注册</span>
@@ -424,6 +425,16 @@
                             </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+                <el-form-item  label="来源顾问：">
+                            {{formLabeldetails.resourceAdviserName}}
+                            </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+                <el-form-item  label="顾问手机：">
+                            {{formLabeldetails.resourceAdviserPhone}}
+                            </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                 <el-form-item  label="性别：">
                             {{formLabeldetails.age}}
                             </el-form-item>
@@ -536,12 +547,12 @@
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                 <el-form-item  label="来源顾问：">
-                            {{formLabeldetails1.adviserName}}
+                            {{formLabeldetails1.resourceAdviserName}}
                             </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                 <el-form-item  label="顾问手机：">
-                            {{formLabeldetails1.adviserPhone}}
+                            {{formLabeldetails1.resourceAdviserPhone}}
                             </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
