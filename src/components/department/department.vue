@@ -288,7 +288,8 @@ rules={
         this.$confirm('是否删除该科室?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          closeOnClickModal:false
         }).then(() => {
           departmentApi.delectdepartment(row.departmentId).then(res => {
             if (res["retCode"]) {
