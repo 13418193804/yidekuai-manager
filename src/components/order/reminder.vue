@@ -116,7 +116,7 @@
 
 
   <el-col :xs="24" :sm="12" :md="8" :lg="5" :xl="3">
-<el-button type="primary" icon="el-icon-search"  @click="getOrderList()"  style="margin-top:20px;">查询</el-button>
+<el-button type="primary" icon="el-icon-search"  @click="getOrderList(true)"  style="margin-top:20px;">查询</el-button>
   </el-col>
 
   

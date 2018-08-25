@@ -11,10 +11,7 @@
 
 
   <el-tabs v-model="reminderVEnums" type="card" @tab-click="handleClick">
-
     <el-tab-pane label="新增订单" name="NEW_ORDER">
-
-
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
@@ -39,7 +36,7 @@
 						</el-date-picker>
   </el-col>
   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
-<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getOrderList()">查询</el-button>
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getOrderList(true)">查询</el-button>
   </el-col>
  
 </el-row>
@@ -116,7 +113,7 @@
 
 
   <el-col :xs="24" :sm="12" :md="8" :lg="5" :xl="3">
-<el-button type="primary" icon="el-icon-search"  @click="getOrderList()"  style="margin-top:20px;">查询</el-button>
+<el-button type="primary" icon="el-icon-search"  @click="getOrderList(true)"  style="margin-top:20px;">查询</el-button>
   </el-col>
 
   
@@ -257,7 +254,10 @@ consigneeAddress =''
     this.getOrderList();
   }
   rderStatus=''
-  getOrderList() {
+  getOrderList(filter =null) {
+    if(filter){
+      this.page = 0
+    }
   let startCreatTime = "";
     let endCreatTime = "";
     if ((this.startDate || "") != "") {

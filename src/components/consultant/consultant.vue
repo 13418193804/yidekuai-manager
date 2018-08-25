@@ -53,9 +53,6 @@
 						</el-date-picker>
   </el-col>
 
-
-
-
   <el-col :xs="5" :sm="5" :md="3" :lg="3" :xl="2" style="    min-width: 325px;">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getConsultantList(true)">查询</el-button>
 <el-button type="primary" style="margin-top:20px;" @click="changeModel('add')">添加顾问</el-button>
@@ -454,7 +451,7 @@
 
 
 <!-- ==============        顾问查药品   ================================== -->
-		<el-dialog width= "70vw" :close-on-click-modal="false" v-loading="loading"  :append-to-body="true" :visible.sync="drugObj.model"  title="药品详情">
+		<el-dialog width= "70vw" :close-on-click-modal="false" v-loading="loading"  :append-to-body="true" :visible.sync="drugObj.model"  title="药品统计">
 
 <div class="flex">
 
@@ -621,6 +618,37 @@ export default class AddGoods extends Vue {
       if (res["retCode"]) {
         this.YdkAdviser = res.data.AdviserInfo;
         this.total = res.data.page.total;
+       this.loading = false;
+            if (res.data.TotalInfo.length > 0) {
+          this.orderMoney = res.data.TotalInfo[0].orderMoney
+            ? res.data.TotalInfo[0].orderMoney
+            : 0;
+          this.payOrderMoney = res.data.TotalInfo[0].payOrderMoney
+            ? res.data.TotalInfo[0].payOrderMoney
+            : 0;
+          this.prescriptionNum = res.data.TotalInfo[0].prescriptionNum
+            ? res.data.TotalInfo[0].prescriptionNum
+            : 0;
+          this.orderNum = res.data.TotalInfo[0].orderNum
+            ? res.data.TotalInfo[0].orderNum
+            : 0;
+          this.payOrderNum = res.data.TotalInfo[0].payOrderNum
+            ? res.data.TotalInfo[0].payOrderNum
+            : 0;
+          this.allAdviserNum = res.data.TotalInfo[0].allAdviserNum
+            ? res.data.TotalInfo[0].allAdviserNum
+            : 0;
+          this.drugNum = res.data.TotalInfo[0].drugNum
+            ? res.data.TotalInfo[0].drugNum
+            : 0;
+          this.drugQuantityTotal = res.data.TotalInfo[0].drugQuantityTotal
+            ? res.data.TotalInfo[0].drugQuantityTotal
+            : 0;
+        }
+
+
+      
+        
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -629,7 +657,7 @@ export default class AddGoods extends Vue {
    return
       }
     });
-    this.ypStartcreateDate(data);
+
   }
   payOrderMoney = 0;
   orderMoney = 0;
@@ -639,46 +667,11 @@ export default class AddGoods extends Vue {
   allAdviserNum = 0;
   drugNum = 0;
   drugQuantityTotal = 0;
-  ypStartcreateDate(data) {
-    data.ypdStartcreateDate = data.startcreateDate;
-    data.ypdEndcreateDate = data.endcreateDate;
-    indexApi.ypStartcreateDate(data).then(res => {
-      this.loading = false;
-      if (res["retCode"]) {
-        if (res.data.AdviserInfo.length > 0) {
-          this.orderMoney = res.data.AdviserInfo[0].orderMoney
-            ? res.data.AdviserInfo[0].orderMoney
-            : 0;
-          this.payOrderMoney = res.data.AdviserInfo[0].payOrderMoney
-            ? res.data.AdviserInfo[0].payOrderMoney
-            : 0;
-          this.prescriptionNum = res.data.AdviserInfo[0].prescriptionNum
-            ? res.data.AdviserInfo[0].prescriptionNum
-            : 0;
-          this.orderNum = res.data.AdviserInfo[0].orderNum
-            ? res.data.AdviserInfo[0].orderNum
-            : 0;
-          this.payOrderNum = res.data.AdviserInfo[0].payOrderNum
-            ? res.data.AdviserInfo[0].payOrderNum
-            : 0;
-          this.allAdviserNum = res.data.AdviserInfo[0].allAdviserNum
-            ? res.data.AdviserInfo[0].allAdviserNum
-            : 0;
-          this.drugNum = res.data.AdviserInfo[0].drugNum
-            ? res.data.AdviserInfo[0].drugNum
-            : 0;
-          this.drugQuantityTotal = res.data.AdviserInfo[0].drugQuantityTotal
-            ? res.data.AdviserInfo[0].drugQuantityTotal
-            : 0;
-        }
-      } else {
-        if (!res["islogin"]) {
-          this.$alert(res["message"]);
-        }
-      }
-           this.loading = false;
-    });
-  }
+
+
+
+
+
   adviserObj: any = {};
   type = "add";
   adviserModel = false;
@@ -890,10 +883,10 @@ export default class AddGoods extends Vue {
     row: {}
   };
   cleanConsultantItemShelf(row) {
-    this.shelfObj.startcreateDate = "";
-    this.shelfObj.endcreateDate = "";
+    this.shelfObj.startcreateDate = this.startDate;
+    this.shelfObj.endcreateDate = this.endDate;
     this.shelfObj.name = "";
-    this.consultantItemShelf(row);
+    this.consultantItemShelf(row,true);
   }
   consultantItemShelf(row, filter = null) {
     this.shelfObj.loading = true;
@@ -949,7 +942,7 @@ export default class AddGoods extends Vue {
         indexApi
           .adviserNotBindDoctor({
             doctorId: row.doctorId,
-                    adviserTypeEnums:row.adviser_type,
+                    adviserTypeEnums:this.shelfObj.row['adviser_type'],
           })
           .then(res => {
             this.shelfObj.loading = false;
@@ -1115,8 +1108,8 @@ export default class AddGoods extends Vue {
 
   adviserGetDrugDoRow(row) {
     this.fontType = "";
-    this.drugObj.startcreateDate = "";
-    this.drugObj.endcreateDate = "";
+    this.drugObj.startcreateDate = this.startDate;
+    this.drugObj.endcreateDate =this.endDate;
     this.adviserGetDrug(row);
   }
   adviserGetDrug(row, filter = null) {
