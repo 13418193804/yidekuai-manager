@@ -10,7 +10,6 @@ axios.interceptors.response.use(response => {
     if (response.data && response.data.err !== 0) {
         console.log('正常')
     }
-
     return response;
 }, error => {
  
@@ -42,12 +41,8 @@ export default class BaseApi{
             let  resp:ResponseObject = new ResponseObject()
 
             if(res.status!=200){
-
-                
-
                 console.error("http状态码错误")
                 console.error(res)
-
                 resp.returnCode=res.status
                 resp.message=`http返回状态码错误，错误码是${res.status}`
                 resp.data=res

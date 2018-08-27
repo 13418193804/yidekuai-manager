@@ -1,37 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-
 import Login from '@/components/Login'
-
 import Home from '@/components/Home'
 import Main from '@/components/Main'
-
 import Portal from '@/components/Portal'
-
-import AddGoods from '@/components/goods/AddGoods1'
-
-import GoodsList from '@/components/goods/GoodsList'
-import hotword from '@/components/goods/hotword'
-
-import GoodsCategory from '@/components/goods/Category1'
-
-import OrderList from '@/components/order/OrderList'
 import PictureList from '@/components/common/PictureList'
-import MainPages from '@/components/custompage/MainPages'
-import OrderDetail from '@/components/order/OrderDetail'
 import RefundAddress from '@/components/order/RefundAddress'
-
-import MemberUser from '@/components/user/memberuser'
-import record from '@/components/user/record'
-
-import AccountScale from '@/components/user/accountscale'
-import memberuserdetail from '@/components/user/memberuserdetail'
-import feedback from '@/components/user/feedback'
 import sysuser from '@/components/sys/user'
 import sysrole from '@/components/sys/role'
-import CouponList from '@/components/coupon/CouponList'
-import AddCoupon from '@/components/coupon/AddCoupon'
 import changepassword from '@/components/sys/changepassword'
 
 
@@ -136,11 +113,7 @@ export default new Router({
           name: 'saveaudit',
           component: r => require.ensure([], () => r(require('@/components/audit/saveaudit')), 'saveaudit')
         },
-        {
-          path: '/center',
-          name: 'center',
-          component: r => require.ensure([], () => r(require('@/components/order/center')), 'center')
-        },
+
         {
           path: '/reminder',
           name: 'reminder',

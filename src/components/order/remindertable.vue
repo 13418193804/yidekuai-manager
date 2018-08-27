@@ -131,7 +131,8 @@
 </el-table>
 
 <prescriptioninfo ref="prescriptioninfo" :row="prescriptioninfoObj" ></prescriptioninfo>
-<updateorder ref="updateorder" @getOrderList="getOrderList" @getOrderDetail="getOrderDetail" @queryShipList="queryShipList" :shipList="shipList" :updateOrder="updateOrder" :pagetype="pagetype" :order="order" ></updateorder>
+<updateorder ref="updateorder" :provinceList="provinceList"
+ @getOrderList="getOrderList" @getOrderDetail="getOrderDetail" @queryShipList="queryShipList" :shipList="shipList" :updateOrder="updateOrder" :pagetype="pagetype" :order="order" ></updateorder>
 
     </div>
  </template>
@@ -162,6 +163,11 @@ export default class AddGoods extends Vue {
   pagetype: string;
     @Prop({ required: false })
   patModel: string;
+      @Prop({ required: false })
+  provinceList
+
+
+
 
   order = {};
   doReminder(row) {
@@ -216,20 +222,24 @@ switch(status){
   return '';
 }
 }
-  getOrderDetail(presId) {
+  getOrderDetail(presId,callback=null) {
     indexApi
       .getOrderInfo({
         presId: presId
       })
       .then(res => {
         if (res["retCode"]) {
-          console.log('-----',res.data)
           res.data.YdkOrderDetailList.forEach((item,index)=>{
         item.logisticslabel =      item.logistics;
         item.waybillNumberlabel =      item.waybillNumber;
           })
           this.order = res.data;
           this.updateOrder = res.data;
+
+          if(callback){
+callback(res.data)
+          }
+
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -239,13 +249,15 @@ switch(status){
       });
   }
   updateOrder = {};
+
   updateInfo(row) {
- 
     let a: any = this.$refs.updateorder;
+    this.getOrderDetail(row.presId,res=>{
+        (<any>this.$refs.updateorder).updateOrder = res;
+  (<any>this.$refs.updateorder).queryCityList();
+  (<any>this.$refs.updateorder).queryCountryList();
+    });
     a.formModel = true;
-  
-    this.getOrderDetail(row.presId);
-      
   }
 
   getOrderList() {
@@ -304,6 +316,7 @@ switch(status){
   }
 
   mounted() {
+
     this.queryShipList();
   }
 }

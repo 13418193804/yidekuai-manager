@@ -6,21 +6,12 @@ let base = Config.g_base_url;
 axios.defaults.timeout =  60000;
 
 //let base = 'http://127.0.0.1:9090';
-
-
 // let base ='http://127.0.0.1:9090/';
-
 
 // export const g_upload_url = Config.g_upload_url
 
 export const requestLogin = params => { return axios.post(`/login`, params).then(res => res.data); };
-
-
 export const requestCommon = (sql) => {
-
-
-
-
     return axios.post(`${base}/dict/commsql`,
         querystring.stringify({
             sql: sql
@@ -76,13 +67,13 @@ export const requestForm2 = (urlPath, params) => {
         })
         .then(res => {
 
-            console.log()
+       
 
             if (res.status != 200) {
 
                 return {
                     retCode: false,
-                    message: "网络数据异常,错误代码是" + res.status,
+                    message: "网络数据异常",
                     data: {}
                 }
 

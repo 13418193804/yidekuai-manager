@@ -832,7 +832,6 @@ formLabelAlign:any={
           remark:'',
 }
 handleClick(tab, event) {
-        console.log(tab, event);
         if(tab.index==0){
             this.getDoctorExamineList();
             // this.countExaminedoctor();

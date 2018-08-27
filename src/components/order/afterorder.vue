@@ -43,7 +43,7 @@
 </div>
 
 
-<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
     <el-tab-pane label="全部" name="ALL">
           <div style="padding-bottom:20px;">
@@ -120,7 +120,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
 
    </el-tab-pane>
 
@@ -149,6 +149,7 @@ import axios from "axios";
 import * as indexApi from "../../api/indexApi";
 import  remindertable from "./remindertable";
 import moment from "moment";
+import * as ApiOrder from "../../api/orderapi";
 
 @Component({
   props: {},
@@ -178,6 +179,16 @@ switch(status){
   return '';
 }
 }
+
+provinceList=[]
+
+  queryProvinceList() {
+    ApiOrder.queryProvinceList().then(res => {
+      this.provinceList = res.data.region;
+    });
+  }
+ 
+
 paymentMode =''
 reminderVEnums = 'NEW_ORDER'
   allprescription = 0;
@@ -314,6 +325,7 @@ queryOrderCount(){
   mounted() {
     this.queryOrderCount()
     // this.allPrescription();
+    this.queryProvinceList()
     this.getOrderList();
   }
 }

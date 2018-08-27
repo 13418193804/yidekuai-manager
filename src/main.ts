@@ -22,6 +22,12 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false
 
 
+
+setTimeout(()=>{
+  document.title = "医德快管理系统"
+},1000)
+
+
 Component.registerHooks([
   'beforeRouteEnter',
   'beforeRouteLeave',
