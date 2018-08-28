@@ -262,8 +262,8 @@ loading=false;
 
 updatedoctor(){
 console.log(this.hospitallist)
-console.log(this.formLabelAlign1.hspCode)
-          let a = this.hospitallist.filter(item => {return (item.hospitalCode == this.formLabelAlign1.hspCode);});
+console.log(this.formLabelAlign1.hospitalId)
+          let a = this.hospitallist.filter(item => {return (item.hospitalCode == this.formLabelAlign1.hospitalId);});
         console.log(a)
         this.loading = true
           let hospital = []
@@ -315,8 +315,8 @@ console.log(this.formLabelAlign1.hspCode)
 }
 notPassupdatedoctor(){
     console.log(this.hospitallist)
-    console.log(this.formLabelAlign1.hspCode)
-          let a = this.hospitallist.filter(item => {return (item.hospitalCode == this.formLabelAlign1.hspCode);});
+    console.log(this.formLabelAlign1.hospitalId)
+          let a = this.hospitallist.filter(item => {return (item.hospitalCode == this.formLabelAlign1.hospitalId);});
           this.loading = true
           let hospital = []
           console.log('1111',a)
