@@ -1,10 +1,7 @@
 <template>
     <div>
        <h4> 修改密码</h4>
-
-
             <el-form ref="form"  label-width="100px" style="width: -webkit-fill-available;padding: 20px;min-width: 600px;text-align: initial;" size="small">
-
   <el-form-item label="新密码">
                     <el-input v-model="password" type="password" style="width:400px;"></el-input>
                 </el-form-item>

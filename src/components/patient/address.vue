@@ -11,8 +11,6 @@
     :data="tableData"
     highlight-current-row
     style="width: 100%;" height="500" >
-
-
        <el-table-column label="是否默认" width="110">
   	<template slot-scope="scope">
       <el-tag type="info" v-if="scope.row.isdefault" size="small" >
@@ -80,7 +78,9 @@
 
 
 		<el-form-item label="地区">
+
 <div style="    white-space: nowrap;overflow:hidden;">
+
 <el-row :gutter="24" >
   
   <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6" style="    margin-bottom: 22px;">
@@ -153,10 +153,7 @@ import * as ApiOrder from "../../api/orderapi";
 @Component
 export default class AddGoods extends Vue {
   rowObject = {
-
 userId:"",
-
-
     type: "add",
     addressId: "",
     showSendDialog: false,
@@ -169,7 +166,6 @@ userId:"",
     isDefault: false,
     doSubmit: () => {
       console.log("提交");
-
       if ((this.rowObject.contactName || "") == "") {
         this.$alert("请填写收货联系人");
         return;
@@ -221,7 +217,6 @@ userId:"",
 
   chengModel(type, row) {
     this.rowObject.type = type;
-
     if (this.rowObject.type == "add") {
       this.rowObject.contactName = "";
       this.rowObject.contactMobile = "";
@@ -231,21 +226,17 @@ userId:"",
       this.rowObject.address = "";
       this.rowObject.isDefault = false;
     } else {
-      console.log(row);
       this.rowObject.isDefault = row.isdefault ? true : false;
       this.rowObject.addressId = row.addressId;
       this.rowObject.contactName = row.contactName;
       this.rowObject.contactMobile = row.contactMobile;
-      console.log()
       this.rowObject.provinceId = row.provinceid;
-
       this.queryCityList();
       this.rowObject.cityId = row.cityid;
       this.queryCountryList();
       this.rowObject.countryId = row.countryid;
       this.rowObject.address = row.address;
     }
-
     this.rowObject.showSendDialog = true;
   }
   tableData = [];
@@ -279,8 +270,6 @@ userId:"",
     });
   }
   queryCityList() {
-    console.log();
-
     this.rowObject.cityId = "";
     ApiOrder.queryCityList(this.rowObject.provinceId).then(res => {
       this.cityList = res.data.region;
@@ -305,7 +294,7 @@ page=0
     if ((sessionStorage.member_id || "") != "") {
       this.rowObject.userId = sessionStorage.member_id;
     } else {
-      this.$alert("找不到该用户");
+      this.$alert("找不到该患者");
       this.$router.go(-1);
       return;
     }

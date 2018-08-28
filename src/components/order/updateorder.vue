@@ -99,7 +99,7 @@
 
 <div style="margin-right:10px;">
   <span>收货地址：</span>
-  <span>{{order.consigneeAddress}}</span>
+  <span>{{order.province}} &nbsp;&nbsp;{{order.city}} &nbsp;&nbsp;{{order.area}}  &nbsp;&nbsp;{{order.consigneeAddress}}</span>
 </div>
 
 <div style="margin-right:10px;">
@@ -411,30 +411,80 @@
   <span>付款时间：</span>
   <span>{{updateOrder.payTime}}</span>
 </div>
-
 <div style="margin-right:10px;">
   <span>付款状态：</span>
   <span>{{handlePayStatus(updateOrder.payStatus)}}</span>
 </div>
-
 </div>
 
-
- <el-form label-width="100px"  >
-
-  <el-form-item  label="收货人：">
+<div v-if="pagetype == 'afterorder'">
+ <el-form label-width="100px">
+  <el-form-item  label="收货人：" style="margin:0">
 					<el-input v-model="updateOrder.consigneeName" size="mini" style="max-width:400px;min-width:200px;"></el-input>
 				</el-form-item>
-  <el-form-item  label="收货电话：">
+  <el-form-item  label="收货电话：" style="margin:0">
 					<el-input v-model="updateOrder.consigneePhone" size="mini" style="max-width:400px;min-width:200px;"></el-input>
 				</el-form-item>
-  <el-form-item  label="收货地址：">
-					<el-input v-model="updateOrder.consigneeAddress" size="mini" style="max-width:400px;min-width:200px;"></el-input>
+
+
+		<el-form-item label="地区" style="margin:0">
+<div style="    white-space: nowrap;overflow:hidden;    max-width: 400px;">
+<el-row :gutter="24" >
+  <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" >
+<el-select v-model="updateOrder.provinceid" @change="queryCityList(true)"  size="mini">
+<el-option v-for="(n,index) in provinceList" :key="index" :label="n.name" :value="n.id" ></el-option>
+</el-select>
+  </el-col>
+  <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" >
+        <el-select v-model="updateOrder.cityid" @change="queryCountryList(true)"  size="mini">
+<el-option v-for="(n,index) in cityList" :key="index" :label="n.name" :value="n.id"></el-option>
+</el-select>
+  </el-col>
+  <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" >
+        <el-select v-model="updateOrder.areaid"  size="mini">
+<el-option v-for="(n,index) in countryList" :key="index" :label="n.name" :value="n.id"></el-option>
+</el-select>
+  </el-col>
+</el-row>
+		</div>
+    		</el-form-item>
+
+
+
+
+  <el-form-item  label="详细地址：" style="margin:0">
+					<el-input v-model="updateOrder.consigneeAddress"  size="mini" style="max-width:400px;min-width:200px;"></el-input>
 				</el-form-item>
+
+
+
           <el-form-item >
 		<el-button type="primary" size="mini" @click="doSubmit">保 存</el-button>
 				</el-form-item>
 </el-form>
+</div>
+
+
+<div  v-else>
+
+
+<div style="margin-right:10px;">
+  <span>收货人：</span>
+  <span>{{updateOrder.consigneeName}}</span>
+</div>
+<div style="margin-right:10px;">
+  <span>收货电话：</span>
+  <span>{{updateOrder.consigneePhone}}</span>
+</div>
+<div style="margin-right:10px;">
+  <span>收货地址：</span>
+  <span>{{updateOrder.consigneeAddress}}</span>
+</div>
+
+
+
+</div>
+
 
 <div v-for="(item,index) in updateOrder.YdkOrderDetailList" :key="index">
 
@@ -568,6 +618,7 @@ import axios from "axios";
 import * as indexApi from "../../api/indexApi";
 import moment from "moment";
 import { Prop } from "vue-property-decorator";
+import * as ApiOrder from "../../api/orderapi";
 
 @Component({
   props: {},
@@ -576,21 +627,55 @@ import { Prop } from "vue-property-decorator";
   }
 })
 
+/**
+ * order :  订单 
+ * 
+ * 
+ */
+
 
 export default class AddGoods extends Vue {
+
 
  @Prop({ required: false })
   order: any;
  @Prop({ required: false })
   updateOrder: any;
-//  @Prop({ required: false })
-//   sendOrder:any
    @Prop({ required: false })
   pagetype: string;
    @Prop({ required: false })
   shipList;
-shipInfoLoading=false
 
+   @Prop({ required: false })
+  provinceList;
+
+countryList= []
+cityList = []
+
+handleUpdateOrder(updateOrder){
+this.updateOrder = updateOrder
+}
+  queryCountryList(setNull=null) {
+    if(setNull){
+          this.updateOrder.areaid = ''
+    }
+    ApiOrder.queryCountryList(this.updateOrder.cityid).then(res => {
+      this.countryList = res.data.region;
+    });
+  }
+
+  queryCityList(setNull=null) {
+    if(setNull){
+          this.updateOrder.cityid = ''
+    }
+    ApiOrder.queryCityList(this.updateOrder.provinceid).then(res => {
+      this.cityList = res.data.region;
+    });
+  }
+
+
+
+shipInfoLoading=false
 shipInfoModel = false
 shipInfo = []
 showShipInfo(item){
@@ -604,10 +689,8 @@ comName:item.logistics
           })
           .then(res => {
 this.shipInfoLoading=false
-console.log(res)
             if (res["retCode"]) {
                 if(res.data.Success){
-                  console.log('--',res.data)
                 this.shipInfo =   res.data.Traces
                 }else{
                 this.shipInfo =  []
@@ -637,7 +720,6 @@ recvGood(item){
       type: "warning"
     })
       .then(() => {
-
   indexApi
       .doSend({
       //  pres_id:this.order.presId,
@@ -647,17 +729,14 @@ recvGood(item){
       .then(res => {
         if (res["retCode"]) {
             this.$message('发货成功');
-         
                 this.$emit('getOrderList');
                 this.$emit('getOrderDetail',this.order.presId);
                 this.$emit('queryShipList');
-                
         } else {
           if(!res['islogin']){this.$alert(res["message"]);}
           console.error("数据查询错误");
         }
       });
-
   })
       .catch(() => {
         this.$message({
@@ -666,7 +745,6 @@ recvGood(item){
         });
       });
 }
-
 handlePayStatus (status){
 switch(status){
  case 'PAY_WAIT':
@@ -678,16 +756,13 @@ switch(status){
 }
 }
 sendModel= false
-
 doSend(item,presId){
 item.waybill_number = item.waybillNumber
 //验证
-console.log(item)
   if((item.logistics||'')==''){
      this.$alert('请填写物流公司')
     return
   }
-
   if((item.waybill_number||'')==''){
      this.$alert('请填写物流单号')
     return
@@ -698,7 +773,6 @@ console.log(item)
       type: "warning"
     })
       .then(() => {
-
   indexApi
       .doSend({
        order_detail_id:  item.orderDetailId,
@@ -714,14 +788,10 @@ console.log(item)
                 this.$emit('getOrderList');
                 this.$emit('getOrderDetail',presId);
                 this.$emit('queryShipList');
-                
         } else {
           if(!res['islogin']){this.$alert(res["message"]);}
-          console.error("数据查询错误");
         }
       });
-
-
       })
       .catch(() => {
         this.$message({
@@ -797,10 +867,8 @@ switch(status){
 }
 }
 
- 
-
   mounted() {
-  
+
   }
 }
 </script>
