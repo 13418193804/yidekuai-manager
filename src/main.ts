@@ -23,9 +23,9 @@ Vue.config.productionTip = false
 
 
 
-setTimeout(()=>{
+setTimeout(() => {
   document.title = "医德快管理系统"
-},1000)
+}, 1000)
 
 
 Component.registerHooks([
@@ -34,22 +34,28 @@ Component.registerHooks([
   'beforeRouteUpdate' // for vue-router 2.2+
 ])
 
+
+router.beforeEach((to, from, next) => {
+    console.log(to,from)
+  next()
+})
+
 Vue.prototype.PermissionList = sessionStorage.PermissionList ? sessionStorage.PermissionList.split(',') : [];
- 
+
 Vue.prototype.dohavePermission = PermissionItem => {
-  if(sessionStorage.roleAdmin  == 'centerroleAdminFormIdTextYIDEKUAI'){
+  if (sessionStorage.roleAdmin == 'centerroleAdminFormIdTextYIDEKUAI') {
     return true;
   }
-  
-    let a = Vue.prototype.PermissionList.filter((items, indexs) => {
-      return items == PermissionItem;
-    });
 
-    if (a.length > 0  ) {
-      return true;
-    } else {
-      return false;
-    }
+  let a = Vue.prototype.PermissionList.filter((items, indexs) => {
+    return items == PermissionItem;
+  });
+
+  if (a.length > 0) {
+    return true;
+  } else {
+    return false;
+  }
   // return true
 };
 /* eslint-disable no-new */

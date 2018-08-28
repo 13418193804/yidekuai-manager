@@ -117,12 +117,11 @@
           
         <el-button
           size="mini"
-          type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
-          
+          type="text" @click="getTransmitInfo(scope.$index, scope.row)" v-if="pagetype !=='rework' ">处方详情</el-button>
+
                <el-button
           size="mini"
           type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button>
-      
                <el-button size="mini" 
           :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button>
 

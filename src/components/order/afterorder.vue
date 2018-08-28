@@ -4,14 +4,14 @@
         <div style="=">
           <h3>售后管理
           </h3>
-           <div style="margin:10px 0;">
+           <!-- <div style="margin:10px 0;">
 平台订单数量统计：{{allprescription}} 单  平台新增订单数量统计：{{NEW_ORDER}} 单
-            </div>
+            </div> -->
           </div>
 
 
   <el-tabs v-model="reminderVEnums" type="card" @tab-click="handleClick">
-    <el-tab-pane label="新增订单" name="NEW_ORDER">
+    <el-tab-pane   :label="'新增订单（'+NEW_ORDER+'）'"  name="NEW_ORDER">
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
@@ -45,7 +45,37 @@
 
 <remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
-    <el-tab-pane label="全部" name="ALL">
+    <el-tab-pane   :label="'待开发票（'+NEW_ORDER+'）'"  name="rework">
+ <div style="padding-bottom:20px;">
+<el-row :gutter="10" style="padding-left:80px;">
+  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+   <el-input
+  placeholder="姓名/手机号" style="margin-top:20px;"  v-model="key"
+  clearable>
+</el-input>
+  </el-col>
+
+ <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
+  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
+						</el-date-picker>
+						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
+						</el-date-picker>
+  </el-col>
+  <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getOrderList(true)">查询</el-button>
+  </el-col>
+ 
+</el-row>
+</div>
+
+<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="rework" ></remindertable>
+  
+    </el-tab-pane>
+
+
+
+
+    <el-tab-pane   :label="'全部（'+allprescription+'）'" name="ALL">
           <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="margin-top:20px;">
 	 <el-form label-width="80px" :inline="true" >
@@ -262,7 +292,7 @@ doDownLoad(){
 consigneeAddress =''
    handleClick(e) {
      this.rderStatus = ''
-    this.getOrderList();
+    this.getOrderList(true);
   }
   rderStatus=''
   getOrderList(filter =null) {
@@ -278,12 +308,16 @@ consigneeAddress =''
     if ((this.endDate || "") != "") {
       endCreatTime = moment(this.endDate).format("YYYY-MM-DD")  + " 23:59:59";
     }
-this.reminderVEnums == 'ALL'
+// this.reminderVEnums == 'ALL'
+let reminderVEnums = this.reminderVEnums
+if(this.reminderVEnums == 'rework'){
+  reminderVEnums = 'ALL'
+}
 this.loading = true
     indexApi
       .gerOrderList({
                 paymentMode:this.paymentMode,
-        reminderVEnums:this.reminderVEnums,
+        reminderVEnums:reminderVEnums,
         key:this.key,
         consigneeAddress:this.consigneeAddress,
      startCreatTime: startCreatTime,

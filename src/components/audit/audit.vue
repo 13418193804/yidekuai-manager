@@ -5,10 +5,10 @@
           <h3>审方管理
           </h3>
           
- <div style="padding-bottom:20px;">
+ <!-- <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">平台处方数量统计：{{allprescription}} 个</span>             
 <span style="margin-right:20px;">待审方数量：{{notCount}} 个</span>             
-            </div>
+            </div> -->
 
 
 
@@ -18,7 +18,7 @@
 
   <el-tabs v-model="prescriptionEnums1" type="card" @tab-click="handleClick">
     
-    <el-tab-pane label="未审方" name="name1">
+    <el-tab-pane  :label="'未审方（'+notCount+'）'" name="name1">
 
 
 <div style="padding-bottom:20px;">
@@ -62,7 +62,7 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 </transmittable>
     </el-tab-pane>
 
-  <el-tab-pane  label="全部" name="name2"  >
+  <el-tab-pane   :label="'全部（'+allprescription+'）'" name="name2"  >
 
 
 <div style="padding-bottom:20px;">

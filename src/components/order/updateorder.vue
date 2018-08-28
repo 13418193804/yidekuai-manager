@@ -11,10 +11,16 @@
 </div>
 </div>
 
-<div class="flex flex-warp-justify" v-if="order.orderStatue !== 'ORDER_INIT' &&  order.orderStatue !== 'ORDER_WAIT_PAY' && order.orderStatue !== 'ORDER_CANCEL_PAY'   ">
+<div class="flex flex-warp-justify" style="margin-top:10px;" v-if="order.orderStatue !== 'ORDER_INIT' &&  order.orderStatue !== 'ORDER_WAIT_PAY' && order.orderStatue !== 'ORDER_CANCEL_PAY'">
   <h4 style="margin:0">支付方式：</h4>
 <div>
     {{handlePaymentMode(order.paymentMode)}}
+</div>
+<div v-if="updateOrder.paymentMode == 'ONLINE_PAYMENT'" style="margin-left:20px;">
+微信支付订单号：
+</div>
+<div>
+{{updateOrder.transactionLogs&&updateOrder.transactionLogs.length>0?updateOrder.transactionLogs[0].weixinno:''}}
 </div>
 </div>
         
@@ -317,11 +323,18 @@
 
 
 
-<div class="flex flex-warp-justify" v-if="updateOrder.orderStatue !== 'ORDER_INIT' && updateOrder.orderStatue !== 'ORDER_WAIT_PAY' && updateOrder.orderStatue !== 'ORDER_CANCEL_PAY'  ">
+<div class="flex flex-warp-justify" style="margin-top:10px;" v-if="updateOrder.orderStatue !== 'ORDER_INIT' && updateOrder.orderStatue !== 'ORDER_WAIT_PAY' && updateOrder.orderStatue !== 'ORDER_CANCEL_PAY'  ">
   <h4 style="margin:0">支付方式：</h4>
 <div>
     {{handlePaymentMode(updateOrder.paymentMode)}}
 </div>
+<div v-if="updateOrder.paymentMode == 'ONLINE_PAYMENT'" style="margin-left:20px;">
+微信支付订单号：
+</div>
+<div>
+{{updateOrder.transactionLogs&&updateOrder.transactionLogs.length>0?updateOrder.transactionLogs[0].weixinno:''}}
+</div>
+
 </div> 
 
 

@@ -4,16 +4,15 @@
         <div style="=">
           <h3>催单管理
           </h3>
-           <div style="margin:10px 0;">
+           <!-- <div style="margin:10px 0;">
 平台订单数量统计：{{allprescription}} 单  平台待催订单数量统计：{{PENDING}} 单
-            </div>
-          </div>
+            </div>-->
+          </div> 
 
 
   <el-tabs v-model="reminderVEnums" type="card" @tab-click="handleClick">
 
-    <el-tab-pane label="待催单" name="PENDING">
-
+    <el-tab-pane   :label="'待催单（'+PENDING+'）'"  name="PENDING">
 
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
@@ -23,15 +22,12 @@
   clearable>
 </el-input>
   </el-col>
-
   <el-col :xs="9" :sm="9" :md="6" :lg="6" :xl="6">
    <el-input
   placeholder="请输入收货地址" style="margin-top:20px;"  v-model="consigneeAddress"
   clearable>
 </el-input>
   </el-col>
-
-
  <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
   	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
 						</el-date-picker>
@@ -45,10 +41,24 @@
 </el-row>
 </div>
 
-
 <remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"></remindertable>
     </el-tab-pane>
-    <el-tab-pane label="全部" name="ALL">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 全部 -->
+
+    <el-tab-pane :label="'全部（'+allprescription+'）'"  name="ALL">
        <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="margin-top:20px;">
 	 <el-form label-width="80px" :inline="true" >

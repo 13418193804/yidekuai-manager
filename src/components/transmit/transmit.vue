@@ -4,24 +4,21 @@
         <div style="">
           <h3>转方管理
           </h3>
-          
- <div style="padding-bottom:20px;">
+ <!-- <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">平台处方数量统计：{{allprescription}} 个</span>             
 <span style="margin-right:20px;">待转方数量：{{notCount}} 个</span>             
-            </div>
+            </div> -->
         </div>
   <el-tabs v-model="prescriptionEnums1" type="card" @tab-click="handleClick">
-    <el-tab-pane label="未转方" name="name1">
+    <el-tab-pane  :label="'未转方（'+notCount+'）'" name="name1">
 <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
- 
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
   clearable>
 </el-input>
   </el-col>
-
  <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
   	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
 						</el-date-picker>
@@ -31,17 +28,12 @@
   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
   </el-col>
-
 </el-row>
-      
 </div>
-
 <transmittable  :table="prescriptionList"  :operationType="operationType">
 </transmittable>
-
     </el-tab-pane>
-
-    <el-tab-pane label="全部" name="name2">
+    <el-tab-pane :label="'全部（'+allprescription+'）'" name="name2">
 <div style="padding-bottom:20px;">
 <!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
 ALREADY_TRANSLATED_PRESCRIPTION,        //已转方

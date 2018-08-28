@@ -63,7 +63,7 @@
       prop="manufacturer"
       label="厂家">
    </el-table-column>
-<el-table-column
+<el-table-column show-overflow-tooltip
       prop="adaptability"
       label="适应症">
    </el-table-column>

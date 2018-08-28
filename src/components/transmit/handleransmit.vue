@@ -412,12 +412,8 @@
     :data="preDrugList"
     stripe
     style="width: 100%">
- 
- <el-table-column  fixed="left"
-      prop="hisCode"
-      label="批准文号">
-   </el-table-column>
-  <el-table-column
+
+  <el-table-column fixed="left"
       prop="drugName"
       label="药品名称">
    </el-table-column>
@@ -441,6 +437,11 @@
   <el-table-column
       prop="specification"
       label="药品规格">
+   </el-table-column>
+
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
    </el-table-column>
 
  <el-table-column
@@ -639,9 +640,7 @@ export default class AddGoods extends Vue {
       return restaurant.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
     };
   }
-  handleSelect(item) {
-    console.log(item);
-  }
+
   editPrice = true;
   prodeInfo = [
     [
@@ -681,7 +680,6 @@ export default class AddGoods extends Vue {
   //   this.commonList();
   // }
   changePartnerName() {
-    console.log("改变供应商");
     // 清空数据
     this.commonList();
   }
@@ -707,7 +705,6 @@ export default class AddGoods extends Vue {
     indexApi.getGrugListZhuanFang(data).then(res => {
       if (res["retCode"]) {
         // this.options4 = res.data.YdkDrugList;
-        console.log(res.data);
         // //规格
         // if (res.data.specificationList) {
         //   // if(res.data.specificationList.length>0){
@@ -753,9 +750,7 @@ export default class AddGoods extends Vue {
         if (res.data.dosageList) {
           this.dosageList = res.data.dosageList;
           if (res.data.dosageList[0]) {
-            console.log(this.drug);
             this.drug["dosage"] = res.data.dosageList[0];
-            console.log(this.drug);
           }
         }
 
@@ -788,7 +783,6 @@ export default class AddGoods extends Vue {
   allPrescription() {
     indexApi.allPrescription().then(res => {
       if (res["retCode"]) {
-        console.log(res.data);
         this.allprescription = res.data;
       } else {
         if (!res["islogin"]) {
@@ -960,7 +954,6 @@ export default class AddGoods extends Vue {
         this.instructions = "";
         this.queryPresDrug();
         this.editPrice = true;
-        console.log(res);
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -989,15 +982,10 @@ export default class AddGoods extends Vue {
       }
     });
   }
-
   tranRemake = "";
   diagnosis = "";
   dotransmit() {
     //验证
-
-    console.log("转方");
-    console.log("药品数", this.preDrugList.length);
-
     if (this.preDrugList.length == 0) {
       this.$alert("至少添加一条药品信息");
       return;
@@ -1102,7 +1090,6 @@ export default class AddGoods extends Vue {
       setTimeout(() => {
         this.loading = false;
         this.getDrugList(query);
-        console.log(query);
       }, 200);
     } else {
       this.options4 = [];
@@ -1119,7 +1106,8 @@ export default class AddGoods extends Vue {
     //  this.drug.commonName
     indexApi
       .getGrugList({
-        keyFName: query
+        keyFName: query,
+        preid :   this.presId 
       })
       .then(res => {
         if (res["retCode"]) {
@@ -1179,8 +1167,6 @@ export default class AddGoods extends Vue {
   }
   init() {
     this.backLoad = true;
-    console.log(sessionStorage.presId);
-
     this.presId = sessionStorage.presId;
     this.queryPresDrug();
     this.getPrePic();
@@ -1197,7 +1183,6 @@ export default class AddGoods extends Vue {
       }
     }, 5000);
   }
-
   uncheckPrefor() {}
 
   //  beforeRouteLeave (to, from, next) {
