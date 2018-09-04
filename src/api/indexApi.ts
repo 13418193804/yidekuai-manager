@@ -188,9 +188,22 @@ export const getGrugList = (model) => {
 
 
     Object.assign(params, model)
-    return Api.requestForm2('/findDrug', params)
+    return Api.requestForm2('/findDrugByTranslated', params)
         .then(res => res);
 }
+//药品库
+export const getGrugList1 = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+        }
+    
+    
+        Object.assign(params, model)
+        return Api.requestForm2('/findDrugByDrugStore', params)
+            .then(res => res);
+    }
 
 // 转方时查药
 export const getGrugListZhuanFang = (model) => {
@@ -545,6 +558,19 @@ export const gerOrderList = (model) => {
     return Api.requestForm2('/getYdkPrescription', params)
         .then(res => res);
 }
+
+//待开发票的订单
+export const getYdkPrescriptionAndInvoice = (model) =>{
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/getYdkPrescriptionAndInvoice',params).then(res=>res);
+
+}
+ 
 //更新订单
 export const updateOrder = (model) => {
 
@@ -913,19 +939,19 @@ export const getConsultantList = (model) => {
 
 
 export const getConsultantList1 = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/getAdviserByKeyword', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-    
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getAdviserByKeyword', params)
+        .then(res => res);
+}
+
+
 
 //新增顾问
 export const addConsultantItem = (model) => {
@@ -1040,221 +1066,267 @@ export const drugGetAdviser = (model) => {
 
 //药品查医生
 export const drugGetDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/getDoctorByDrug', params)
-            .then(res => res);
-    }
-    
 
-    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getDoctorByDrug', params)
+        .then(res => res);
+}
+
+
+
 //（通用名）统计药品数
 export const countDrug = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/countAdvisersDrug', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-    //查询医生数量 、绑定顾问的医生  所有医生
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/countAdvisersDrug', params)
+        .then(res => res);
+}
+
+//查询医生数量 、绑定顾问的医生  所有医生
 export const countDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/countAdvisersDoctor', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-        
-    //医生查药品
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/countAdvisersDoctor', params)
+        .then(res => res);
+}
+
+//医生查药品
 export const doctorGetDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/getDrugByDocterId', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-    
-            
-    //顾问查已绑定的医生
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getDrugByDocterId', params)
+        .then(res => res);
+}
+
+
+
+//顾问查已绑定的医生
 export const adviserGetDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/getDoctorByAdviser', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-        
-    
-            
-    //手机号查询未绑定顾问的医生
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getDoctorByAdviser', params)
+        .then(res => res);
+}
+
+
+
+
+//手机号查询未绑定顾问的医生
 export const notBindDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/getNotAdviserDoctor', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-    
-           
-    //顾问绑定医生
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getNotAdviserDoctor', params)
+        .then(res => res);
+}
+
+
+
+//顾问绑定医生
 export const adviserBindDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/docAdviser/bindingAdviser', params)
-            .then(res => res);
-    }
-    
 
-    
-    
-    //顾问查药品列表
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+
+    Object.assign(params, model)
+    return Api.requestForm2('/docAdviser/bindingAdviser', params)
+        .then(res => res);
+}
+
+
+
+
+//顾问查药品列表
 export const adviserGetDrug = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/getDrugByKeyword', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-        //顾问人数
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getDrugByKeyword', params)
+        .then(res => res);
+}
+
+//顾问人数
 export const getAdviserCount = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/countAdvisersAdviser', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-    
-       
-        //医生查顾问
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/countAdvisersAdviser', params)
+        .then(res => res);
+}
+
+
+
+//医生查顾问
 export const doctorGetAdviser = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/getAdviserByDoctor', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-        
-       
-        //取消绑定医生
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getAdviserByDoctor', params)
+        .then(res => res);
+}
+
+
+//取消绑定医生
 export const adviserNotBindDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
 
-        Object.assign(params, model)
-        return Api.requestForm2('/api/adviser/unbindDoctorAdviser', params)
-            .then(res => res);
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-    
-            //我的医生
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/unbindDoctorAdviser', params)
+        .then(res => res);
+}
+
+
+//我的医生
 export const memberGetDoctor = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
 
-        Object.assign(params, model)
-        return Api.requestForm2('/api/ship/findDoctorPatient', params)
-            .then(res => res);
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
-    
-  //顾问中心各种数量
-                /**
-                 * orderMoney 订单金额
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/ship/findDoctorPatient', params)
+        .then(res => res);
+}
+
+
+//顾问中心各种数量
+/**
+ * orderMoney 订单金额
 prescriptionNum 处方数量
 orderNum 订单数量 
 allAdviserNum 全部顾问数量
 drugNum 药品数量
-                 * @param model 
-                 */
-                export const ypStartcreateDate = (model) => {
-                    
-                        let params = {
-                            token: sessionStorage.getItem("token"),
-                            userid: sessionStorage.getItem("userId"),
-                            userId: sessionStorage.getItem("userId"),
-                        }
-                
-                        Object.assign(params, model)
-                        return Api.requestForm2('/api/adviser/GetToatlInfoForWeb', params)
-                            .then(res => res);
-                    }
-                    
-                    /**
-                     * 更多聊天记录
-                     */
-                    export const getInterrDetail = (model) => {
-                        
-                            let params = {
-                                token: sessionStorage.getItem("token"),
-                                userid: sessionStorage.getItem("userId"),
-                                userId: sessionStorage.getItem("userId"),
-                            }
-                    
-                            Object.assign(params, model)
-                            return Api.requestForm2('/api/news/getInterrDetailLimit', params)
-                                .then(res => res);
-                        }
-                    
+ * @param model 
+ */
+export const ypStartcreateDate = (model) => {
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/GetToatlInfoForWeb', params)
+        .then(res => res);
+}
+
+/**
+ * 更多聊天记录
+ */
+export const getInterrDetail = (model) => {
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+
+    Object.assign(params, model)
+    return Api.requestForm2('/api/news/getInterrDetailLimit', params)
+        .then(res => res);
+}
+
+
+/**
+ * 弃单
+ */
+export const doGiveup = (model) => {
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/giveupPre', params)
+            .then(res => res);
+    }
+    
+
+
+    /**
+     * 找药
+     */
+    export const requireDrugList = (model) => {
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/getInquireDrugsRecordsByKeywordHavingP', params)
+            .then(res => res);
+    }
+    
+
+        /**
+     * 找药修改 （备注）
+     */
+    export const updateInquireDrugsRecords = (model) => {
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/updateInquireDrugsRecords', params)
+            .then(res => res);
+    }
+    

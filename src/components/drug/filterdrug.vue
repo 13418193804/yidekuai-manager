@@ -208,7 +208,7 @@
 
 
             	<el-form-item label="适应症：" prop="adaptability" >
-              					<el-input v-model="addDrug.adaptability"  placeholder="请输入适应症" style="max-width:400px;min-width:200px" ></el-input>
+              					<el-input v-model="addDrug.adaptability" type="textarea"  :rows="4" placeholder="请输入适应症" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
 
          
@@ -263,8 +263,6 @@ export default class AddGoods extends Vue {
         //  ingredient:[{ required: true, message: '请输入药品成分', trigger: 'blur' }],
          dosageforms:[{ required: true, message: '请输入剂型', trigger: 'blur' }],
         }
-
-
 
    pageSize = 10;
   total = 0;
@@ -462,7 +460,7 @@ this.$emit('selectRow')
         Object.assign(data,{ key :this.key})
       }
       this.loading = true
-      indexApi.getGrugList(data).then(res => {
+      indexApi.getGrugList1(data).then(res => {
       this.loading = false
       if (res["retCode"]) {
           this.drugList = res.data.list;

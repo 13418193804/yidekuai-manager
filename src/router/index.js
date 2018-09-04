@@ -151,11 +151,11 @@ export default new Router({
       menu_grade: 2,
       name: '账户管理',
       children: [
-        {
-          path: '/system',
-          name: '权限',
-          component: r => require.ensure([], () => r(require('@/components/system/system')))
-        },
+        // {
+        //   path: '/system',
+        //   name: '权限',
+        //   component: r => require.ensure([], () => r(require('@/components/system/system')))
+        // },
         {
           path: '/department1',
           name: '部门管理',
@@ -174,19 +174,49 @@ export default new Router({
       ]
     },
     {
+      path: '5',
+      icon: require('../assets/menu/药丸 (1).png'),
+      select_icon: require('../assets/menu/药丸.png'),
+      component: Home,
+      position: 'menu',
+      menu_grade: 2,
+      name: '药品咨询',
+      children: [
+        {
+          path: '/drug',
+          promissId: 'PERecc2af8eb68a48fcb68bbc782bab1554',
+          name: '药品库管理',
+          component: r => require.ensure([], () => r(require('@/components/drug/drug')))
+        },
+        {
+          path: '/requiredrug',
+          name: '找药管理',
+          component: r => require.ensure([], () => r(require('@/components/drug/requiredrug')))
+        },
+      ]
+    },
+    {
       path: '/',
       component: Home,
       position: 'menu',
       menu_grade: 1,
       children: [
-        {
-          path: '/drug',
-          promissId: 'PERecc2af8eb68a48fcb68bbc782bab1554',
-          icon: require('../assets/menu/药丸 (1).png'),
-          select_icon: require('../assets/menu/药丸.png'),
-          name: '药品库管理',
-          component: r => require.ensure([], () => r(require('@/components/drug/drug')))
-        },
+        // {
+        //   path: '/drug',
+        //   promissId: 'PERecc2af8eb68a48fcb68bbc782bab1554',
+        //   icon: require('../assets/menu/药丸 (1).png'),
+        //   select_icon: require('../assets/menu/药丸.png'),
+        //   name: '药品库管理',
+        //   component: r => require.ensure([], () => r(require('@/components/drug/drug')))
+        // },
+        // {
+        //   path: '/requiredrug',
+        //   name: '找药管理',
+        //   component: r => require.ensure([], () => r(require('@/components/drug/requiredrug')))
+        // },
+
+
+
         {
           path: '/online',
           promissId: 'PER296d2b20d79c4601bad1408e09f687b6',

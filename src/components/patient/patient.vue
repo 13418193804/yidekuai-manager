@@ -4,11 +4,9 @@
         <div style="border-bottom:1px #e5e5e5 solid;">
           <h3>患者管理
           </h3>
-          
  <div style="10px;">
 平台患者数量统计：{{userCount}} 人              
             </div>
-
 <div style="padding-bottom:20px;">
 <el-row :gutter="10">
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
@@ -596,7 +594,6 @@ this.updateModel = false
 loading = false
 orderByStr = "";
   getpatientList(filter=null) {
-    
     if(filter){
       this.page = 0
     }

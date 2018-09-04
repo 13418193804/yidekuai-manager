@@ -16,6 +16,7 @@
     "fundebug-javascript": "^1.2.0",
     "moment": "^2.22.1",
     "reflect-metadata": "^0.1.12",
+    "typeface-roboto": "0.0.54",
     "vue": "^2.5.2",
     "vue-class-component": "^6.2.0",
     "vue-cropper": "^0.2.9",

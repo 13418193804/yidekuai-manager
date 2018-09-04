@@ -305,8 +305,8 @@ doDownLoad(){
         reminderVEnums: this.reminderVEnums,
         key: this.key,
         consigneeAddress: this.consigneeAddress,
-        startCreatTime: startCreatTime,
-        endCreatTime: endCreatTime,
+        startCreateDate: startCreatTime,
+        endCreateDate: endCreatTime,
         rderStatus: this.rderStatus,
         page: this.page,
         pageSize: this.pageSize

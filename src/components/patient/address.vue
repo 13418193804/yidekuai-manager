@@ -38,11 +38,7 @@
 				</template>
     </el-table-column>
 
-    <el-table-column
-      property="createTime"
-      label="日期"
-      width="180">
-    </el-table-column>
+
 	<el-table-column label="操作" width="280" fixed="right">
 				<template slot-scope="scope">
 					<el-button size="small"  @click="setDefault(scope.row)">设为默认</el-button>

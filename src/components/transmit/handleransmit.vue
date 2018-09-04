@@ -13,9 +13,6 @@
 <span style="margin-right:10px">平台处方数量统计 {{allprescription}} 个</span>             
 <span > 待转方数量 {{notCount}} 个</span>    
             </div>
-
-
-
 <div style="text-align:right;float:right;">
      <el-button size="small" type="primary" @click="getCountForList('shang')" :disabled="leftDis"  icon="el-icon-arrow-left">上一条</el-button>
                  <el-button size="small" type="primary" @click="getCountForList('xia')" :disabled="rightDis">下一条<i class="el-icon-arrow-right"></i></el-button>
@@ -487,8 +484,6 @@
       label="提交时间">
    </el-table-column>
 
-
-
    <el-table-column label="操作" fixed="right"  width="100">
       <template slot-scope="scope">
 
@@ -575,6 +570,7 @@ import corpperlabel from "./corpperlabel";
     corpperlabel
   }
 })
+
 export default class AddGoods extends Vue {
   //供应商
   querySearch4(queryString, cb) {
@@ -582,7 +578,6 @@ export default class AddGoods extends Vue {
     var results = queryString
       ? restaurants.filter(this.createFilter(queryString))
       : restaurants;
-
     // 调用 callback 返回建议列表的数据
     let a = results.map(item => {
       return { value: item, partnerName: item.partnerName };
@@ -671,6 +666,7 @@ export default class AddGoods extends Vue {
     this.drug["specification"] = a[0].specification;
     this.drug["price"] = a[0].sellingPrice;
     this.drug["primarykeyID"] = a[0].id;
+    this.drug['manufacturer'] = a[0].manufacturer
     //清空数据
     this.commonList();
   }
@@ -694,6 +690,11 @@ export default class AddGoods extends Vue {
     let data = {
       commonName: this.drug.commonName
     };
+      
+    if (this.drug.manufacturer) {
+      Object.assign(data, { manufacturer: this.drug.manufacturer });
+    }
+
     if (this.drug.specification) {
       Object.assign(data, { specification: this.drug.specification });
     }
@@ -701,7 +702,6 @@ export default class AddGoods extends Vue {
     if (this.drug.partnerObj) {
       Object.assign(data, { partnerName: this.drug.partnerObj });
     }
-
     indexApi.getGrugListZhuanFang(data).then(res => {
       if (res["retCode"]) {
         // this.options4 = res.data.YdkDrugList;
@@ -1095,19 +1095,16 @@ export default class AddGoods extends Vue {
       this.options4 = [];
     }
   }
-
   options4 = [];
   value9 = [];
   list = [];
-
   drugList = [];
-
   getDrugList(query) {
     //  this.drug.commonName
     indexApi
       .getGrugList({
         keyFName: query,
-        preid :   this.presId 
+        preId :   this.presId 
       })
       .then(res => {
         if (res["retCode"]) {

@@ -45,7 +45,7 @@
 
 <remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
-    <el-tab-pane   :label="'待开发票（'+NEW_ORDER+'）'"  name="rework">
+    <el-tab-pane   :label="'待开发票（'+invoice+'）'"  name="rework">
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
@@ -72,9 +72,6 @@
   
     </el-tab-pane>
 
-
-
-
     <el-tab-pane   :label="'全部（'+allprescription+'）'" name="ALL">
           <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="margin-top:20px;">
@@ -89,7 +86,7 @@
       <el-option value="ORDER_WAIT_RECVGOODS" label="待收货"></el-option>
       <el-option value="ORDER_END_GOODS" label="已完成"></el-option>
     </el-select>
-				</el-form-item>
+				</el-form-item> 
   </el-col>
    <el-col :xs="17" :sm="17" :md="11" :lg="8" :xl="6" style="min-width:500px;margin-top:10px;" class="flex" >
   	<el-date-picker v-model="startDate" type="date" placeholder="开始日期"  class="flex-1" style="margin-right:5px">
@@ -177,52 +174,47 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import axios from "axios";
 import * as indexApi from "../../api/indexApi";
-import  remindertable from "./remindertable";
+import remindertable from "./remindertable";
 import moment from "moment";
 import * as ApiOrder from "../../api/orderapi";
 
 @Component({
   props: {},
   components: {
-  remindertable
+    remindertable
   }
 })
 export default class AddGoods extends Vue {
-
-handleOrderStatus(status){
-switch(status){
-  case 'ORDER_INIT':
-  return '订单初始化';
-   case 'ORDER_WAIT_PAY':
-  return '等待支付';
-   case 'ORDER_PAY_ONDEV':
-  return '货到付款';
-   case 'ORDER_CANCEL_PAY':
-  return '取消支付';
-   case 'ORDER_WAIT_SENDGOODS':
-  return '待发货';
-     case 'ORDER_WAIT_RECVGOODS':
-  return '待收货';
-  case 'ORDER_END_GOODS':
-  return '完成';
-  default :
-  return '';
-}
-}
-
-provinceList=[]
-
+  handleOrderStatus(status) {
+    switch (status) {
+      case "ORDER_INIT":
+        return "订单初始化";
+      case "ORDER_WAIT_PAY":
+        return "等待支付";
+      case "ORDER_PAY_ONDEV":
+        return "货到付款";
+      case "ORDER_CANCEL_PAY":
+        return "取消支付";
+      case "ORDER_WAIT_SENDGOODS":
+        return "待发货";
+      case "ORDER_WAIT_RECVGOODS":
+        return "待收货";
+      case "ORDER_END_GOODS":
+        return "完成";
+      default:
+        return "";
+    }
+  }
+  provinceList = [];
   queryProvinceList() {
     ApiOrder.queryProvinceList().then(res => {
       this.provinceList = res.data.region;
     });
   }
- 
-
-paymentMode =''
-reminderVEnums = 'NEW_ORDER'
+  paymentMode = "";
+  reminderVEnums = "NEW_ORDER";
   allprescription = 0;
- loading = false
+  loading = false;
   getOrderExcel() {
     this.loading = true;
     let startCreatTime = "";
@@ -234,42 +226,41 @@ reminderVEnums = 'NEW_ORDER'
     if ((this.endDate || "") != "") {
       endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
     }
-    
-    indexApi.getExcelUrl({
-    startCreateDate: startCreatTime,
+
+    indexApi
+      .getExcelUrl({
+        startCreateDate: startCreatTime,
         endCreateDate: endCreatTime,
         rderStatus: this.rderStatus,
-                paymentMode:this.paymentMode
-}).then(res => {
-      if (res["retCode"]) {
-   
-        if (res.data.num>0) {
-          this.doResult(res.data.durl);
+        paymentMode: this.paymentMode
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          if (res.data.num > 0) {
+            this.doResult(res.data.durl);
+          } else {
+            this.loading = false;
+            this.$alert("查询结果没有可导出数据");
+          }
         } else {
-        this.loading = false;
-          this.$alert("查询结果没有可导出数据");
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
         }
-
-      } else {
-        if (!res["islogin"]) {
-          this.$alert(res["message"]);
-        }
-      }
-    });
+      });
   }
-durl =''
-doDownLoad(){
-  window.open(this.durl);
-}
+  durl = "";
+  doDownLoad() {
+    window.open(this.durl);
+  }
   doResult(durl) {
-
     indexApi.orderDoResult({}).then(res => {
-        this.loading = false;
+      this.loading = false;
       if (res["retCode"]) {
         this.$message("导出成功");
-          this.durl = durl
-          // sessionStorage
-          // 塞到缓存
+        this.durl = durl;
+        // sessionStorage
+        // 塞到缓存
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -277,7 +268,7 @@ doDownLoad(){
       }
     });
   }
-  key = ''
+  key = "";
   page = 0;
   pageSize = 10;
   total = 100;
@@ -286,80 +277,99 @@ doDownLoad(){
     this.getOrderList();
   }
   orderList = [];
-    startDate = "";
+  startDate = "";
   endDate = "";
 
-consigneeAddress =''
-   handleClick(e) {
-     this.rderStatus = ''
+  consigneeAddress = "";
+  handleClick(e) {
+    this.rderStatus = "";
     this.getOrderList(true);
   }
-  rderStatus=''
-  getOrderList(filter =null) {
-    if(filter){
-      this.page = 0
+  rderStatus = "";
+  getOrderList(filter = null) {
+    if (filter) {
+      this.page = 0;
     }
-  let startCreatTime = "";
+    let startCreatTime = "";
     let endCreatTime = "";
     if ((this.startDate || "") != "") {
       startCreatTime =
-        moment(this.startDate).format("YYYY-MM-DD")  + " 00:00:00";
+        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
     }
     if ((this.endDate || "") != "") {
-      endCreatTime = moment(this.endDate).format("YYYY-MM-DD")  + " 23:59:59";
+      endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
     }
-// this.reminderVEnums == 'ALL'
-let reminderVEnums = this.reminderVEnums
-if(this.reminderVEnums == 'rework'){
-  reminderVEnums = 'ALL'
-}
-this.loading = true
+    let reminderVEnums = this.reminderVEnums;
+    if (this.reminderVEnums == "rework") {
+      this.loading = true;
+      indexApi
+        .getYdkPrescriptionAndInvoice({
+          key: this.key,
+          startCreateDate: startCreatTime,
+          endCreateDate: endCreatTime,
+          page: this.page,
+          pageSize: this.pageSize
+        })
+        .then(res => {
+          this.loading = false;
+          if (res["retCode"]) {
+            this.orderList = res.data.data;
+            this.total = res.data.page.total;
+          } else {
+            if (!res["islogin"]) {
+              this.$alert(res["message"]);
+            }
+          }
+        });
+      return;
+    }
+    this.loading = true;
     indexApi
       .gerOrderList({
-                paymentMode:this.paymentMode,
-        reminderVEnums:reminderVEnums,
-        key:this.key,
-        consigneeAddress:this.consigneeAddress,
-     startCreatTime: startCreatTime,
-        endCreatTime: endCreatTime,
-        rderStatus : this.rderStatus,
+        paymentMode: this.paymentMode,
+        reminderVEnums: reminderVEnums,
+        key: this.key,
+        consigneeAddress: this.consigneeAddress,
+        startCreateDate: startCreatTime,
+        endCreateDate: endCreatTime,
+        rderStatus: this.rderStatus,
         page: this.page,
         pageSize: this.pageSize
       })
       .then(res => {
-        this.loading = false
+        this.loading = false;
         if (res["retCode"]) {
-          console.log('-----',res.data)
           this.orderList = res.data.data;
           this.total = res.data.page.total;
         } else {
-          if(!res['islogin']){this.$alert(res["message"]);}
-          console.error("数据查询错误");
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
         }
       });
   }
-NEW_ORDER = 0
-queryOrderCount(){
-   indexApi
-      .queryOrderCount({
-      })
-      .then(res => {
-   
-        if (res["retCode"]) {
-            this.NEW_ORDER = res.data.NEW_ORDER
-   this.allprescription = res.data.all; 
 
-        } else {
-          if(!res['islogin']){this.$alert(res["message"]);}
-          console.error("数据查询错误");
+  invoice = 0;
+  NEW_ORDER = 0;
+  queryOrderCount() {
+    indexApi.queryOrderCount({}).then(res => {
+      if (res["retCode"]) {
+        this.invoice = res.data.invoice;
+        this.NEW_ORDER = res.data.NEW_ORDER;
+        this.allprescription = res.data.all;
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
         }
-      });
-}
+        console.error("数据查询错误");
+      }
+    });
+  }
 
   mounted() {
-    this.queryOrderCount()
+    this.queryOrderCount();
     // this.allPrescription();
-    this.queryProvinceList()
+    this.queryProvinceList();
     this.getOrderList();
   }
 }

@@ -84,10 +84,7 @@
   <span>{{order.hospitalName}}</span>
 </div>
 </div>
-
-
   <h4 >详细信息</h4>
-
 <div class="flex flex-warp-justify">
 <div style="margin-right:10px;">
   <span>订单编号：</span>
@@ -179,17 +176,45 @@
     审方退回原因：{{order.rejectAuditReason}}
     </div>
     </div>
+<div v-if="order.invoiceRecords && order.invoiceRecords.length>0">
+  <h4 >发票信息</h4>
+  
+  <div class="flex flex-warp-justify">
+<div style="margin-right:10px;">
+  <span>抬头类型：</span>
+  <span>{{order.invoiceRecords[0].titleType =='PERSONAL'?'个人':'公司'}}</span>
+</div>
 
+<div style="margin-right:10px;">
+  <span>姓名：</span>
+  <span>{{order.invoiceRecords[0].memberName}}</span>
+</div>
+
+<div style="margin-right:10px;">
+  <span>联系电话：</span>
+  <span>{{order.invoiceRecords[0].phone}}</span>
+</div>
+
+<div style="margin-right:10px;">
+  <span>名称：</span>
+  <span>{{order.invoiceRecords[0].invoiceName }}</span>
+</div>
+
+
+
+
+</div>
+
+
+
+</div>
 
 
 <div v-for="(item,index) in order.YdkOrderDetailList" :key="index">
-
-
 <div class="flex flex-warp-justify" style="margin-top:20px;">
   <h4 style="margin:0;    height: 40px;
     display: flex;
     align-items: center;">物流信息：</h4>
-
     <div >
       
       
@@ -282,15 +307,18 @@
       prop="frequency"
       label="频次">
    </el-table-column>
-
   <el-table-column
       prop="quantity"
       label="数量">
    </el-table-column>
+  <el-table-column
+      prop="drugPrice"
+      label="药品库价格">
+   </el-table-column>
 
   <el-table-column
       prop="price"
-      label="药品价格">
+      label="售价">
    </el-table-column>
 
     <el-table-column
@@ -611,7 +639,7 @@
 </el-dialog>
 
 		<el-dialog width= "70vw" :close-on-click-modal="false"   append-to-body :visible.sync="shipInfoModel"  title="物流追踪" >
-         <div style="margin-left:20px;margin-bottom:10px;font-size:15px;height:500px;" v-loading="shipInfoLoading">
+         <div style="margin-left:20px;margin-bottom:10px;font-size:15px;height:500px;overflow: auto;" v-loading="shipInfoLoading">
             <div v-for="(item,index) in shipInfo" :key="index">
               {{item.AcceptStation}}{{item.AcceptTime}}
           </div>

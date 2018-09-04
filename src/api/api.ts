@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Vue from 'vue';
 
 import * as Config from './conf';
 import querystring from 'querystring';
@@ -39,10 +40,6 @@ export const requestBody = (url, body) => {
 
 
 export const requestForm = (urlPath, params) => {
-
-
-
-    console.log("enter form")
     return axios.post(`${base}${urlPath}`,
         querystring.stringify(params), {
             headers: {
@@ -51,13 +48,10 @@ export const requestForm = (urlPath, params) => {
         })
         .then(res => res)
         .catch(error => error);
-
 };
 
 
-export const requestForm2 = (urlPath, params) => {
-
-    console.log(`${base}${urlPath}`)
+export const requestForm2 = Vue.prototype.ydkManager=='test'? (urlPath, params) => {
 
     return axios.post(`${base}${urlPath}`,
         querystring.stringify(params), {
@@ -66,19 +60,29 @@ export const requestForm2 = (urlPath, params) => {
             }
         })
         .then(res => {
-
-       
-
             if (res.status != 200) {
-
+                console.log(`响应请求:${urlPath}`,{
+                    reqUrl :`${base}${urlPath}`,
+                    params:params,
+                    httpStatus:res.status,
+                })
                 return {
                     retCode: false,
                     message: "网络数据异常",
                     data: {}
                 }
-
             }
+            
+            console.log(`响应请求:${urlPath}`,{
+                reqUrl :`${base}${urlPath}`,
+                params:params,
+                httpStatus:res.status,
+                resStatus:res.data.status,
+                message:`响应信息:${res.data.message}`
+            })
+
             if (res.data.status != 200) {
+
                 if (res.data.status ==401 && res.data.message =="用户没有登录，请先登录") {
                     window['myvue'].$router.replace('/login');
                     return {
@@ -87,7 +91,6 @@ export const requestForm2 = (urlPath, params) => {
                         message: res.data.message
                     };
                 }
-                
                 return {
                     retCode: false,
                     message: res.data.message,
@@ -95,22 +98,60 @@ export const requestForm2 = (urlPath, params) => {
                 }
 
             }
-
             return { retCode: true, message: '', data: res.data.data }
-
         })
         .catch(error => {
-
+                console.log(`捕捉错误:${urlPath}`,{
+                    reqUrl :`${base}${urlPath}`,
+                    params:params,
+                    error:error
+                })
             return {
                 retCode: false,
                 message: `网络请求异常 请求路径 ${urlPath},错误信息 ${error}`,
                 data: {}
             }
-
-
         });
-
-};
+}:(urlPath, params) => {
+        return axios.post(`${base}${urlPath}`,
+            querystring.stringify(params), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            })
+            .then(res => {
+                if (res.status != 200) {
+                    return {
+                        retCode: false,
+                        message: "网络数据异常",
+                        data: {}
+                    }
+                }
+                if (res.data.status != 200) {
+                    if (res.data.status ==401 && res.data.message =="用户没有登录，请先登录") {
+                        window['myvue'].$router.replace('/login');
+                        return {
+                            retCode: false,
+                            islogin:true,
+                            message: res.data.message
+                        };
+                    }
+                    return {
+                        retCode: false,
+                        message: res.data.message,
+                        data: {}
+                    }
+                }
+                return { retCode: true, message: '', data: res.data.data }
+            })
+            .catch(error => {
+                return {
+                    retCode: false,
+                    message: `网络请求异常 请求路径 ${urlPath},错误信息 ${error}`,
+                    data: {}
+                }
+            });
+    }
 
 
 export const requestGet = (urlPath) => {
