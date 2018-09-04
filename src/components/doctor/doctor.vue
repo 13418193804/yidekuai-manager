@@ -5,7 +5,7 @@
         <div style="padding-bottom:20px;">平台医生数量统计：{{doctotcount}}个</div>
         <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
             <!-- 医生申请列表 -->
-            <el-tab-pane label="申请列表" name="first">
+            <el-tab-pane :label="'申请列表（'+examinedoctorcount+'）'" name="first">
                 <el-table border
                     :data="doctorExamineList"
                     stripe 
@@ -54,7 +54,7 @@
                             </el-pagination>
                         </el-col>
             </el-tab-pane>
-            <el-tab-pane label="医生列表" name="second">
+            <el-tab-pane :label="'医生列表（'+doctotcount+'）'" name="second">
                 <div class="flex flex-pack-justify" style="margin-top:20px;">
                     <el-button type="primary" @click="dialogFormVisible = true">新增医生</el-button>
                     <!-- <el-button type="primary" @click="getapplyVisible()">申请列表({{examinedoctorcount}})</el-button> -->
@@ -834,11 +834,11 @@ formLabelAlign:any={
 handleClick(tab, event) {
         if(tab.index==0){
             this.getDoctorExamineList();
-            // this.countExaminedoctor();
+            this.countExaminedoctor();
         }else{
             this.getdoctorList();
             this.getdoctorcount();
-            // this.countExaminedoctor();
+            this.countExaminedoctor();
         } 
       }
 checkconsultingFee = (rule, value, callback) => {
@@ -1478,7 +1478,7 @@ updatedoctor(){
             if (res["retCode"]) {
                 this.doctorExamineList=res.data.doctorExamines;
                 this.examinepagetotal=res.data.page.total;
-                // this.countExaminedoctor();
+                this.countExaminedoctor();
                 this.loading=false;
             } else {
                 if(!res['islogin']){this.$alert(res["message"]);}
@@ -1586,17 +1586,17 @@ updatedoctor(){
                 });          
             });
         }
-        // examinedoctorcount=0;
-        // countExaminedoctor(){
-        //     doctorApi.countDoctorExamineList().then(res => {
-        //     if (res["retCode"]) {
-        //         this.examinedoctorcount=res.data;
-        //     } else {
-        //         if(!res['islogin']){this.$alert(res["message"]);}
-        //         console.error("数据查询错误");
-        //     }
-        //     });
-        // }
+        examinedoctorcount=0;
+        countExaminedoctor(){
+            doctorApi.countDoctorExamineList().then(res => {
+            if (res["retCode"]) {
+                this.examinedoctorcount=res.data;
+            } else {
+                if(!res['islogin']){this.$alert(res["message"]);}
+                console.error("数据查询错误");
+            }
+            });
+        }
         detailsshow=false;
         detailsshow1=false;
         formLabeldetails:any={};
@@ -1634,7 +1634,7 @@ mounted(){
   this.gethospitalList();
   this.getdepartmenttree();
   this.getDoctorExamineList();
-//   this.countExaminedoctor();
+  this.countExaminedoctor();
 }
 }
 </script>
