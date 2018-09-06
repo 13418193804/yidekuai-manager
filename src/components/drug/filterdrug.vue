@@ -83,7 +83,7 @@
 
 <el-table-column
       prop="sellingPrice"
-      label="售价">
+      label="药品库价格">
    </el-table-column>
    
 <el-table-column

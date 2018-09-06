@@ -180,7 +180,7 @@ export default new Router({
       component: Home,
       position: 'menu',
       menu_grade: 2,
-      name: '药品咨询',
+      name: '药品管理',
       children: [
         {
           path: '/drug',

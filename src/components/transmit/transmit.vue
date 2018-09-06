@@ -121,12 +121,12 @@ import moment from "moment";
   }
 })
 export default class AddGoods extends Vue {
-
-  get notCount(){
-    return this.countPreByStatuObj['data5']?this.countPreByStatuObj['data5'].count:0
+  get notCount() {
+    return this.countPreByStatuObj["data5"]
+      ? this.countPreByStatuObj["data5"].count
+      : 0;
   }
   allprescription = 0;
-
 
   allPrescription() {
     indexApi.allPrescription().then(res => {
@@ -134,18 +134,22 @@ export default class AddGoods extends Vue {
         console.log(res.data);
         this.allprescription = res.data;
       } else {
-        if(!res['islogin']){this.$alert(res["message"]);}
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
         console.error("数据查询错误");
       }
     });
   }
-  countPreByStatuObj = {}
-countPreByStatu() {
+  countPreByStatuObj = {};
+  countPreByStatu() {
     indexApi.countPreByStatu({}).then(res => {
       if (res["retCode"]) {
         this.countPreByStatuObj = res.data;
       } else {
-        if(!res['islogin']){this.$alert(res["message"]);}
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
         console.error("数据查询错误");
       }
     });
@@ -158,10 +162,13 @@ countPreByStatu() {
     this.getprescriptionList();
   }
   handleClick(e) {
-    
+    this.startDate = "";
+    this.endDate = "";
+    this.key = ""
     this.page = 0;
-          if(this.prescriptionEnums1 == 'name2'){
-       this.prescriptionEnums = ''
+
+    if (this.prescriptionEnums1 == "name2") {
+      this.prescriptionEnums = "";
     }
     this.getprescriptionList();
   }
@@ -169,63 +176,61 @@ countPreByStatu() {
   prescriptionList = [];
   prescriptionEnums = "";
   prescriptionEnums1 = "name1";
-  
-  
+
   startDate = "";
   endDate = "";
   key = "";
-  operationType= 'Translators'
-     loading = false
-  
-  getprescriptionList(filter=null) {
-    if(filter){
-      this.page = 0
+  operationType = "Translators";
+  loading = false;
+
+  getprescriptionList(filter = null) {
+    if (filter) {
+      this.page = 0;
     }
-   if(this.prescriptionEnums1 == 'name1'){
-       this.prescriptionEnums = 'NOT_TRANSLATED_OR_REJECT_AUDIT_PRESCRIPTION'
+
+    if (this.prescriptionEnums1 == "name1") {
+      this.prescriptionEnums = "NOT_TRANSLATED_OR_REJECT_AUDIT_PRESCRIPTION";
     }
 
     let startCreatTime = "";
     let endCreatTime = "";
     if ((this.startDate || "") != "") {
       startCreatTime =
-        moment(this.startDate).format("YYYY-MM-DD")  + " 00:00:00";
+        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
     }
     if ((this.endDate || "") != "") {
-      endCreatTime = moment(this.endDate).format("YYYY-MM-DD")  + " 23:59:59";
+      endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
     }
-    let data = { 
-        prescriptionEnums: this.prescriptionEnums,
-      //  operationType :this.operationType,
-        key: this.key,
-        startCreatTime: startCreatTime,
-        endCreatTime: endCreatTime,
-      }
-      sessionStorage.tranObject = JSON.stringify(data)
-      Object.assign(data,{   page: this.page,
-        pageSize: this.pageSize})
+    let data = {
+      prescriptionEnums: this.prescriptionEnums,
+      key: this.key,
+      startCreatTime: startCreatTime,
+      endCreatTime: endCreatTime
+    };
+    sessionStorage.tranObject = JSON.stringify(data);
+    Object.assign(data, {
+      page: this.page,
+      pageSize: this.pageSize
+    });
 
-        this.loading = true
-    indexApi
-      .findPrescriptionByType(data)
-      .then(res => {
-        this.loading = false
-        
-        if (res["retCode"]) {
-          console.log('-----',res.data);
-          this.prescriptionList = res.data.list;
-          this.total = res.data.page.total;
-        } else {
-          if(!res['islogin']){this.$alert(res["message"]);}
-          console.error("数据查询错误");
+    this.loading = true;
+    indexApi.findPrescriptionByType(data).then(res => {
+      this.loading = false;
+  this.countPreByStatu();
+      if (res["retCode"]) {
+        this.prescriptionList = res.data.list;
+        this.total = res.data.page.total;
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
         }
-      });
+        console.error("数据查询错误");
+      }
+    });
   }
   mounted() {
-
     this.allPrescription();
     this.getprescriptionList();
-    this.countPreByStatu();
   }
 }
 </script>

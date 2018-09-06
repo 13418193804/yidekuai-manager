@@ -5,6 +5,9 @@
           </h3>
         </div>
 
+ <div style="10px;">
+找药数量统计：{{total}}              
+            </div>
 
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
 <el-row :gutter="10">
@@ -22,10 +25,22 @@
 						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
 						</el-date-picker>
   </el-col>
+    <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
+      <el-select v-model="dataType" placeholder="请选择药品归属" style="margin-top:20px;" >
+        <el-option value="" label="全部"></el-option>
+        <el-option value="TRUTH" label="药品库"></el-option>
+        <el-option value="FICTITIOUS" label="虚拟库"></el-option>
+        <el-option value="NONENTITY"  label="不在目录"></el-option>
+      </el-select>
+  </el-col>
   <el-col :xs="5" :sm="5" :md="3" :lg="3" :xl="2" >
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="requireDrugList(true)">查询</el-button>
   </el-col>
 
+
+
+
+ 
 
 
 </el-row>
@@ -37,10 +52,12 @@
     stripe border
     style="width: 100%;">
        <el-table-column   fixed="left"
-      prop="drugStatus"
-      label="状态" width="150">
+      label="药品归属" width="150">
         <template slot-scope="scope">
-      {{scope.row.drugStatus=='USE'?'可用':'停用'}}
+    <el-tag :type="handledataType1(scope.row.dataType)">{{handledataType(scope.row.dataType)}}</el-tag>
+
+      
+
       </template>
    </el-table-column>
 
@@ -84,12 +101,10 @@
       label="厂家" width="150">
    </el-table-column>  
 
-   
-
    <el-table-column  
       label="医生/患者" width="150">
       <template slot-scope="scope">
-      {{handledrugFlag(scope.row.drugFlag)}}
+      {{handledrugFlag(scope.row.memberFlag)}}
       </template>
    </el-table-column>
 
@@ -105,14 +120,10 @@
       prop="remark" show-overflow-tooltip
       label="备注" width="150">
    </el-table-column>
-
-
          <el-table-column 
       prop="queryTime"
       label="创建时间" width="150">
    </el-table-column>
-
-
    <el-table-column label="操作" fixed="right"  width="100">
       <template slot-scope="scope">
         <el-button
@@ -133,14 +144,12 @@
 			</el-pagination>
 		</el-col>
 
-
-
 	<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="detailModel"  title="详情">
 <div style="min-height:500px;">
 <el-form   label-width="120px" :model="detail.row" class="demo-form-inline">
- <el-form-item  label="状态：" style="margin:0">
+ <!-- <el-form-item  label="状态：" style="margin:0">
   {{detail.row.drugStatus=='USE'?'可用':'停用'}}
-  </el-form-item>
+  </el-form-item> -->
    <el-form-item  label="商品名：" style="margin:0">
 {{detail.row.productName}}
   </el-form-item>
@@ -169,7 +178,7 @@
   </el-form-item>
 
 <el-form-item  label="医生/患者：" style="margin:0">
-      {{handledrugFlag(detail.row.drugFlag)}}
+      {{handledrugFlag(detail.row.memberFlag)}}
   </el-form-item>
 <el-form-item  label="姓名：" style="margin:0">
 {{detail.row.name}}
@@ -177,10 +186,20 @@
   <el-form-item  label="电话：" style="margin:0">
 {{detail.row.phone}}
   </el-form-item>
+
   <el-form-item  label="创建时间：" style="margin:0">
 {{detail.row.queryTime}}
   </el-form-item>
+
+
+  <el-form-item  label="图片：" style="margin:0">
+    <img v-for="(item,index) in detail.row.picturesUrlList" :key="item" :src="item" style=" cursor: pointer;margin-right: 10px;width:100px;height:100px;" @click="viewBigIcon(item)"/>
+   </el-form-item>
+
 </el-form>
+
+
+
 
 <el-form label-width="120px" class="demo-form-inline">
             	<el-form-item label="备注：" prop="remark" >
@@ -201,14 +220,12 @@
 
 </div>
 
-
-
 </el-dialog>
 
 
-
-
-
+ <el-dialog  :visible.sync="viewBig" width="400px">
+      <img :src="bigIcon" style="width:400px;height:400px;margin:-55px -20px -40px" >
+    </el-dialog>
 
     </div>
  </template>
@@ -225,6 +242,34 @@ import moment from "moment";
   components: {}
 })
 export default class AddGoods extends Vue {
+    viewBigIcon(qrcode) {
+    this.bigIcon = qrcode;
+    this.viewBig = true;
+  }
+  bigIcon = "";
+  viewBig = false;
+handledataType1(dataType){
+  switch(dataType){
+    case 'TRUTH':
+    return 'success';
+   case 'FICTITIOUS':
+    return 'warning';  
+    case 'NONENTITY':
+    return 'danger';
+    default: return ''
+  }
+}
+handledataType(dataType){
+  switch(dataType){
+    case 'TRUTH':
+    return '药品库';
+   case 'FICTITIOUS':
+    return '虚拟库';  
+    case 'NONENTITY':
+    return '不在目录';
+    default: return ''
+  }
+}
   page = 0;
   loading = false;
   total = 0;
@@ -237,6 +282,7 @@ export default class AddGoods extends Vue {
   }
   startDate = "";
   endDate = "";
+  dataType=""
   requireDrugList(filter = null) {
     if (filter) {
       this.page = 0;
@@ -257,6 +303,7 @@ export default class AddGoods extends Vue {
         keyword: this.keyword,
         startqueryTime: startCreatTime,
         endqueryTime: endCreatTime,
+        dataType:this.dataType,
         page: this.page,
         pageSize: this.pageSize
       })

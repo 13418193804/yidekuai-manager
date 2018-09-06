@@ -279,10 +279,16 @@ doDownLoad(){
   consigneeAddress = "";
   handleClick(e) {
     this.rderStatus = "";
+    this.key= "";
+this.paymentMode = "";
+this.consigneeAddress ="";
+this.startDate ="";
+this.endDate ="";
+this.rderStatus ="";
+ this.page = 0
     this.getOrderList();
   }
   rderStatus = "";
-  
   getOrderList(filter=null) {
     if(filter){
       this.page = 0
@@ -313,6 +319,7 @@ doDownLoad(){
       })
       .then(res => {
     this.loading = false
+        this.queryOrderCount();
         if (res["retCode"]) {
           console.log("-----", res.data);
           this.orderList = res.data.data;
@@ -345,7 +352,7 @@ doDownLoad(){
   mounted() {
     // this.allPrescription();
     this.getOrderList();
-    this.queryOrderCount();
+
   }
 }
 </script>

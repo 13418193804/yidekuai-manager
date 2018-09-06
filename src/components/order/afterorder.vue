@@ -282,7 +282,14 @@ export default class AddGoods extends Vue {
 
   consigneeAddress = "";
   handleClick(e) {
-    this.rderStatus = "";
+   this.rderStatus = "";
+    this.key= "";
+this.paymentMode = "";
+this.consigneeAddress ="";
+this.startDate ="";
+this.endDate ="";
+this.rderStatus ="";
+ this.page = 0
     this.getOrderList(true);
   }
   rderStatus = "";
@@ -338,6 +345,7 @@ export default class AddGoods extends Vue {
       })
       .then(res => {
         this.loading = false;
+            this.queryOrderCount();
         if (res["retCode"]) {
           this.orderList = res.data.data;
           this.total = res.data.page.total;
@@ -367,7 +375,7 @@ export default class AddGoods extends Vue {
   }
 
   mounted() {
-    this.queryOrderCount();
+
     // this.allPrescription();
     this.queryProvinceList();
     this.getOrderList();

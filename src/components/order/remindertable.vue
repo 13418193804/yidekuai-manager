@@ -67,11 +67,11 @@
       label="收货手机号"  width="150">
    </el-table-column>
     <el-table-column
-      prop="consigneeAddress"
       label="收货地址" width="180">
+      <template slot-scope="scope">
+          {{`${scope.row.province?scope.row.province:''}${scope.row.city?scope.row.city:''}${scope.row.area?scope.row.area:''}${scope.row.consigneeAddress?scope.row.consigneeAddress:''}`}}
+     </template>
    </el-table-column>
-
-    
       <el-table-column
       prop="doctorMobile"
       label="医生手机号"  width="150">
@@ -82,7 +82,6 @@
       label="医院"  width="180">
    </el-table-column>
 
-
       <el-table-column
       prop="serviceMoney"
       label="治疗服务费"  width="180">
@@ -92,7 +91,15 @@
       prop="presscriptionMoney"
       label="药品金额" width="180">
    </el-table-column>
-
+       <el-table-column
+      label="开票状态" width="150">
+      <template slot-scope="scope">
+<el-tag
+  :type="handleInvoinStatus(scope.row).type">
+        {{handleInvoinStatus(scope.row).title}}
+</el-tag>
+     </template>
+   </el-table-column>
        <el-table-column
       prop="remark"
       label="开方医生备注"  width="180">
@@ -122,7 +129,7 @@
 
         <el-button
           size="mini"
-          type="text" @click="getTransmitInfo(scope.$index, scope.row)" v-if="pagetype !=='rework' ">处方详情</el-button>
+          type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
 
                <el-button
           size="mini"
@@ -135,7 +142,7 @@
           -->
          
                <el-button size="mini" 
-          :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button>
+          :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button>
         
         
         
@@ -154,21 +161,32 @@
 
 
  <el-table-column fixed="left"
-      label="开票状态" width="150">
+      label="开票状态" width="120">
 <template slot-scope="scope">
-      {{scope.row.isInvoiced == '1'?'已开票':'未开票'}}
+    <el-tag
+  :type="handleInvoinStatus(scope.row).type">
+        {{handleInvoinStatus(scope.row).title}}
+</el-tag>
 </template>
    </el-table-column>
-     
-
+   
+     <el-table-column
+      label="收货人(开票)"  width="150">
+<template  slot-scope="scope">
+      {{scope.row.address.contactName}}
+</template>
+   </el-table-column>
   <el-table-column
-      prop="consigneePhone"
       label="收货手机号(开票)"  width="150">
+<template  slot-scope="scope">
+      {{scope.row.address.contactMobile}}
+</template>
    </el-table-column>
 
     <el-table-column
-      prop="consigneeAddress"
       label="收货地址(开票)" width="180">
+<template  slot-scope="scope">
+  {{scope.row.address.province}}{{scope.row.address.city}}{{scope.row.address.country}}{{scope.row.address.address}}</template>
    </el-table-column>
 
  <el-table-column  
@@ -179,7 +197,6 @@
 </template>
    </el-table-column>
 
-<!-- v-if="patModel != 'PENDING'" -->
  <el-table-column 
       label="支付方式" width="150">
 <template slot-scope="scope">
@@ -209,7 +226,24 @@
       prop="memberPhone"
       label="患者手机号" width="150">
    </el-table-column>
-   
+       <el-table-column
+      prop="memberIdcard"
+      label="患者身份证" width="180">
+   </el-table-column>
+        <el-table-column
+      prop="consigneeName"
+      label="收货人" width="180">
+   </el-table-column>
+   <el-table-column
+      prop="consigneePhone"
+      label="收货手机号"  width="150">
+   </el-table-column>
+    <el-table-column
+      label="收货地址" width="180">
+     <template slot-scope="scope">
+    {{`${scope.row.province?scope.row.province:''}${scope.row.city?scope.row.city:''}${scope.row.area?scope.row.area:''}${scope.row.consigneeAddress?scope.row.consigneeAddress:''}`}}
+     </template>
+   </el-table-column>
     <el-table-column
       prop="orderMoney"
       label="订单金额"  width="150">
@@ -263,18 +297,18 @@
       label="处方编号" width="200">
    </el-table-column>
 
-   <el-table-column label="操作" fixed="right"  :width="pagetype=='patient'?'200':'340'"  >
+   <el-table-column label="操作" fixed="right"  width="200"  >
       <template slot-scope="scope">
-    <el-button
+         <el-button
           size="mini"
-          type="text" @click="getorderInfo(scope.row)" > {{ scope.row.orderStatue == 'ORDER_WAIT_RECVGOODS'?'已发货':'发货' }} </el-button>
-         
+          type="text" @click="getorderInfo(scope.row)">订单详情</el-button>
+               <el-button
+          size="mini"
+          type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
+
              </template>
     </el-table-column>
-
 </el-table>
-
-
 <prescriptioninfo ref="prescriptioninfo" :row="prescriptioninfoObj" ></prescriptioninfo>
 <updateorder ref="updateorder" :provinceList="provinceList"
  @getOrderList="getOrderList" @getOrderDetail="getOrderDetail" @queryShipList="queryShipList" :shipList="shipList" :updateOrder="updateOrder" :pagetype="pagetype" :order="order" ></updateorder>
@@ -326,15 +360,32 @@ export default class AddGoods extends Vue {
   @Prop({ required: false })
   provinceList;
 
+
+
+
+handleInvoinStatus(row){
+if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shipStatus == 'HAVE_SIGNED_IN'){
+  return {title:"开票完成",type:'success'}
+}else if(row.isInvoicedShipped == '1'){
+  return {title:"已开发票",type:'warning'}
+}else if(row.isInvoiced == '1'){
+  return {title:"新增开票",type:'danger'}
+}else if(row.isInvoiced == '0'){
+  return {title:"未开发票",type:'info'}
+}else{
+  return {title:"",type:''}
+}
+}
+
+
+
+
   invoiceRecordsObj = {};
   invoiceRecordModel = false;
-
   getInvoiceRecords(index, row) {
     this.invoiceRecordsObj = row.invoiceRecords;
   }
-
   giveupModel = false;
-
   presId = "";
   reason = "";
   doGiveup(row) {
@@ -417,6 +468,7 @@ export default class AddGoods extends Vue {
     let a: any = this.$refs.updateorder;
     a.model = true;
     //  a.queryPresDrugback(row.presId)
+
     this.getOrderDetail(row.presId);
   }
   handlePaymentMode(status) {
@@ -440,8 +492,16 @@ export default class AddGoods extends Vue {
             item.logisticslabel = item.logistics;
             item.waybillNumberlabel = item.waybillNumber;
           });
+          if (res.data.invoiceRecords && res.data.invoiceRecords.length > 0) {
+            res.data.invoiceObj_logistics =
+              res.data.invoiceRecords[0].logistics;
+            res.data.invoiceObj_waybillNumber =
+              res.data.invoiceRecords[0].waybillNumber;
+          }
+
           this.order = res.data;
           this.updateOrder = res.data;
+
           if (callback) {
             callback(res.data);
           }
@@ -449,7 +509,6 @@ export default class AddGoods extends Vue {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
           }
-  
         }
       });
   }

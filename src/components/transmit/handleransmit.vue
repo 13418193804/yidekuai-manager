@@ -94,18 +94,17 @@
     </div>
 
 
- 
-
-
-
-
-
 <div v-for="(item,index) in prodeInfo">
 <h4 style="margin: 10px 0;">{{index == 0?'患者信息':'医生信息'}}</h4>
 <div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;" >
-  <div style=" margin-top:10px;margin-right:10px;" v-for="items in item">
+  <div style=" margin-top:10px;margin-right:10px;" class=" flex  flex-align-center" v-for="items in item">
 <span>{{items.title}}</span>
-<span>{{prodetail[items.value]}}</span>
+<span v-if="items.value !== 'diagnose'">{{prodetail[items.value]}}</span>
+<span v-else>
+ <el-input
+  placeholder="诊断"
+  v-model="diagnosis" style=""/>
+</span>
 </div>
 </div>
 </div>
@@ -359,20 +358,16 @@
       :fetch-suggestions="querySearch3"
       placeholder="请输入频次" clearable
     ></el-autocomplete>
-
-
-
 				</el-form-item>	
-
-
-
-      
                     <el-form-item label="数量：" >
                       <el-input v-model="drug.quantity"
   placeholder="请输入数量"  >
 </el-input>
 	</el-form-item>
-
+<div class="flex flex-1 flex-pack-justify" style="margin-left:120px;margin-bottom:25px">
+  <el-radio v-model="drug.price" :label="drug.oldprice?drug.oldprice.toString():''" :disabled="!drug.id||!drug.oldprice">{{`上次售价：${drug.oldprice?drug.oldprice:''}`}}</el-radio>
+  <el-radio v-model="drug.price" :label="drug.drugPrice?drug.drugPrice.toString():''" :disabled="!drug.id">{{`药品库价格：${drug.drugPrice?drug.drugPrice:''}`}}</el-radio>
+</div>
       <el-form-item label="药品价格：" >
                   <div style="display:flex;">
                   <div style="flex:1;margin-right:20px">
@@ -410,9 +405,16 @@
     stripe
     style="width: 100%">
 
+   
+
   <el-table-column fixed="left"
       prop="drugName"
-      label="药品名称">
+      label="通用名">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
    </el-table-column>
 
   <el-table-column
@@ -477,8 +479,6 @@
       label="药品合计">
    </el-table-column>
 
-
-
   <el-table-column
       prop="createDate"
       label="提交时间">
@@ -486,7 +486,6 @@
 
    <el-table-column label="操作" fixed="right"  width="100">
       <template slot-scope="scope">
-
         <el-button
           size="mini"
         type="text" icon="el-icon-delete" 
@@ -496,14 +495,11 @@
 
 </el-table>
 
-<div style="text-align:right;padding:15px">
-
+<!-- <div style="text-align:right;padding:15px">
  <el-input
-  type="textarea"
-  :rows="4"
   placeholder="诊断"
   v-model="diagnosis" style=""/>
-</div>
+</div> -->
 <div style="text-align:right;padding:15px">
 
  <el-input
@@ -528,9 +524,7 @@
 </div>
  
 <div>
- 
                  <el-button type="primary" @click="dotransmit()" >转方</el-button>
-              
 </div>
 
  
@@ -539,9 +533,6 @@
 
 
 
-		<el-dialog width= "70vw" :close-on-click-modal="false" :visible.sync="filterdrugModel"  title="选择药品">
-      <filterdrug ref="filterdrug" :transmitType="true" @selectRow="selectRow()"></filterdrug>
-</el-dialog>
 
 
 
@@ -654,19 +645,25 @@ export default class AddGoods extends Vue {
     ]
   ];
 
+
   selectDrug(drugId) {
     this.drug = {};
     let a = this.options4.filter(item => {
       return drugId == item.id;
     });
-
     this.drug["id"] = a[0].id;
     this.drug["commonName"] = a[0].commonName;
     this.drug["hisCode"] = a[0].hisCode;
     this.drug["specification"] = a[0].specification;
-    this.drug["price"] = a[0].sellingPrice;
+    this.drug["drugPrice"] = a[0].drugPrice;
     this.drug["primarykeyID"] = a[0].id;
     this.drug['manufacturer'] = a[0].manufacturer
+    this.drug['oldprice'] = a[0].oldprice
+    if(this.drug.oldprice){
+    this.drug['price'] = a[0].oldprice.toString()
+    }else{
+    this.drug['price'] = a[0].drugPrice.toString()
+    }
     //清空数据
     this.commonList();
   }
@@ -771,10 +768,6 @@ export default class AddGoods extends Vue {
     });
   }
 
-  filterdrugModel = false;
-  changeModel() {
-    this.filterdrugModel = !this.filterdrugModel;
-  }
 
   drug: any = {};
 
@@ -876,14 +869,6 @@ export default class AddGoods extends Vue {
         console.error("数据查询错误");
       }
     });
-  }
-
-  selectRow() {
-    let a = {};
-    Object.assign(a, this.$refs.filterdrug["row"]);
-    this.drug = a;
-    this.drug.price = a["guidance"];
-    this.filterdrugModel = false;
   }
 
   deletePreDrug(index, row) {

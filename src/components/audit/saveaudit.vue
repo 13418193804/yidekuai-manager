@@ -124,14 +124,19 @@
     :data="preDrugList"
     stripe :height="500"
     style="width: 100%">
-      <el-table-column  fixed="left"
-      prop="hisCode"
-      label="批准文号">
-   </el-table-column>
-  <el-table-column
+   
+
+  <el-table-column fixed="left"
       prop="drugName"
-      label="药品名称">
+      label="通用名">
    </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
+   </el-table-column>
+
+
   <el-table-column
       prop="partnerName"
       label="供应商">
@@ -149,7 +154,10 @@
       prop="specification"
       label="药品规格">
    </el-table-column>
-
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
+   </el-table-column>
  <el-table-column
       prop="usages"
       label="用法">

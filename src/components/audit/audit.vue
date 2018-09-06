@@ -201,17 +201,17 @@ page=0
   }
   handleClick (e){
     this.page = 0
+        this.startDate = "";
+    this.endDate = "";
+    this.key = ""
+    this.page = 0;
         if(this.prescriptionEnums1 == 'name2'){
        this.prescriptionEnums = ''
     }
     this.getprescriptionList();
   }
-
-
     prescriptionList = []
     prescriptionEnums = ''
-
-
 startDate=''
 endDate=''
   key = "";
@@ -259,6 +259,7 @@ endDate=''
     indexApi
       .findPrescriptionByType(data).then(res => {
         this.loading =false
+            this.countPreByStatu();
       if (res["retCode"]) {
         console.log(res.data);
         this.prescriptionList = res.data.list        
@@ -273,7 +274,7 @@ endDate=''
   mounted() {
 this.allPrescription()
     this.getprescriptionList()
-    this.countPreByStatu();
+
 
 
 

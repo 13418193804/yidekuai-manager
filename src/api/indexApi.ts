@@ -193,17 +193,17 @@ export const getGrugList = (model) => {
 }
 //药品库
 export const getGrugList1 = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-        }
-    
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/findDrugByDrugStore', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
     }
+
+
+    Object.assign(params, model)
+    return Api.requestForm2('/findDrugByDrugStore', params)
+        .then(res => res);
+}
 
 // 转方时查药
 export const getGrugListZhuanFang = (model) => {
@@ -560,17 +560,17 @@ export const gerOrderList = (model) => {
 }
 
 //待开发票的订单
-export const getYdkPrescriptionAndInvoice = (model) =>{
-    
+export const getYdkPrescriptionAndInvoice = (model) => {
+
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
     }
     Object.assign(params, model)
-    return Api.requestForm2('/getYdkPrescriptionAndInvoice',params).then(res=>res);
+    return Api.requestForm2('/getYdkPrescriptionAndInvoice', params).then(res => res);
 
 }
- 
+
 //更新订单
 export const updateOrder = (model) => {
 
@@ -1289,44 +1289,75 @@ export const getInterrDetail = (model) => {
  * 弃单
  */
 export const doGiveup = (model) => {
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-        Object.assign(params, model)
-        return Api.requestForm2('/giveupPre', params)
-            .then(res => res);
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
+    Object.assign(params, model)
+    return Api.requestForm2('/giveupPre', params)
+        .then(res => res);
+}
 
 
-    /**
-     * 找药
-     */
-    export const requireDrugList = (model) => {
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-        Object.assign(params, model)
-        return Api.requestForm2('/getInquireDrugsRecordsByKeywordHavingP', params)
-            .then(res => res);
-    }
-    
 
-        /**
-     * 找药修改 （备注）
-     */
-    export const updateInquireDrugsRecords = (model) => {
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-            userId: sessionStorage.getItem("userId"),
-        }
-        Object.assign(params, model)
-        return Api.requestForm2('/updateInquireDrugsRecords', params)
-            .then(res => res);
+/**
+ * 找药
+ */
+export const requireDrugList = (model) => {
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
     }
-    
+    Object.assign(params, model)
+    return Api.requestForm2('/getInquireDrugsRecordsByKeywordHavingP', params)
+        .then(res => res);
+}
+
+
+/**
+* 找药修改 （备注）
+*/
+export const updateInquireDrugsRecords = (model) => {
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/updateInquireDrugsRecords', params)
+        .then(res => res);
+}
+
+
+/**
+* 发票物流 （发货）
+*/
+export const invoicedDeliver = (model) => {
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/invoicedDeliver', params)
+        .then(res => res);
+}
+
+
+
+/**
+* 发票物流 （确认收货）
+*/
+export const invoicedSignInByid = (model) => {
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/invoicedSignInByid', params)
+        .then(res => res);
+}
+
