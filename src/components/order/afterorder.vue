@@ -4,14 +4,14 @@
         <div style="=">
           <h3>售后管理
           </h3>
-           <!-- <div style="margin:10px 0;">
-平台订单数量统计：{{allprescription}} 单  平台新增订单数量统计：{{NEW_ORDER}} 单
-            </div> -->
+           <div style="margin:10px 0;">
+平台订单数量统计：{{allprescription}} 单  平台待发货订单数量统计：{{NEW_ORDER}} 单
+            </div>
           </div>
 
 
   <el-tabs v-model="reminderVEnums" type="card" @tab-click="handleClick">
-    <el-tab-pane   :label="'新增订单（'+NEW_ORDER+'）'"  name="NEW_ORDER">
+    <el-tab-pane   :label="'待发货订单（'+NEW_ORDER+'）'"  name="NEW_ORDER">
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
@@ -83,6 +83,8 @@
       <el-option value="ORDER_WAIT_PAY" label="等待支付"></el-option>
       <el-option value="ORDER_CANCEL_PAY" label="取消支付"></el-option>
       <el-option value="ORDER_WAIT_SENDGOODS" label="待发货"></el-option>
+      <el-option value="ORDER_WAIT_SENDGOODS" label="待发货"></el-option>
+            <el-option value="SENDGOODS_UNFINISHED" label="发货中"></el-option>
       <el-option value="ORDER_WAIT_RECVGOODS" label="待收货"></el-option>
       <el-option value="ORDER_END_GOODS" label="已完成"></el-option>
     </el-select>
@@ -197,6 +199,8 @@ export default class AddGoods extends Vue {
         return "取消支付";
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
+          case "SENDGOODS_UNFINISHED":
+        return "发货中";
       case "ORDER_WAIT_RECVGOODS":
         return "待收货";
       case "ORDER_END_GOODS":

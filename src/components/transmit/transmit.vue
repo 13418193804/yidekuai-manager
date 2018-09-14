@@ -4,10 +4,10 @@
         <div style="">
           <h3>转方管理
           </h3>
- <!-- <div style="padding-bottom:20px;">
+ <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">平台处方数量统计：{{allprescription}} 个</span>             
 <span style="margin-right:20px;">待转方数量：{{notCount}} 个</span>             
-            </div> -->
+            </div>
         </div>
   <el-tabs v-model="prescriptionEnums1" type="card" @tab-click="handleClick">
     <el-tab-pane  :label="'未转方（'+notCount+'）'" name="name1">

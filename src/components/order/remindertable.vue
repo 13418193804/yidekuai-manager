@@ -131,15 +131,15 @@
           size="mini"
           type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
 
-               <el-button
-          size="mini"
-          type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button>
-         
-         
                <!-- <el-button
           size="mini"
-          type="text" @click="getorderInfo(scope.row)"  v-if=" pagetype =='rework'  && scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' || scope.row.orderStatue == 'ORDER_WAIT_RECVGOODS' " > {{ scope.row.orderStatue == 'ORDER_WAIT_RECVGOODS'?'已发货':'发货' }} </el-button>
-          -->
+          type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button> -->
+         
+         
+               <el-button
+          size="mini"
+          type="text" @click="sendGoods(scope.row)"  v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED')" > 发货 </el-button>
+         
          
                <el-button size="mini" 
           :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button>
@@ -310,8 +310,9 @@
     </el-table-column>
 </el-table>
 <prescriptioninfo ref="prescriptioninfo" :row="prescriptioninfoObj" ></prescriptioninfo>
-<updateorder ref="updateorder" :provinceList="provinceList"
- @getOrderList="getOrderList" @getOrderDetail="getOrderDetail" @queryShipList="queryShipList" :shipList="shipList" :updateOrder="updateOrder" :pagetype="pagetype" :order="order" ></updateorder>
+<updateorder ref="updateorder"  :provinceList="provinceList"
+ @getOrderList="getOrderList" @getOrderDetail="getOrderDetail" @queryShipList="queryShipList" :shipList="shipList" 
+  :pagetype="pagetype" :order="order" ></updateorder>
 
       
 	<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="giveupModel"  title="弃单">
@@ -378,6 +379,14 @@ if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shi
 }
 
 
+sendGoods(row){
+    let a: any = this.$refs.updateorder;
+    a.send_model = true;
+    this.presId = row.presId
+        sessionStorage.presId = row.presId
+     this.getOrderDetail(row.presId);
+     
+}
 
 
   invoiceRecordsObj = {};
@@ -469,8 +478,12 @@ if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shi
     a.model = true;
     //  a.queryPresDrugback(row.presId)
 
+    this.presId = row.presId
+    sessionStorage.presId = row.presId
     this.getOrderDetail(row.presId);
   }
+
+  
   handlePaymentMode(status) {
     switch (status) {
       case "ONLINE_PAYMENT":
@@ -481,7 +494,8 @@ if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shi
         return "";
     }
   }
-  getOrderDetail(presId, callback = null) {
+
+  getOrderDetail(presId) {
     indexApi
       .getOrderInfo({
         presId: presId
@@ -498,13 +512,8 @@ if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shi
             res.data.invoiceObj_waybillNumber =
               res.data.invoiceRecords[0].waybillNumber;
           }
-
           this.order = res.data;
-          this.updateOrder = res.data;
-
-          if (callback) {
-            callback(res.data);
-          }
+          (<any>this.$refs.updateorder).getExpressPackage(presId);
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -512,16 +521,9 @@ if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shi
         }
       });
   }
+
   updateOrder = {};
-  updateInfo(row) {
-    let a: any = this.$refs.updateorder;
-    this.getOrderDetail(row.presId, res => {
-      (<any>this.$refs.updateorder).updateOrder = res;
-      (<any>this.$refs.updateorder).queryCityList();
-      (<any>this.$refs.updateorder).queryCountryList();
-    });
-    a.formModel = true;
-  }
+
 
   getOrderList() {
     this.$emit("getOrderList");
@@ -556,7 +558,9 @@ if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shi
         return "取消支付";
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
-      case "ORDER_WAIT_RECVGOODS":
+      case "SENDGOODS_UNFINISHED":
+        return "发货中";
+            case "ORDER_WAIT_RECVGOODS":
         return "待收货";
       case "ORDER_END_GOODS":
         return "完成";

@@ -78,10 +78,8 @@
 <div style="    white-space: nowrap;overflow:hidden;">
 
 <el-row :gutter="24" >
-  
   <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6" style="    margin-bottom: 22px;">
-  
-<el-select v-model="rowObject.provinceId" @change="queryCityList()">
+<el-select v-model="rowObject.provinceId" @change="queryCityList()" >
 <el-option v-for="(n,index) in provinceList" :key="index" :label="n.name" :value="n.id" ></el-option>
 </el-select>
   </el-col>

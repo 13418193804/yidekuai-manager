@@ -73,6 +73,11 @@ export default class App extends Vue {
   background-color:#c30d23!important;
   
 }
+.el-step.is-simple .el-step__head{
+  width: auto;
+    font-size: inherit!important;
+    padding-right: 10px;
+}
 .flex {
   display: -webkit-box;
   display: -webkit-flex;
@@ -172,5 +177,13 @@ export default class App extends Vue {
     height: 100px!important;
     display: block;
   }
+  
+.send_box .el-dialog__body{
+  padding:0!important;
+  position:relative;
+}
+.send_box .el-dialog__header{
+display:none;
+}
 
 </style>

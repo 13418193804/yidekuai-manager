@@ -621,11 +621,55 @@ export const doSend = (model) => {
     }
 
     Object.assign(params, model)
-    return Api.requestForm2('/express/updateYdkOrderDetail', params)
+    return Api.requestForm2('/ExpressSplit/addExpressSplit', params)
         .then(res => res);
 }
 
+//确认收货
+export const dorecvGood = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+        }
+    
+        Object.assign(params, model)
+        return Api.requestForm2('/express/updateYdkOrderDetail', params)
+            .then(res => res);
+    }
 
+/**
+ * 包裹列表
+ * @param model 
+ */
+export const getExpressPackage = (model) => {
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+    }
+
+    Object.assign(params, model)
+    return Api.requestForm2('/ExpressSplit/getExpressPackage', params)
+        .then(res => res);
+}
+/**
+ * 包裹查药品
+ * @param model 
+ */
+
+
+export const getExpressPackageDrug = (model) => {
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+    }
+
+    Object.assign(params, model)
+    return Api.requestForm2('/ExpressSplit/getExpressPackageDrug', params)
+        .then(res => res);
+}
 //订单查数量
 export const queryOrderCount = (model) => {
 
@@ -718,7 +762,7 @@ export const updateDrugStore = (model) => {
     }
 
     Object.assign(params, model)
-    return Api.requestForm2('/updateDrug', params)
+    return Api.requestForm2('/updateDrugByDrugStore', params)
         .then(res => res);
 }
 

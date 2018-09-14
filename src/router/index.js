@@ -189,6 +189,7 @@ export default new Router({
           component: r => require.ensure([], () => r(require('@/components/drug/drug')))
         },
         {
+          promissId: 'PERbcadcaeff2814e1baae0dcb661855617',
           path: '/requiredrug',
           name: '找药管理',
           component: r => require.ensure([], () => r(require('@/components/drug/requiredrug')))

@@ -85,6 +85,8 @@ export default class Login extends Vue {
       
     ).then(res => {
       if (res.retCode) {
+
+
         sessionStorage.setItem("token", res.data.tokenid);
         sessionStorage.setItem("userId", res.data.User[0].userId);
         sessionStorage.setItem("merchantUserId",  res.data.User[0].userId);
@@ -97,14 +99,9 @@ export default class Login extends Vue {
         }else{
         sessionStorage.setItem("roleAdmin", res.data.User[0].userStatus);
         }
-        
-            
-        
+        sessionStorage.roleId = ""
         this.loading = false
-
-
   Vue.prototype.PermissionList = [];
-
  res.data.permission.forEach((item, index) => {
               Vue.prototype.PermissionList.push(item.permissionId);
             });

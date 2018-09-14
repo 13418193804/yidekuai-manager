@@ -145,7 +145,7 @@
         		<el-form-item label="通用名称：" prop="commonName">
               					<el-input v-model="addDrug.commonName"  placeholder="请输入通用名称" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
-      	<el-form-item label="供应商：" prop="partnerName">
+      	<el-form-item label="供应商：" prop="partnerId">
            <el-select v-model="addDrug.partnerId"   @change="changePartner" filterable placeholder="请选择供应商" style="max-width:400px;min-width:200px">
     <el-option
       v-for="item in partnerList"
@@ -325,16 +325,21 @@ this.$emit('allDrug')
       }
     type ="add"
     changeModel(type,row){
+
       this.type = type
       this.addDrug = {}
       this.queryAllPartner()
+
+      this.drugModel = true
       if(row){
               let a = {};
       Object.assign(a, row);
       this.addDrug = a;
+this.addDrug.partnerName = this.partnerList.filter(item=>{
+  return item.partnerId == this.addDrug.partnerId
+})[0].partnerName;
 
       }
-      this.drugModel = true
     }
 
     

@@ -5,10 +5,10 @@
           <h3>审方管理
           </h3>
           
- <!-- <div style="padding-bottom:20px;">
+ <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">平台处方数量统计：{{allprescription}} 个</span>             
 <span style="margin-right:20px;">待审方数量：{{notCount}} 个</span>             
-            </div> -->
+            </div>
 
 
 
