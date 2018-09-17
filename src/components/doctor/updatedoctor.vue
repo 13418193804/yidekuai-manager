@@ -1,7 +1,8 @@
 <template>
     <div v-loading="loading">
      
-        <el-dialog title="医生编辑" :visible.sync="dialogFormVisible1" @close="updatecancel('formLabelAlign1')" :close-on-click-modal="false">
+        <el-dialog title="医生编辑" :visible.sync="dialogFormVisible1" @close="updatecancel('formLabelAlign1')" :close-on-click-modal="false" top="5vh">
+        <div v-loading="updateloading">
         <el-form  label-width="140px" :model="formLabelAlign1" :rules="rules" ref="formLabelAlign1">
         <el-form-item label="医生姓名" prop="name">
             <el-input v-model="formLabelAlign1.name"></el-input>
@@ -109,6 +110,7 @@
             <el-button @click="updatecancel('formLabelAlign1')">取 消</el-button>
             <el-button type="primary" @click="updatedoctorrules('formLabelAlign1')" :disabled="loading">确 定</el-button>
         </div>
+        </div>
         </el-dialog>
 
 
@@ -202,6 +204,7 @@ rules={
 }
 
 dialogFormVisible1=false;
+updateloading=false;
            update='';
     
     formLabelAlign1:any ={
@@ -283,6 +286,7 @@ console.log(this.formLabelAlign1.hospitalId)
                         this.loading=false
                     if (res["retCode"]) {
                         this.dialogFormVisible1 = false;
+                        this.updateloading=false;
                         // this.getdoctorList();
                         this.$emit('getdoctorList')
                                 this.$message('保存成功')
@@ -302,6 +306,7 @@ console.log(this.formLabelAlign1.hospitalId)
                     this.loading=false
                 if (res["retCode"]) {
                     this.dialogFormVisible1 = false;
+                    this.updateloading=false;
                     // this.getdoctorList();
                     this.$emit('getdoctorList')
                             this.$message('保存成功')
@@ -336,6 +341,7 @@ notPassupdatedoctor(){
                             this.loading=false
                         if (res["retCode"]) {
                             this.dialogFormVisible1 = false;
+                            this.updateloading=false;
                             // this.getDoctorExamineList();
                             this.$emit('getDoctorExamineList')
                             this.$message('修改成功')
@@ -355,6 +361,7 @@ notPassupdatedoctor(){
                 this.loading=false
             if (res["retCode"]) {
                 this.dialogFormVisible1 = false;
+                this.updateloading=false;
                 // this.getDoctorExamineList();
                 this.$emit('getDoctorExamineList')
                 this.$message('修改成功')
@@ -369,6 +376,7 @@ notPassupdatedoctor(){
         handleEdit(index, row,state) {
             this.update=state;
             this.dialogFormVisible1=true;
+            this.updateloading=true;
             this.formLabelAlign1.doctorId=row.doctorId;
             this.formLabelAlign1.phone=row.phone;
             this.formLabelAlign1.hospitalId=row.hspCode;
@@ -421,7 +429,8 @@ notPassupdatedoctor(){
                 console.log(res);
                 if (res["retCode"]) {
                     this.formLabelAlign1.departmentName = res.data[0].departmentName;
-            console.log('departmentName',this.formLabelAlign1.departmentName)                    
+            console.log('departmentName',this.formLabelAlign1.departmentName)    
+            this.updateloading=false;           
                 } else {
                     this.$alert(res["message"]);
                     console.error("数据查询错误");
@@ -433,6 +442,7 @@ notPassupdatedoctor(){
         let a:any=this.$refs[formName];
         a.resetFields();
         this.dialogFormVisible1 = false;
+        this.updateloading=false;
         this.formLabelAlign1={name: '',phone: '',hospitalId:'',hospitalName: '',hospitalDepartment: '',departmentId:[],departmentName:'',doctorBrief: '',doctorGood: '',consultingFee: '',prescriptionNum:'',orderNum:'',orderMoney:'',doctorPatientNum:'',remark:'',doctorTitle:'',idCard:'',pharmacistCertificateNum:'',qualificationCertificateNum:'',}
         }
 
