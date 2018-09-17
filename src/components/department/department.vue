@@ -89,7 +89,7 @@
         </el-dialog>
         
         <el-dialog title="修改科室" :visible.sync="dialogFormVisible1" @close="updatecancel('formLabelAlign1')" :close-on-click-modal="false">
-      
+        <div v-loading="updateloading">
         <el-form  label-width="100px" :model="formLabelAlign1" :rules="rules" ref="formLabelAlign1">
         <el-form-item label="科室名称" prop="departmentName">
             <el-input v-model="formLabelAlign1.departmentName"></el-input>
@@ -107,6 +107,7 @@
         <div slot="footer" class="dialog-footer">
             <el-button @click="updatecancel('formLabelAlign1')">取 消</el-button>
             <el-button type="primary" @click="updatedepartment('formLabelAlign1')" :disabled="loading">确 定</el-button>
+        </div>
         </div>
         </el-dialog>
 
@@ -308,9 +309,11 @@ rules={
         });
       }
       updatedepartmentId:any='';
+      updateloading=false;
       changeModel(row){
         this.updateparentid = []
         this.dialogFormVisible1 = true;
+        this.updateloading=true;
         let form = {}
         Object.assign(form,row);
         this.formLabelAlign1 = form
@@ -332,7 +335,8 @@ finddeptree(departmentId){
              }
            })
   // a.push(departmentId)
-  this.updateparentid = a
+  this.updateparentid = a;
+  this.updateloading=false;
             } else {
               this.$alert(res["message"]);
               console.error("数据查询错误");
