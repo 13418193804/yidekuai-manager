@@ -37,7 +37,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"></remindertable>
+<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
 
@@ -65,7 +65,7 @@
       <el-option value="ORDER_WAIT_PAY" label="等待支付"></el-option>
       <el-option value="ORDER_CANCEL_PAY" label="取消支付"></el-option>
       <el-option value="ORDER_WAIT_SENDGOODS" label="待发货"></el-option>
-      <el-option value="SENDGOODS_UNFINISHED" label="发货中"></el-option>
+      <el-option value="SENDGOODS_UNFINISHED" label="发货未完成"></el-option>
       <el-option value="ORDER_WAIT_RECVGOODS" label="待收货"></el-option>
       <el-option value="ORDER_END_GOODS" label="已完成"></el-option>
     </el-select>
@@ -181,7 +181,7 @@ export default class AddGoods extends Vue {
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
           case "SENDGOODS_UNFINISHED":
-        return "发货中";
+        return "发货未完成";
       case "ORDER_WAIT_RECVGOODS":
         return "待收货";
       case "ORDER_END_GOODS":

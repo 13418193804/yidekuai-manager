@@ -16,7 +16,7 @@
 <el-row :gutter="10" style="padding-left:80px;">
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
    <el-input
-  placeholder="姓名/手机号/身份证/处方编号" style="margin-top:20px;"  v-model="key"
+  placeholder="姓名/手机号/身份证/处方编号" style="margin-top:20px;"  v-model="key" 
   clearable>
 </el-input>
   </el-col>
@@ -35,6 +35,9 @@
 						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
 						</el-date-picker>
   </el-col>
+
+
+
   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getOrderList(true)">查询</el-button>
   </el-col>
@@ -45,6 +48,67 @@
 
 <remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
+
+    <el-tab-pane   :label="'待收货订单（'+ORDER_WAIT_RECVGOODS+'）'"  name="ORDER_WAIT_RECVGOODS">
+
+ <div style="padding-bottom:20px;">
+<el-row :gutter="10" style="padding-left:80px;">
+  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+   <el-input
+  placeholder="姓名/手机号/身份证/处方编号" style="margin-top:20px;"  v-model="key" 
+  clearable>
+</el-input>
+  </el-col>
+
+  <el-col :xs="9" :sm="9" :md="6" :lg="6" :xl="6">
+   <el-input
+  placeholder="请输入收货地址" style="margin-top:20px;"  v-model="consigneeAddress"
+  clearable>
+</el-input>
+  </el-col>
+ <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
+  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
+						</el-date-picker>
+						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
+						</el-date-picker>
+  </el-col>
+  <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getOrderList(true)">查询</el-button>
+  </el-col>
+</el-row>
+</div>
+<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+    </el-tab-pane>
+    <el-tab-pane   :label="'待付款订单（'+ORDER_WAIT_PAY+'）'"  name="ORDER_WAIT_PAY">
+ <div style="padding-bottom:20px;">
+<el-row :gutter="10" style="padding-left:80px;">
+  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+   <el-input
+  placeholder="姓名/手机号/身份证/处方编号" style="margin-top:20px;"  v-model="key" 
+  clearable>
+</el-input>
+  </el-col>
+  <el-col :xs="9" :sm="9" :md="6" :lg="6" :xl="6">
+   <el-input
+  placeholder="请输入收货地址" style="margin-top:20px;"  v-model="consigneeAddress"
+  clearable>
+</el-input>
+  </el-col>
+
+ <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
+  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
+						</el-date-picker>
+						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
+						</el-date-picker>
+  </el-col>
+  <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getOrderList(true)">查询</el-button>
+  </el-col>
+</el-row>
+</div>
+<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder" payStatus="ORDER_WAIT_PAY"></remindertable>
+    </el-tab-pane>
+
     <el-tab-pane   :label="'待开发票（'+invoice+'）'"  name="rework">
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
@@ -72,6 +136,7 @@
   
     </el-tab-pane>
 
+
     <el-tab-pane   :label="'全部（'+allprescription+'）'" name="ALL">
           <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="margin-top:20px;">
@@ -84,17 +149,23 @@
       <el-option value="ORDER_CANCEL_PAY" label="取消支付"></el-option>
       <el-option value="ORDER_WAIT_SENDGOODS" label="待发货"></el-option>
       <el-option value="ORDER_WAIT_SENDGOODS" label="待发货"></el-option>
-            <el-option value="SENDGOODS_UNFINISHED" label="发货中"></el-option>
+            <el-option value="SENDGOODS_UNFINISHED" label="发货未完成"></el-option>
       <el-option value="ORDER_WAIT_RECVGOODS" label="待收货"></el-option>
       <el-option value="ORDER_END_GOODS" label="已完成"></el-option>
     </el-select>
 				</el-form-item> 
   </el-col>
    <el-col :xs="17" :sm="17" :md="11" :lg="8" :xl="6" style="min-width:500px;margin-top:10px;" class="flex" >
+  
+  
   	<el-date-picker v-model="startDate" type="date" placeholder="开始日期"  class="flex-1" style="margin-right:5px">
 						</el-date-picker>
 						<el-date-picker v-model="endDate" type="date" placeholder="结束日期"  class="flex-1"   style="margin-left:5px">
 						</el-date-picker>
+  
+
+  
+  
   </el-col>
 
   <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="5" style="margin-top:10px;">
@@ -200,7 +271,7 @@ export default class AddGoods extends Vue {
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
           case "SENDGOODS_UNFINISHED":
-        return "发货中";
+        return "发货未完成";
       case "ORDER_WAIT_RECVGOODS":
         return "待收货";
       case "ORDER_END_GOODS":
@@ -217,6 +288,8 @@ export default class AddGoods extends Vue {
   }
   paymentMode = "";
   reminderVEnums = "NEW_ORDER";
+  // reminderVEnums = "rework";
+  
   allprescription = 0;
   loading = false;
   getOrderExcel() {
@@ -363,11 +436,15 @@ this.rderStatus ="";
 
   invoice = 0;
   NEW_ORDER = 0;
+  ORDER_WAIT_RECVGOODS= 0;
+  ORDER_WAIT_PAY= 0;
   queryOrderCount() {
     indexApi.queryOrderCount({}).then(res => {
       if (res["retCode"]) {
         this.invoice = res.data.invoice;
         this.NEW_ORDER = res.data.NEW_ORDER;
+        this.ORDER_WAIT_RECVGOODS = res.data.ORDER_WAIT_RECVGOODS
+        this.ORDER_WAIT_PAY = res.data.ORDER_WAIT_PAY
         this.allprescription = res.data.all;
       } else {
         if (!res["islogin"]) {

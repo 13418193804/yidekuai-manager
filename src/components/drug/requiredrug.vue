@@ -145,7 +145,12 @@
 		</el-col>
 
 	<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="detailModel"  title="详情">
-<div style="min-height:500px;">
+
+<div style="min-height:500px;" class="flex">
+<div v-if="this.detail.row['picturesUrlList'] && this.detail.row['picturesUrlList'].length>0">
+  <corpperlabel ref="cropper" :preImageList="detail.row.picturesUrlList1"></corpperlabel>
+</div>
+<div>
 <el-form   label-width="120px" :model="detail.row" class="demo-form-inline">
  <!-- <el-form-item  label="状态：" style="margin:0">
   {{detail.row.drugStatus=='USE'?'可用':'停用'}}
@@ -192,9 +197,9 @@
   </el-form-item>
 
 
-  <el-form-item  label="图片：" style="margin:0">
+  <!-- <el-form-item  label="图片：" style="margin:0">
     <img v-for="(item,index) in detail.row.picturesUrlList" :key="item" :src="item" style=" cursor: pointer;margin-right: 10px;width:100px;height:100px;" @click="viewBigIcon(item)"/>
-   </el-form-item>
+   </el-form-item> -->
 
 </el-form>
 
@@ -216,7 +221,7 @@
 
 </el-form>
 
-
+</div>
 
 </div>
 
@@ -237,11 +242,16 @@ import axios from "axios";
 import * as indexApi from "../../api/indexApi";
 import moment from "moment";
 
+import corpperlabel from '../transmit/corpperlabel'
+
 @Component({
   props: {},
-  components: {}
+  components: {
+    corpperlabel
+  }
 })
 export default class AddGoods extends Vue {
+
     viewBigIcon(qrcode) {
     this.bigIcon = qrcode;
     this.viewBig = true;
@@ -338,6 +348,17 @@ detail={
 }
   selectDrug(index, row) {
     this.detail.row = row
+
+    this.detail.row['picturesUrlList1'] = this.detail.row['picturesUrlList'].map(item=>{
+      return {
+        presImageUrl:item
+      }
+    })
+    
+  if(  this.detail.row['picturesUrlList'].length>0){
+    (<any>this.$refs.cropper).changePreImageUrl(0)
+  }
+
     this.detail.remark = row.remark;
     this.detailModel = !this.detailModel
   }
