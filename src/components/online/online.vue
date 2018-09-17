@@ -48,7 +48,7 @@
 
 
 
-   <el-table-column label="医院"   fixed="left" >
+   <el-table-column label="医院"  width="180"   fixed="left" >
       <template slot-scope="scope">
          {{scope.row.hospitalName}}
       </template>
@@ -148,12 +148,20 @@ sex
 {{scope.row.createtime}}
  </template>
     </el-table-column>
-   <el-table-column
-      fixed="right"
-      label="操作"
-     >
-      <template slot-scope="scope">
+   <el-table-column fixed="right" label="操作" width="150">
+      <template slot-scope="scope" >
         <el-button @click="cleangetInterrDetail(scope.row)" type="text" size="small">更多</el-button>
+<el-popover
+  placement="top"
+  width="280"
+  trigger="hover">
+  <el-table :data="scope.row.itlist">
+    <el-table-column width="100" property="money" label="咨询费"></el-table-column>
+    <el-table-column width="180" property="paytime" label="支付时间"></el-table-column>
+  </el-table>
+  <el-button slot="reference" type="text" size="small">支付记录</el-button>
+</el-popover>
+
       </template>
     </el-table-column>
  <!--  </el-table>

@@ -83,7 +83,7 @@
 
 <el-table-column
       prop="sellingPrice"
-      label="售价">
+      label="药品库价格">
    </el-table-column>
    
 <el-table-column
@@ -145,7 +145,7 @@
         		<el-form-item label="通用名称：" prop="commonName">
               					<el-input v-model="addDrug.commonName"  placeholder="请输入通用名称" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
-      	<el-form-item label="供应商：" prop="partnerName">
+      	<el-form-item label="供应商：" prop="partnerId">
            <el-select v-model="addDrug.partnerId"   @change="changePartner" filterable placeholder="请选择供应商" style="max-width:400px;min-width:200px">
     <el-option
       v-for="item in partnerList"
@@ -208,7 +208,7 @@
 
 
             	<el-form-item label="适应症：" prop="adaptability" >
-              					<el-input v-model="addDrug.adaptability"  placeholder="请输入适应症" style="max-width:400px;min-width:200px" ></el-input>
+              					<el-input v-model="addDrug.adaptability" type="textarea"  :rows="4" placeholder="请输入适应症" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
 
          
@@ -263,8 +263,6 @@ export default class AddGoods extends Vue {
         //  ingredient:[{ required: true, message: '请输入药品成分', trigger: 'blur' }],
          dosageforms:[{ required: true, message: '请输入剂型', trigger: 'blur' }],
         }
-
-
 
    pageSize = 10;
   total = 0;
@@ -327,16 +325,21 @@ this.$emit('allDrug')
       }
     type ="add"
     changeModel(type,row){
+
       this.type = type
       this.addDrug = {}
       this.queryAllPartner()
+
+      this.drugModel = true
       if(row){
               let a = {};
       Object.assign(a, row);
       this.addDrug = a;
+this.addDrug.partnerName = this.partnerList.filter(item=>{
+  return item.partnerId == this.addDrug.partnerId
+})[0].partnerName;
 
       }
-      this.drugModel = true
     }
 
     
@@ -462,7 +465,7 @@ this.$emit('selectRow')
         Object.assign(data,{ key :this.key})
       }
       this.loading = true
-      indexApi.getGrugList(data).then(res => {
+      indexApi.getGrugList1(data).then(res => {
       this.loading = false
       if (res["retCode"]) {
           this.drugList = res.data.list;

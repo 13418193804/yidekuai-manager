@@ -5,7 +5,7 @@
 <el-table border height="500"
     :data="orderList"
     stripe 
-    style="width: 100%;">
+    style="width: 100%;" v-if="pagetype !=='rework'">
 
  <el-table-column  fixed="left"
       label="订单状态" width="150">
@@ -67,15 +67,203 @@
       label="收货手机号"  width="150">
    </el-table-column>
     <el-table-column
-      prop="consigneeAddress"
       label="收货地址" width="180">
+      <template slot-scope="scope">
+          {{`${scope.row.province?scope.row.province:''}${scope.row.city?scope.row.city:''}${scope.row.area?scope.row.area:''}${scope.row.consigneeAddress?scope.row.consigneeAddress:''}`}}
+     </template>
    </el-table-column>
-
-    
       <el-table-column
       prop="doctorMobile"
       label="医生手机号"  width="150">
    </el-table-column>
+
+    <el-table-column
+      prop="hospitalName"
+      label="医院"  width="180">
+   </el-table-column>
+
+      <el-table-column
+      prop="serviceMoney"
+      label="治疗服务费"  width="180">
+   </el-table-column>
+
+       <el-table-column
+      prop="presscriptionMoney"
+      label="药品金额" width="180">
+   </el-table-column>
+       <el-table-column
+      label="开票状态" width="150">
+      <template slot-scope="scope">
+<el-tag
+  :type="handleInvoinStatus(scope.row).type">
+        {{handleInvoinStatus(scope.row).title}}
+</el-tag>
+     </template>
+   </el-table-column>
+       <el-table-column
+      prop="remark"
+      label="开方医生备注"  width="180">
+   </el-table-column>
+
+  <el-table-column
+      prop="orderid"
+      label="订单编号"  width="200">
+   </el-table-column>
+
+  <el-table-column
+      prop="presId"
+      label="处方编号" width="200">
+   </el-table-column>
+
+   <el-table-column label="操作" fixed="right"  :width="pagetype=='patient'?'200':'340'"  >
+      <template slot-scope="scope">
+
+        <el-button
+          size="mini"
+          type="text" @click="getorderInfo(scope.row)">订单详情</el-button>
+          
+          
+        <!-- <el-button
+          size="mini"
+          type="text" @click="getInvoiceRecords(scope.$index, scope.row)" v-if="pagetype =='rework' ">发票信息</el-button> -->
+
+        <el-button
+          size="mini"
+          type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
+
+               <!-- <el-button
+          size="mini"
+          type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button> -->
+         
+         
+               <el-button
+          size="mini"
+          type="text" @click="sendGoods(scope.row)"  v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED')" > 发货 </el-button>
+         
+         
+               <el-button size="mini" 
+          :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button>
+        
+        
+        
+         <el-button size="mini" 
+          :type="scope.row.presState == 'GIVEUP_PRESCRIPTION'?'':'primary'" @click="doGiveup(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY'" :disabled="scope.row.presState == 'GIVEUP_PRESCRIPTION'"  >{{  scope.row.presState == 'GIVEUP_PRESCRIPTION'?'已弃单':'弃单'}}</el-button>
+  
+
+     </template>
+    </el-table-column>
+</el-table>
+
+<el-table border height="500"
+    :data="orderList"
+    stripe 
+    style="width: 100%;" v-else>
+
+
+ <el-table-column fixed="left"
+      label="开票状态" width="120">
+<template slot-scope="scope">
+    <el-tag
+  :type="handleInvoinStatus(scope.row).type">
+        {{handleInvoinStatus(scope.row).title}}
+</el-tag>
+</template>
+   </el-table-column>
+   
+     <el-table-column
+      label="收货人(开票)"  width="150">
+<template  slot-scope="scope">
+      {{scope.row.address.contactName}}
+</template>
+   </el-table-column>
+  <el-table-column
+      label="收货手机号(开票)"  width="150">
+<template  slot-scope="scope">
+      {{scope.row.address.contactMobile}}
+</template>
+   </el-table-column>
+
+    <el-table-column
+      label="收货地址(开票)" width="180">
+<template  slot-scope="scope">
+  {{scope.row.address.province}}{{scope.row.address.city}}{{scope.row.address.country}}{{scope.row.address.address}}</template>
+   </el-table-column>
+
+ <el-table-column  
+      label="订单状态" width="150">
+<template slot-scope="scope">
+ {{handleOrderStatus(scope.row.orderStatue)}}, 
+{{handlePayStatus(scope.row.payStatus)}}
+</template>
+   </el-table-column>
+
+ <el-table-column 
+      label="支付方式" width="150">
+<template slot-scope="scope">
+ {{handlePaymentMode(scope.row.paymentMode)}}
+</template>
+   </el-table-column>
+     
+
+
+  <el-table-column
+      label="申请开票时间" width="180">
+<template slot-scope="scope">
+{{scope.row.invoiceRecords&&scope.row.invoiceRecords.length>0?scope.row.invoiceRecords[0].creatTime:''}}      
+      </template>
+   </el-table-column>
+
+  <el-table-column
+      prop="auditingDate"
+      label="创建时间" width="180">
+   </el-table-column>
+
+    <el-table-column
+      prop="memberName"
+      label="患者姓名" width="150">
+   </el-table-column>
+    <el-table-column
+      prop="memberPhone"
+      label="患者手机号" width="150">
+   </el-table-column>
+       <el-table-column
+      prop="memberIdcard"
+      label="患者身份证" width="180">
+   </el-table-column>
+        <el-table-column
+      prop="consigneeName"
+      label="收货人" width="180">
+   </el-table-column>
+   <el-table-column
+      prop="consigneePhone"
+      label="收货手机号"  width="150">
+   </el-table-column>
+    <el-table-column
+      label="收货地址" width="180">
+     <template slot-scope="scope">
+    {{`${scope.row.province?scope.row.province:''}${scope.row.city?scope.row.city:''}${scope.row.area?scope.row.area:''}${scope.row.consigneeAddress?scope.row.consigneeAddress:''}`}}
+     </template>
+   </el-table-column>
+    <el-table-column
+      prop="orderMoney"
+      label="订单金额"  width="150">
+   </el-table-column>
+
+   <el-table-column
+      prop="patientSex"
+      label="患者性别"  width="150">
+   </el-table-column>
+
+   <el-table-column
+      prop="docterName"
+      label="开方医生" width="150">
+   </el-table-column>
+ 
+      <el-table-column
+      prop="doctorMobile"
+      label="医生手机号"  width="150">
+   </el-table-column>
+
 
     <el-table-column
       prop="hospitalName"
@@ -103,35 +291,45 @@
       label="订单编号"  width="200">
    </el-table-column>
 
+
   <el-table-column
       prop="presId"
       label="处方编号" width="200">
    </el-table-column>
 
-   <el-table-column label="操作" fixed="right"  :width="pagetype=='patient'?'200':'320'"  >
+   <el-table-column label="操作" fixed="right"  width="200"  >
       <template slot-scope="scope">
-
-        <el-button
+         <el-button
           size="mini"
           type="text" @click="getorderInfo(scope.row)">订单详情</el-button>
-          
-        <el-button
-          size="mini"
-          type="text" @click="getTransmitInfo(scope.$index, scope.row)" v-if="pagetype !=='rework' ">处方详情</el-button>
-
                <el-button
           size="mini"
-          type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button>
-               <el-button size="mini" 
-          :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button>
+          type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
 
-      </template>
+             </template>
     </el-table-column>
 </el-table>
-
 <prescriptioninfo ref="prescriptioninfo" :row="prescriptioninfoObj" ></prescriptioninfo>
-<updateorder ref="updateorder" :provinceList="provinceList"
- @getOrderList="getOrderList" @getOrderDetail="getOrderDetail" @queryShipList="queryShipList" :shipList="shipList" :updateOrder="updateOrder" :pagetype="pagetype" :order="order" ></updateorder>
+<updateorder ref="updateorder"  :provinceList="provinceList"
+ @getOrderList="getOrderList" @getOrderDetail="getOrderDetail" @queryShipList="queryShipList" :shipList="shipList" 
+  :pagetype="pagetype" :order="order" ></updateorder>
+
+      
+	<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="giveupModel"  title="弃单">
+    	 <el-form label-width="120px" ref="ruleForm"  >
+				<el-form-item label="备注原因：" prop="usages">
+              					<el-input v-model="reason"  type="textarea"
+  :rows="4"  placeholder="请输入备注原因" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+                
+        </el-form >
+			<span slot="footer" class="dialog-footer" >
+				<el-button @click="giveupModel = false">取 消</el-button>
+				<el-button type="primary" @click="doGiveupSubmit()" >确 定</el-button>
+			</span>
+
+</el-dialog>
+
 
     </div>
  </template>
@@ -153,21 +351,93 @@ import updateorder from "./updateorder";
     updateorder
   }
 })
-
 export default class AddGoods extends Vue {
-
   @Prop({ required: false })
   orderList: any;
   @Prop({ required: false })
   pagetype: string;
-    @Prop({ required: false })
+  @Prop({ required: false })
   patModel: string;
-      @Prop({ required: false })
-  provinceList
+  @Prop({ required: false })
+  provinceList;
 
 
 
 
+handleInvoinStatus(row){
+if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shipStatus == 'HAVE_SIGNED_IN'){
+  return {title:"开票完成",type:'success'}
+}else if(row.isInvoicedShipped == '1'){
+  return {title:"已开发票",type:'warning'}
+}else if(row.isInvoiced == '1'){
+  return {title:"新增开票",type:'danger'}
+}else if(row.isInvoiced == '0'){
+  return {title:"未开发票",type:'info'}
+}else{
+  return {title:"",type:''}
+}
+}
+
+
+sendGoods(row){
+    let a: any = this.$refs.updateorder;
+    a.send_model = true;
+    this.presId = row.presId
+        sessionStorage.presId = row.presId
+     this.getOrderDetail(row.presId);
+     
+}
+
+
+  invoiceRecordsObj = {};
+  invoiceRecordModel = false;
+  getInvoiceRecords(index, row) {
+    this.invoiceRecordsObj = row.invoiceRecords;
+  }
+  giveupModel = false;
+  presId = "";
+  reason = "";
+  doGiveup(row) {
+    this.presId = row.presId;
+    this.reason = "";
+    this.giveupModel = !this.giveupModel;
+  }
+  doGiveupSubmit() {
+    this.$confirm("是否对该订单弃单?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning"
+    })
+      .then(() => {
+        if ((this.reason || "") == "") {
+          this.$message("请输入备注原因");
+          return;
+        }
+        indexApi
+          .doGiveup({
+            preId: this.presId,
+            reason: this.reason
+          })
+          .then(res => {
+            if (res["retCode"]) {
+              this.$message("已弃单");
+              this.$emit("getOrderList");
+              this.giveupModel = !this.giveupModel;
+            } else {
+              if (!res["islogin"]) {
+                this.$alert(res["message"]);
+              }
+              console.error("数据查询错误");
+            }
+          });
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消操作"
+        });
+      });
+  }
   order = {};
   doReminder(row) {
     // this.$confirm("确定要发送一次催单?", "提示", {
@@ -176,30 +446,28 @@ export default class AddGoods extends Vue {
     //   type: "warning"
     // })
     //   .then(() => {
-        indexApi
-          .changeReminderStatus({
-            presId: row.presId
-          })
-          .then(res => {
-            if (res["retCode"]) {
-              this.$message("已催单");
-    this.$emit("getOrderList");
-              
-
-            } else {
-              if (!res["islogin"]) {
-                this.$alert(res["message"]);
-              }
-              console.error("数据查询错误");
-            }
-          });
-      // })
-      // .catch(() => {
-      //   this.$message({
-      //     type: "info",
-      //     message: "已取消操作"
-      //   });
-      // });
+    indexApi
+      .changeReminderStatus({
+        presId: row.presId
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          this.$message("已催单");
+          this.$emit("getOrderList");
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+          console.error("数据查询错误");
+        }
+      });
+    // })
+    // .catch(() => {
+    //   this.$message({
+    //     type: "info",
+    //     message: "已取消操作"
+    //   });
+    // });
   }
 
   getorderInfo(row) {
@@ -209,55 +477,53 @@ export default class AddGoods extends Vue {
     let a: any = this.$refs.updateorder;
     a.model = true;
     //  a.queryPresDrugback(row.presId)
+
+    this.presId = row.presId
+    sessionStorage.presId = row.presId
     this.getOrderDetail(row.presId);
   }
-  handlePaymentMode(status){
-switch(status){
-  case 'ONLINE_PAYMENT':
-  return '微信支付';
-   case 'ORDER_PAY_ONDEV':
-  return '货到付款';
-  default :
-  return '';
-}
-}
-  getOrderDetail(presId,callback=null) {
+
+  
+  handlePaymentMode(status) {
+    switch (status) {
+      case "ONLINE_PAYMENT":
+        return "微信支付";
+      case "ORDER_PAY_ONDEV":
+        return "货到付款";
+      default:
+        return "";
+    }
+  }
+
+  getOrderDetail(presId) {
     indexApi
       .getOrderInfo({
         presId: presId
       })
       .then(res => {
         if (res["retCode"]) {
-          res.data.YdkOrderDetailList.forEach((item,index)=>{
-        item.logisticslabel =      item.logistics;
-        item.waybillNumberlabel =      item.waybillNumber;
-          })
-          this.order = res.data;
-          this.updateOrder = res.data;
-
-          if(callback){
-callback(res.data)
+          res.data.YdkOrderDetailList.forEach((item, index) => {
+            item.logisticslabel = item.logistics;
+            item.waybillNumberlabel = item.waybillNumber;
+          });
+          if (res.data.invoiceRecords && res.data.invoiceRecords.length > 0) {
+            res.data.invoiceObj_logistics =
+              res.data.invoiceRecords[0].logistics;
+            res.data.invoiceObj_waybillNumber =
+              res.data.invoiceRecords[0].waybillNumber;
           }
-
+          this.order = res.data;
+          (<any>this.$refs.updateorder).getExpressPackage(presId);
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
           }
-          console.error("数据查询错误");
         }
       });
   }
+
   updateOrder = {};
 
-  updateInfo(row) {
-    let a: any = this.$refs.updateorder;
-    this.getOrderDetail(row.presId,res=>{
-        (<any>this.$refs.updateorder).updateOrder = res;
-  (<any>this.$refs.updateorder).queryCityList();
-  (<any>this.$refs.updateorder).queryCountryList();
-    });
-    a.formModel = true;
-  }
 
   getOrderList() {
     this.$emit("getOrderList");
@@ -292,7 +558,9 @@ callback(res.data)
         return "取消支付";
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
-      case "ORDER_WAIT_RECVGOODS":
+      case "SENDGOODS_UNFINISHED":
+        return "发货中";
+            case "ORDER_WAIT_RECVGOODS":
         return "待收货";
       case "ORDER_END_GOODS":
         return "完成";
@@ -315,7 +583,6 @@ callback(res.data)
   }
 
   mounted() {
-
     this.queryShipList();
   }
 }

@@ -38,11 +38,7 @@
 				</template>
     </el-table-column>
 
-    <el-table-column
-      property="createTime"
-      label="日期"
-      width="180">
-    </el-table-column>
+
 	<el-table-column label="操作" width="280" fixed="right">
 				<template slot-scope="scope">
 					<el-button size="small"  @click="setDefault(scope.row)">设为默认</el-button>
@@ -82,10 +78,8 @@
 <div style="    white-space: nowrap;overflow:hidden;">
 
 <el-row :gutter="24" >
-  
   <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6" style="    margin-bottom: 22px;">
-  
-<el-select v-model="rowObject.provinceId" @change="queryCityList()">
+<el-select v-model="rowObject.provinceId" @change="queryCityList()" >
 <el-option v-for="(n,index) in provinceList" :key="index" :label="n.name" :value="n.id" ></el-option>
 </el-select>
   </el-col>

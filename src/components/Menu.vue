@@ -7,8 +7,8 @@
       :collapse="collapsed"
       router=“true” style="border-right: 1px solid #c30d23;"
       >
-      <block v-for="menu in menuOption" v-if="menu.position=='menu'">
-      <block v-for="(item,index) in menu.children" v-if="menu.menu_grade == 1&& dohavePermission(item.promissId)">
+      <block v-for="menu in menuOption" :key="menu"  v-if="menu.position=='menu'">
+      <block v-for="(item,index) in menu.children" :key="index" v-if="menu.menu_grade == 1&& dohavePermission(item.promissId)">
           <el-menu-item  :index="item.path" >
           <img :src="$route.path == item.path ?item.select_icon :item.icon " style="height:24px;width:24px;margin-right:5px;"/>
            <span :style="$route.path == item.path?handleSelectColor():'color:#fff'">{{item.name}}</span>
@@ -19,7 +19,7 @@
           <img :src="handleSelectImage(menu)?menu.select_icon :menu.icon " style="height:24px;width:24px;margin-right:5px;"/>
            <span :style="handleSelectImage(menu)?handleSelectColor():'color:#fff'"> {{menu.name}}</span>
         </template>
-          <el-menu-item v-for="(items,indexs) in menu.children" :index="items.path" v-if="dohavePermission(items.promissId)" >
+          <el-menu-item v-for="(items,indexs) in menu.children" :key="indexs" :index="items.path" v-if="dohavePermission(items.promissId)" >
             <span :style="$route.path == items.path?handleSelectColor():'color:#fff'">{{items.name}}</span>
             </el-menu-item>
      </el-submenu>

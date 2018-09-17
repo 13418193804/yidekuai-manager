@@ -6,9 +6,10 @@ import * as Config from './conf';
 
 
 axios.interceptors.response.use(response => {
+    console.log('执行响应:',response)
     // 系统报错
     if (response.data && response.data.err !== 0) {
-        console.log('正常')
+        console.log('执行响应:',response.data)
     }
     return response;
 }, error => {
