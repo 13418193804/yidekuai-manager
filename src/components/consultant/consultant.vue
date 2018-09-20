@@ -46,12 +46,19 @@
   </el-col>
 
 
- <el-col :xs="16" :sm="24" :md="6" :lg="8" :xl="5" style="min-width:470px;">
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
+
 
   <el-col :xs="5" :sm="5" :md="3" :lg="3" :xl="2" style="    min-width: 325px;">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getConsultantList(true)">查询</el-button>
@@ -584,24 +591,17 @@ export default class AddGoods extends Vue {
     this.page = page - 1;
     this.getConsultantList();
   }
-  startDate = "";
-  endDate = "";
+
   YdkAdviser = [];
+
+    date = []
+
   getConsultantList(filter = null) {
     this.loading = true;
     if (filter) {
       this.page = 0;
     }
 
-    let startDate = "";
-    let endDate = "";
-    if ((this.startDate || "") != "") {
-      startDate = moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
-
-    if ((this.endDate || "") != "") {
-      endDate = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
 
     let data = {
       page: this.page,
@@ -609,8 +609,8 @@ export default class AddGoods extends Vue {
       userStatus: this.userStatus,
       name: this.name,
       drug: this.drug,
-      startcreateDate: startDate,
-      endcreateDate: endDate,
+        startcreateDate: this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+        endcreateDate:  this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
       orderByStr: this.orderByStr
     };
     indexApi.getConsultantList1(data).then(res => {
@@ -883,8 +883,8 @@ export default class AddGoods extends Vue {
     row: {}
   };
   cleanConsultantItemShelf(row) {
-    this.shelfObj.startcreateDate = this.startDate;
-    this.shelfObj.endcreateDate = this.endDate;
+    this.shelfObj.startcreateDate = this.date[0];
+    this.shelfObj.endcreateDate = this.date[1];
     this.shelfObj.name = "";
     this.consultantItemShelf(row,true);
   }
@@ -1108,8 +1108,8 @@ export default class AddGoods extends Vue {
 
   adviserGetDrugDoRow(row) {
     this.fontType = "";
-    this.drugObj.startcreateDate = this.startDate;
-    this.drugObj.endcreateDate =this.endDate;
+    this.drugObj.startcreateDate = this.date[0];
+    this.drugObj.endcreateDate =this.date[1];
     this.adviserGetDrug(row);
   }
   adviserGetDrug(row, filter = null) {

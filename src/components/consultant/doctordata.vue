@@ -25,12 +25,20 @@
   clearable>
 </el-input>
   </el-col>
- <el-col :xs="16" :sm="24" :md="6" :lg="8" :xl="5" style="min-width:470px;">
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
+
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
+
 
 
 
@@ -356,31 +364,21 @@ export default class AddGoods extends Vue {
   phone = "";
   DoctorInfo = [];
 
-  startDate = "";
-  endDate = "";
   doctorStatus = "";
+  date=[]
   getDoctorList(filter = null) {
     this.loading = true;
     if (filter) {
       this.page = 0;
     }
 
-    let startCreatTime = "";
-    let endCreatTime = "";
-    if ((this.startDate || "") != "") {
-      startCreatTime =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
-    if ((this.endDate || "") != "") {
-      endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
     let data = {
       page: this.page,
       pageSize: this.pageSize,
       keyword: this.keyword,
       phone: this.phone,
-      startcreateDate: startCreatTime,
-      endcreateDate: endCreatTime,
+              startcreateDate: this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+        endcreateDate:  this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
       doctorStatus: this.doctorStatus,
       orderByStr: this.orderByStr
     };

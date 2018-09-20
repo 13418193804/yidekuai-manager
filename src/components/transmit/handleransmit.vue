@@ -97,7 +97,7 @@
 <div v-for="(item,index) in prodeInfo">
 <h4 style="margin: 10px 0;">{{index == 0?'患者信息':'医生信息'}}</h4>
 <div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;" >
-  <div style=" margin-top:10px;margin-right:10px;" class=" flex  flex-align-center" v-for="items in item">
+  <div style="margin-right:10px;" class=" flex  flex-align-center" v-for="items in item">
 <span>{{items.title}}</span>
 <span v-if="items.value !== 'diagnose'">{{prodetail[items.value]}}</span>
 <span v-else>

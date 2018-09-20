@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading="loading">
       <div style="">
           <h3>找药管理
           </h3>
@@ -19,12 +19,20 @@
   </el-col>
 
 
- <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
+
+
     <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
       <el-select v-model="dataType" placeholder="请选择药品归属" style="margin-top:20px;" >
         <el-option value="" label="全部"></el-option>
@@ -147,10 +155,10 @@
 	<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="detailModel"  title="详情">
 
 <div style="min-height:500px;" class="flex">
-<div v-if="this.detail.row['picturesUrlList'] && this.detail.row['picturesUrlList'].length>0">
+<div v-if="this.detail.row['picturesUrlList'] && this.detail.row['picturesUrlList'].length>0" class="flex-1">
   <corpperlabel ref="cropper" :preImageList="detail.row.picturesUrlList1"></corpperlabel>
 </div>
-<div>
+<div class="flex-1">
 <el-form   label-width="120px" :model="detail.row" class="demo-form-inline">
  <!-- <el-form-item  label="状态：" style="margin:0">
   {{detail.row.drugStatus=='USE'?'可用':'停用'}}
@@ -290,34 +298,24 @@ handledataType(dataType){
     this.page = page - 1;
     this.requireDrugList();
   }
-  startDate = "";
-  endDate = "";
+  date = []
   dataType=""
   requireDrugList(filter = null) {
     if (filter) {
       this.page = 0;
     }
     this.loading = true;
-    let startCreatTime = "";
-    let endCreatTime = "";
-    if ((this.startDate || "") != "") {
-      startCreatTime =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
-    if ((this.endDate || "") != "") {
-      endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
-
     indexApi
       .requireDrugList({
         keyword: this.keyword,
-        startqueryTime: startCreatTime,
-        endqueryTime: endCreatTime,
+        startqueryTime:this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+        endqueryTime:  this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
         dataType:this.dataType,
         page: this.page,
         pageSize: this.pageSize
       })
       .then(res => {
+        
         if (res["retCode"]) {
           this.drugList = res.data.InquireDrugsRecords;
           this.total = res.data.page.total;

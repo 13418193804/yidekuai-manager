@@ -31,7 +31,7 @@
  <el-table-column v-if="payStatus!='ORDER_WAIT_PAY'"
       label="支付方式" width="120">
 <template slot-scope="scope">
- <el-tag v-if="scope.row.orderStatue!=='ORDER_WAIT_PAY' || scope.row.orderStatue!=='ORDER_INIT'|| scope.row.orderStatue!=='ORDER_CANCEL_PAY'"  :type="handlePaymentMode(scope.row.paymentMode).type">{{handlePaymentMode(scope.row.paymentMode).title}}</el-tag>
+ <el-tag v-if="scope.row.orderStatue!=='ORDER_WAIT_PAY' && scope.row.orderStatue!=='ORDER_INIT'&& scope.row.orderStatue!=='ORDER_CANCEL_PAY'"  :type="handlePaymentMode(scope.row.paymentMode).type">{{handlePaymentMode(scope.row.paymentMode).title}}</el-tag>
 </template>
    </el-table-column>
      
@@ -56,7 +56,7 @@
    </el-table-column>
 
 
-      <el-table-column
+      <el-table-column v-if="payStatus!='ORDER_WAIT_PAY'"
       label="订单类型"  width="150">
      <template slot-scope="scope">
      {{ handleOrderType(scope.row)}}
@@ -191,20 +191,23 @@
      <el-table-column
       label="收货人(开票)"  width="150">
 <template  slot-scope="scope">
-      {{scope.row.address.contactName}}
+      {{scope.row.invoiceRecords && scope.row.invoiceRecords.length>0?scope.row.invoiceRecords[0].contactName:""}}
 </template>
    </el-table-column>
-  <el-table-column
+ <el-table-column
       label="收货手机号(开票)"  width="150">
 <template  slot-scope="scope">
-      {{scope.row.address.contactMobile}}
+      {{scope.row.invoiceRecords && scope.row.invoiceRecords.length>0?scope.row.invoiceRecords[0].contactMobile:""}}
 </template>
    </el-table-column>
-
+ 
     <el-table-column
       label="收货地址(开票)" width="180">
 <template  slot-scope="scope">
-  {{scope.row.address.province}}{{scope.row.address.city}}{{scope.row.address.country}}{{scope.row.address.address}}</template>
+  <span v-if="scope.row.invoiceRecords && scope.row.invoiceRecords.length>0">
+  {{scope.row.invoiceRecords[0].province}}{{scope.row.invoiceRecords[0].city}}{{scope.row.invoiceRecords[0].country}}{{scope.row.invoiceRecords[0].address}}
+  </span>
+  </template>
    </el-table-column>
 
  <el-table-column 

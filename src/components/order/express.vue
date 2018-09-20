@@ -50,7 +50,10 @@
       prop="price"
       label="售价">
    </el-table-column>
-
+  <el-table-column
+      prop="manufacturer"
+      label="厂家">
+   </el-table-column>
  <el-table-column
       prop="partnerName"
       label="供应商">
@@ -137,11 +140,15 @@
           <el-form-item  label="运单号：">
 					<el-input v-model="send_obj.waybillNumber"   size="mini" style="max-width:400px;min-width:200px;"></el-input>
 				</el-form-item>
-           <el-form-item  >
-				</el-form-item>
+        
         <!-- <el-form-item>
         		<el-button type="primary" size="mini" @click="recvGood(item)" v-if="order.orderStatue == 'ORDER_WAIT_RECVGOODS' && pagetype =='afterorder'">确认收货</el-button>
 				</el-form-item> -->
+</el-form>
+ <el-form label-width="100px" >
+      <el-form-item  label="包裹备注：">
+					<el-input v-model="send_obj.remarks" placeholder="患者可见"  size="mini" style="max-width:400px;min-width:200px;"></el-input>
+				</el-form-item>
 </el-form>
 
       <div>
@@ -199,6 +206,10 @@
   <el-table-column
       prop="price"
       label="售价">
+   </el-table-column>
+     <el-table-column
+      prop="manufacturer"
+      label="厂家">
    </el-table-column>
   <el-table-column
       prop="partnerName"
@@ -268,6 +279,10 @@
       prop="price"
       label="售价">
    </el-table-column>
+     <el-table-column
+      prop="manufacturer"
+      label="厂家">
+   </el-table-column>
   <el-table-column
       prop="partnerName"
       label="供应商">
@@ -280,7 +295,7 @@
     </el-table>
 
       </el-tab-pane>
-<el-tab-pane v-for="(item,index) in expressPackageList"  :label="'包裹'+ ++index"  :name="item.expressDetailId" >
+<el-tab-pane v-for="(item,index) in expressPackageList"  :label="item. expressName"  :name="item.expressDetailId" >
 <el-container>
     <el-header style="height: 100px;">
       <div>
@@ -303,9 +318,13 @@
 
 </div>
     </el-header>
-    <el-main>
+    <el-main style="padding:10px;">
+ <span style="color: #409EFF;    cursor: pointer;margin-left:10px;" @click="recallGood(item)">撤回包裹</span>
 <div style="margin:0 10px;">
   药品总价：￥{{ExpressDetailModel.drugPrice}}
+</div>
+<div style="margin:0 10px;">
+  包裹备注：{{item.remarks}}
 </div>
 <div style="margin:0 10px;">
   包裹发货时间：{{ExpressDetailModel.deliveryTime}}
@@ -332,7 +351,6 @@
       prop="dosage"
       label="用量">
    </el-table-column>
-
   <el-table-column
       prop="frequency"
       label="频次">
@@ -349,10 +367,13 @@
       prop="drugPrice"
       label="药品库价格">
    </el-table-column>
-
   <el-table-column
       prop="price"
       label="售价">
+   </el-table-column>
+     <el-table-column
+      prop="manufacturer"
+      label="厂家">
    </el-table-column>
   <el-table-column
       prop="partnerName"
@@ -511,8 +532,13 @@ presId:this.order.presId,
 waybillNumber:this.send_obj['waybillNumber'],
 logistics:this.send_obj['logistics'],
 splitFlag:this.send_obj.splitFlag,
+remarks:this.send_obj['remarks']
           }
     if(this.send_obj.splitFlag == '1'){
+      if(this.selection.length==0){
+        this.$alert('请选择需要发货的药品');
+        return 
+      }
         let PDrugQuantityListStr = []
         for(let i = 0; i<this.selection.length; i++){
         for(let j = 0; j<this.ExpressDrugDetailSumQuantityList.length; j++){
@@ -630,16 +656,44 @@ this.addressObj['countryId'] = this.order.areaid
 
 
 }
+
+//撤回包裹
+recallGood(item){
+    this.$confirm("确认撤回该包裹?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning"
+    })
+      .then(() => {
+        indexApi
+          .recallGood({
+expressDetailId:item.expressDetailId
+          })
+          .then(res => {
+            if (res["retCode"]) {
+              this.$message("撤回成功");
+           this.$emit('getExpressPackage',this.order.presId)
+             this.$emit('doUpdate');
+            } else {
+              if (!res["islogin"]) {
+                this.$alert(res["message"]);
+              }
+            }
+          });
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消操作"
+        });
+      });
+}
+
 splitFlagChange(val){
-
-
   if(val=='0'){
-
   }else{
 this.setaddress()
   }
-
-
 // <div v-if="send_obj.splitFlag =='0'">
 //    <div>
 // 收货人： {{order.consigneeName}}
@@ -650,8 +704,6 @@ this.setaddress()
 //       <div>
 // 收货地址：{{order.province}} &nbsp;&nbsp;{{order.city}} &nbsp;&nbsp;{{order.area}}  &nbsp;&nbsp;{{order.consigneeAddress}}
 // </div>
-
-
 }
 showShipInfo(obj){
     this.$emit('showShipInfo',obj)

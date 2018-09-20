@@ -13,18 +13,27 @@
     <el-tab-pane  :label="'未转方（'+notCount+'）'" name="name1">
 <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
-  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
   clearable>
 </el-input>
   </el-col>
- <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
+
+
+
   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
   </el-col>
@@ -72,18 +81,25 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
 <el-row :gutter="10" style="padding-left:80px;">
 
  
-  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
   clearable>
 </el-input>
   </el-col>
- <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
+
   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
   </el-col>
@@ -162,8 +178,7 @@ export default class AddGoods extends Vue {
     this.getprescriptionList();
   }
   handleClick(e) {
-    this.startDate = "";
-    this.endDate = "";
+this.date = ["",""]
     this.key = ""
     this.page = 0;
 
@@ -176,9 +191,8 @@ export default class AddGoods extends Vue {
   prescriptionList = [];
   prescriptionEnums = "";
   prescriptionEnums1 = "name1";
+date = []
 
-  startDate = "";
-  endDate = "";
   key = "";
   operationType = "Translators";
   loading = false;
@@ -192,20 +206,12 @@ export default class AddGoods extends Vue {
       this.prescriptionEnums = "NOT_TRANSLATED_OR_REJECT_AUDIT_PRESCRIPTION";
     }
 
-    let startCreatTime = "";
-    let endCreatTime = "";
-    if ((this.startDate || "") != "") {
-      startCreatTime =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
-    if ((this.endDate || "") != "") {
-      endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
+ 
     let data = {
       prescriptionEnums: this.prescriptionEnums,
       key: this.key,
-      startCreatTime: startCreatTime,
-      endCreatTime: endCreatTime
+      startCreatTime: this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+      endCreatTime: this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":""
     };
     sessionStorage.tranObject = JSON.stringify(data);
     Object.assign(data, {

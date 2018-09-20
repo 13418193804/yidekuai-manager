@@ -8,7 +8,7 @@
       <el-input type="password" v-model="loginModel.password" auto-complete="off" placeholder="密码" onkeydown="if(event.keyCode==13){window.myvue.doLogin()}"></el-input>
     </el-form-item>
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="doLogin" v-loading="loading">登录</el-button>
+      <el-button type="primary" style="width:100%;" @click.native.prevent="doLogin" :disabled="loading">登录</el-button>
       <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
     </el-form-item>
     <el-form-item>

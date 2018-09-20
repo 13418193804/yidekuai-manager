@@ -24,7 +24,7 @@
 <div style="padding-bottom:20px;">
       
 <el-row :gutter="10" style="padding-left:80px;">
-  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;" v-model="key"
   clearable>
@@ -38,15 +38,16 @@ FAIL_AUDIT_PRESCRIPTION,             //审方失败
 REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 
 
-
- <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
-
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-				
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
-
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
 
 
@@ -87,7 +88,7 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 </el-row>
 
 <el-row :gutter="10" style="padding-left:80px;">
-  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;" v-model="key"
   clearable>
@@ -101,15 +102,16 @@ FAIL_AUDIT_PRESCRIPTION,             //审方失败
 REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 
 
-
- <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
-
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-				
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
-
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
 
 
@@ -201,8 +203,7 @@ page=0
   }
   handleClick (e){
     this.page = 0
-        this.startDate = "";
-    this.endDate = "";
+    this.date= ["",""]
     this.key = ""
     this.page = 0;
         if(this.prescriptionEnums1 == 'name2'){
@@ -212,8 +213,7 @@ page=0
   }
     prescriptionList = []
     prescriptionEnums = ''
-startDate=''
-endDate=''
+date= []
   key = "";
   operationType ="Auditor"
   loading = false
@@ -223,22 +223,11 @@ endDate=''
     }
 
 
-    let startCreatTime = ''
-    let endCreatTime = ''
-
-  if ((this.startDate|| "") != "") {
-      startCreatTime =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
-
-   if ((this.endDate || "") != "") {
-      endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
 
 
   let data= {
-        startCreatTime:startCreatTime,
-    endCreatTime:endCreatTime,
+        startCreatTime:this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+    endCreatTime:this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
         key: this.key,
   }
   

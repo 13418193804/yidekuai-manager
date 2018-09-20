@@ -68,7 +68,12 @@
   </el-collapse-item>
  <el-collapse-item title="详细信息" >
    
-
+<div class="flex flex-warp-justify" >
+<div style="margin-right:10px;">
+  <span>订单状态：</span>
+  <span>{{ handleOrderStatus(order.orderStatue)}}</span>
+</div>
+</div>
 
 <div class="flex flex-warp-justify">
 <div style="margin-right:10px;">
@@ -112,6 +117,7 @@
 <div>
     {{handlePaymentMode(order.paymentMode)}}
 </div>
+
 <div v-if="order.paymentMode == 'ONLINE_PAYMENT'" style="margin-left:20px;">
 微信支付订单号：
 </div>
@@ -271,9 +277,9 @@
   </el-collapse-item>
 </el-collapse>
 <div style="height:20px;"></div>
-
+<div v-if="expressPackageList.length>0 && (order.orderStatue == 'ORDER_WAIT_RECVGOODS' || order.orderStatue ==  'ORDER_END_GOODS') && OrderSplitFlag == '0'">
 <div class="flex flex-warp-justify" >
-    <div v-if="expressPackageList.length>0 && (order.orderStatue == 'ORDER_WAIT_RECVGOODS' || order.orderStatue ==  'ORDER_END_GOODS') && OrderSplitFlag == '0'" style="line-height:40px;" class="flex flex-warp-justify">
+    <div  style="line-height:40px;" class="flex flex-warp-justify">
 <div style="margin-right:10px;">
   <span>物流单号：</span>
   <span>{{expressPackageList[0].waybillNumber}}</span>
@@ -300,7 +306,16 @@
 </div>
 
       </div>
+
 </div>
+
+
+      <div style="margin-right:10px;">
+  <span>包裹备注：</span>
+  <span>{{expressPackageList[0].remarks}}</span>
+</div>
+</div>
+
 
 <div v-if="OrderSplitFlag == '0'">
 <h4 style="margin:0 0 10px 0;">药品信息</h4>
@@ -347,6 +362,10 @@
   <el-table-column
       prop="price"
       label="售价">
+   </el-table-column>
+  <el-table-column
+      prop="manufacturer"
+      label="厂家">
    </el-table-column>
   <el-table-column
       prop="partnerName"
@@ -971,19 +990,19 @@ splitFlag:this.send_obj.splitFlag,
       case "ORDER_INIT":
         return 0;
       case "ORDER_WAIT_PAY":
-        return 1;
+        return 0;
       case "ORDER_PAY_ONDEV":
         return 4;
       case "ORDER_CANCEL_PAY":
         return 0;
       case "ORDER_WAIT_SENDGOODS":
-        return 2;
+        return 1;
              case "SENDGOODS_UNFINISHED":
-        return 2;
+        return 1;
       case "ORDER_WAIT_RECVGOODS":
-        return 3;
+        return 2;
       case "ORDER_END_GOODS":
-        return 4;
+        return 3;
       default:
         return 0;
     }

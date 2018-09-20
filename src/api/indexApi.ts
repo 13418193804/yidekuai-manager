@@ -1405,3 +1405,20 @@ export const invoicedSignInByid = (model) => {
         .then(res => res);
 }
 
+
+
+
+/**
+* 撤回包裹 （确认收货）
+*/
+export const recallGood = (model) => {
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/ExpressSplit/cancelExpressSplit', params)
+        .then(res => res);
+}
+
