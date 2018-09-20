@@ -42,18 +42,14 @@
       label="数量">
    </el-table-column>
   <el-table-column
-      prop="drugPrice"
-      label="药品库价格">
+      prop="manufacturer"
+      label="厂家">
    </el-table-column>
-
   <el-table-column
       prop="price"
       label="售价">
    </el-table-column>
-  <el-table-column
-      prop="manufacturer"
-      label="厂家">
-   </el-table-column>
+
  <el-table-column
       prop="partnerName"
       label="供应商">
@@ -197,20 +193,15 @@
       prop="quantity"
       label="数量">
    </el-table-column>
-
-  <el-table-column
-      prop="drugPrice"
-      label="药品库价格">
-   </el-table-column>
-
-  <el-table-column
-      prop="price"
-      label="售价">
-   </el-table-column>
      <el-table-column
       prop="manufacturer"
       label="厂家">
    </el-table-column>
+  <el-table-column
+      prop="price"
+      label="售价">
+   </el-table-column>
+
   <el-table-column
       prop="partnerName"
       label="供应商">
@@ -270,19 +261,15 @@
       label="数量">
    </el-table-column>
 
-  <el-table-column
-      prop="drugPrice"
-      label="药品库价格">
-   </el-table-column>
-
-  <el-table-column
-      prop="price"
-      label="售价">
-   </el-table-column>
      <el-table-column
       prop="manufacturer"
       label="厂家">
    </el-table-column>
+  <el-table-column
+      prop="price"
+      label="售价">
+   </el-table-column>
+
   <el-table-column
       prop="partnerName"
       label="供应商">
@@ -363,18 +350,15 @@
       prop="expressPrice"
       label="发货金额">
    </el-table-column>
-  <el-table-column
-      prop="drugPrice"
-      label="药品库价格">
+     <el-table-column
+      prop="manufacturer"
+      label="厂家">
    </el-table-column>
   <el-table-column
       prop="price"
       label="售价">
    </el-table-column>
-     <el-table-column
-      prop="manufacturer"
-      label="厂家">
-   </el-table-column>
+
   <el-table-column
       prop="partnerName"
       label="供应商">
@@ -454,11 +438,10 @@
       prop="quantity"
       label="数量">
    </el-table-column>
-  <el-table-column
-      prop="drugPrice"
-      label="药品库价格">
+     <el-table-column
+      prop="manufacturer"
+      label="厂家">
    </el-table-column>
-
   <el-table-column
       prop="price"
       label="售价">
