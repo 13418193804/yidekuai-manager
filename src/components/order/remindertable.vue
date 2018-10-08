@@ -8,18 +8,30 @@
     style="width: 100%;" v-if="pagetype !=='rework'">
 
  <el-table-column  fixed="left"
-      label="订单状态" width="150">
+      label="订单状态" width="120">
 <template slot-scope="scope">
- {{handleOrderStatus(scope.row.orderStatue)}}, 
-{{handlePayStatus(scope.row.payStatus)}}
+<el-tag :type="handleOrderStatus(scope.row.orderStatue).type">
+ {{handleOrderStatus(scope.row.orderStatue).title}}
+</el-tag>
+ 
 </template>
    </el-table-column>
 
-<!-- v-if="patModel != 'PENDING'" -->
- <el-table-column 
-      label="支付方式" width="150">
+
+<el-table-column v-if="payStatus!='ORDER_WAIT_PAY'"
+      label="支付状态" width="120">
 <template slot-scope="scope">
- {{handlePaymentMode(scope.row.paymentMode)}}
+{{handlePayStatus(scope.row.payStatus)}} 
+</template>
+   </el-table-column>
+
+
+
+<!-- v-if="patModel != 'PENDING'" -->
+ <el-table-column v-if="payStatus!='ORDER_WAIT_PAY'"
+      label="支付方式" width="120">
+<template slot-scope="scope">
+ <el-tag v-if="scope.row.orderStatue!=='ORDER_WAIT_PAY' && scope.row.orderStatue!=='ORDER_INIT'&& scope.row.orderStatue!=='ORDER_CANCEL_PAY'"  :type="handlePaymentMode(scope.row.paymentMode).type">{{handlePaymentMode(scope.row.paymentMode).title}}</el-tag>
 </template>
    </el-table-column>
      
@@ -42,6 +54,15 @@
       prop="orderMoney"
       label="订单金额"  width="150">
    </el-table-column>
+
+
+      <el-table-column v-if="payStatus!='ORDER_WAIT_PAY'"
+      label="订单类型"  width="150">
+     <template slot-scope="scope">
+     {{ handleOrderType(scope.row)}}
+     </template>
+   </el-table-column>
+
 
    <el-table-column
       prop="patientSex"
@@ -115,13 +136,12 @@
       label="处方编号" width="200">
    </el-table-column>
 
-   <el-table-column label="操作" fixed="right"  :width="pagetype=='patient'?'200':'340'"  >
+   <el-table-column label="操作" fixed="right"  :width="handleWidth()" >
       <template slot-scope="scope">
 
         <el-button
           size="mini"
           type="text" @click="getorderInfo(scope.row)">订单详情</el-button>
-          
           
         <!-- <el-button
           size="mini"
@@ -138,14 +158,12 @@
          
                <el-button
           size="mini"
-          type="text" @click="sendGoods(scope.row)"  v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED')" > 发货 </el-button>
+          type="primary" @click="sendGoods(scope.row)"   v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED')" > 发货 </el-button>
          
-         
+
+
                <el-button size="mini" 
           :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button>
-        
-        
-        
          <el-button size="mini" 
           :type="scope.row.presState == 'GIVEUP_PRESCRIPTION'?'':'primary'" @click="doGiveup(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY'" :disabled="scope.row.presState == 'GIVEUP_PRESCRIPTION'"  >{{  scope.row.presState == 'GIVEUP_PRESCRIPTION'?'已弃单':'弃单'}}</el-button>
   
@@ -173,34 +191,48 @@
      <el-table-column
       label="收货人(开票)"  width="150">
 <template  slot-scope="scope">
-      {{scope.row.address.contactName}}
+      {{scope.row.invoiceRecords && scope.row.invoiceRecords.length>0?scope.row.invoiceRecords[0].contactName:""}}
 </template>
    </el-table-column>
-  <el-table-column
+ <el-table-column
       label="收货手机号(开票)"  width="150">
 <template  slot-scope="scope">
-      {{scope.row.address.contactMobile}}
+      {{scope.row.invoiceRecords && scope.row.invoiceRecords.length>0?scope.row.invoiceRecords[0].contactMobile:""}}
 </template>
    </el-table-column>
-
+ 
     <el-table-column
       label="收货地址(开票)" width="180">
 <template  slot-scope="scope">
-  {{scope.row.address.province}}{{scope.row.address.city}}{{scope.row.address.country}}{{scope.row.address.address}}</template>
+  <span v-if="scope.row.invoiceRecords && scope.row.invoiceRecords.length>0">
+  {{scope.row.invoiceRecords[0].province}}{{scope.row.invoiceRecords[0].city}}{{scope.row.invoiceRecords[0].country}}{{scope.row.invoiceRecords[0].address}}
+  </span>
+  </template>
    </el-table-column>
 
- <el-table-column  
-      label="订单状态" width="150">
+ <el-table-column 
+      label="订单状态" width="100">
 <template slot-scope="scope">
- {{handleOrderStatus(scope.row.orderStatue)}}, 
-{{handlePayStatus(scope.row.payStatus)}}
+<el-tag :type="handleOrderStatus(scope.row.orderStatue).type">
+ {{handleOrderStatus(scope.row.orderStatue).title}}
+</el-tag>
+ 
 </template>
    </el-table-column>
+
+
+<el-table-column 
+      label="支付状态" width="150">
+<template slot-scope="scope">
+{{handlePayStatus(scope.row.payStatus)}} 
+</template>
+   </el-table-column>
+
 
  <el-table-column 
       label="支付方式" width="150">
 <template slot-scope="scope">
- {{handlePaymentMode(scope.row.paymentMode)}}
+ <el-tag v-if="scope.row.orderStatue!=='ORDER_WAIT_PAY' || scope.row.orderStatue!=='ORDER_INIT'|| scope.row.orderStatue!=='ORDER_CANCEL_PAY'" :type="handlePaymentMode(scope.row.paymentMode).type">{{handlePaymentMode(scope.row.paymentMode).title}}</el-tag>
 </template>
    </el-table-column>
      
@@ -248,6 +280,8 @@
       prop="orderMoney"
       label="订单金额"  width="150">
    </el-table-column>
+
+
 
    <el-table-column
       prop="patientSex"
@@ -297,7 +331,7 @@
       label="处方编号" width="200">
    </el-table-column>
 
-   <el-table-column label="操作" fixed="right"  width="200"  >
+   <el-table-column label="操作" fixed="right"  width="220"  >
       <template slot-scope="scope">
          <el-button
           size="mini"
@@ -305,6 +339,10 @@
                <el-button
           size="mini"
           type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
+
+  <el-button
+          size="mini"
+          type="primary" @click="doRework(scope.$index, scope.row)" >开票</el-button>
 
              </template>
     </el-table-column>
@@ -360,8 +398,14 @@ export default class AddGoods extends Vue {
   patModel: string;
   @Prop({ required: false })
   provinceList;
-
-
+  @Prop({ required: false })
+payStatus
+handleWidth(){
+if(this.pagetype=='reminder'){
+  return "290"
+}
+return "220"
+}
 
 
 handleInvoinStatus(row){
@@ -382,6 +426,7 @@ if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shi
 sendGoods(row){
     let a: any = this.$refs.updateorder;
     a.send_model = true;
+        a.loading = true
     this.presId = row.presId
         sessionStorage.presId = row.presId
      this.getOrderDetail(row.presId);
@@ -471,15 +516,19 @@ sendGoods(row){
   }
 
   getorderInfo(row) {
-    //  let order = {}
-    //   Object.assign(order,row);
-    //   this.order = order
     let a: any = this.$refs.updateorder;
     a.model = true;
-    //  a.queryPresDrugback(row.presId)
-
+    a.loading = true
     this.presId = row.presId
-    sessionStorage.presId = row.presId
+    this.getOrderDetail(row.presId);
+
+  }
+
+  doRework(index,row){
+      let a: any = this.$refs.updateorder;
+    a.reworkModel = true;
+    a.loading = true
+        this.presId = row.presId
     this.getOrderDetail(row.presId);
   }
 
@@ -487,11 +536,11 @@ sendGoods(row){
   handlePaymentMode(status) {
     switch (status) {
       case "ONLINE_PAYMENT":
-        return "微信支付";
+        return {type:'success',title:"微信支付"};
       case "ORDER_PAY_ONDEV":
-        return "货到付款";
+        return {type:'warning',title:"货到付款"};
       default:
-        return "";
+        return {type:'',title:""};
     }
   }
 
@@ -515,6 +564,7 @@ sendGoods(row){
           this.order = res.data;
           (<any>this.$refs.updateorder).getExpressPackage(presId);
         } else {
+               (<any>this.$refs.updateorder).loading = false
           if (!res["islogin"]) {
             this.$alert(res["message"]);
           }
@@ -546,26 +596,61 @@ sendGoods(row){
     let a: any = this.$refs.prescriptioninfo;
     a.getInfo();
   }
+
+  handleOrderType(row){
+  if( row.splitFlag==='1'){
+    return "拆分订单"
+  }
+   if( row.splitFlag==='0'){
+    return "普通订单"
+  }
+  return ""
+  }
   handleOrderStatus(status) {
     switch (status) {
       case "ORDER_INIT":
-        return "订单初始化";
+        return {
+          type:"info",
+          title:"订单初始化"
+          };
       case "ORDER_WAIT_PAY":
-        return "等待支付";
+        return {
+          type:"",
+          title:"等待支付"
+          };
       case "ORDER_PAY_ONDEV":
-        return "货到付款";
+        return  {
+          type:"warning",
+          title:"货到付款"
+          };
       case "ORDER_CANCEL_PAY":
-        return "取消支付";
+        return {
+          type:"info",
+          title:"取消支付"
+          };
       case "ORDER_WAIT_SENDGOODS":
-        return "待发货";
+        return {
+          type:"danger",
+          title:"待发货"
+          }
       case "SENDGOODS_UNFINISHED":
-        return "发货中";
+        return   {
+          type:"",
+          title:"发货未完成"
+          }; 
             case "ORDER_WAIT_RECVGOODS":
-        return "待收货";
+        return {
+          type:"warning",
+          title:"待收货"
+          }; 
       case "ORDER_END_GOODS":
-        return "完成";
+        return {
+          type:"success",
+          title:"订单已完成"
+          }; 
       default:
-        return "";
+        return {  type:"",
+          title:""};
     }
   }
   shipList = [];

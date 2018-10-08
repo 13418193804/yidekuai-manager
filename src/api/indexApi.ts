@@ -814,20 +814,6 @@ export const showShipInfo = (model) => {
 
 
 
-//锁定处方
-export const checkPrefor = (model) => {
-
-    let params = {
-        token: sessionStorage.getItem("token"),
-        userid: sessionStorage.getItem("userId"),
-        userId: sessionStorage.getItem("userId"),
-    }
-
-    Object.assign(params, model)
-    return Api.requestForm2('/clockPre', params)
-        .then(res => res);
-}
-
 //释放处方
 export const uncheckPrefor = (model) => {
 
@@ -1404,4 +1390,115 @@ export const invoicedSignInByid = (model) => {
     return Api.requestForm2('/invoicedSignInByid', params)
         .then(res => res);
 }
+
+
+
+
+/**
+* 撤回包裹 （确认收货）
+*/
+export const recallGood = (model) => {
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/ExpressSplit/cancelExpressSplit', params)
+        .then(res => res);
+}
+
+/**
+* 查看是否有最新处方或订单
+*/
+export const getYdkPrescriptionStatusNum = (model) => {
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/getYdkPrescriptionStatusNum', params)
+        .then(res => res);
+}
+
+
+
+/**
+* 更新订单条数
+*/
+export const updateYdkPrescriptionStatusNum = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/updateYdkPrescriptionStatusNum', params)
+        .then(res => res);
+
+}
+
+
+
+/**
+* 新建处方时查患者列表
+*/
+export const findmemberlike = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/api/member/findmemberlike', params)
+        .then(res => res);
+}
+
+
+/**
+* 新增处方( 平台手工单 )
+*/
+export const createphotoprescription = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/api/prefront/createphotoprescription', params)
+        .then(res => res);
+}
+/**
+ * 添加处方
+* 选择患者的时候 查询患者默认收货地址
+*/
+export const getMenberdefaultaddress = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/address/defaultaddress', params)
+        .then(res => res);
+}
+
+/**
+ * 完善处方
+* 即  编辑处方
+*/
+export const updatePre = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/updatePre', params)
+        .then(res => res);
+}
+
+
 

@@ -40,6 +40,14 @@
 <div>
     {{ handleStatus(row.presState)  }}
 </div>
+
+  <h4 style="margin:0">处方类型：</h4>
+<div>
+    {{ handleprescriptionType(row.prescriptionType)  }}
+</div>
+
+
+
 </div>
 
 <div  class="textLine">
@@ -221,14 +229,22 @@ detailInfo= [
       {name:'科室',key:'docterDept'},
           {name:'诊断',key:'diagnose'},
    ]
- },
-
- 
-  
+ } 
 ]
 
 model = false
-
+  handleprescriptionType(prescriptionType){
+switch(prescriptionType){
+  case 'BACK_HANDWORK':
+  return '平台手工单'
+   case 'DOC_HANDWORK':
+  return '医生手工单'
+   case 'PHOTO':
+  return '普通单'
+        default:
+        return  ""
+}
+  }
   preIndex = 0;
   handleStatus(status) {
     switch (status) {

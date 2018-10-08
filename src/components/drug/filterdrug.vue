@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
 
         
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">

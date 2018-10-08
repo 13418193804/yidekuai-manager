@@ -22,7 +22,8 @@ export default class App extends Vue {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -177,7 +178,9 @@ export default class App extends Vue {
     height: 100px!important;
     display: block;
   }
-  
+  .filter_box .el-dialog__body{
+        padding: 0 15px 30px;
+  }
 .send_box .el-dialog__body{
   padding:0!important;
   position:relative;
@@ -185,5 +188,56 @@ export default class App extends Vue {
 .send_box .el-dialog__header{
 display:none;
 }
+.min_box .el-dialog__body{
+  padding:0!important;
+  position:relative;
+}
+.min_title{
+      background-color: #f2f2f2;
+    padding: 5px 15px;
+    font-weight: 600;
+    border-left: 3px solid #c30d23;
+}
+.el-select.filter_select   {
+    width: 75px!important;
+  }
+  .filter_select .el-input-group__prepend{
+    background-color: #fff!important;
+  }
 
+
+  @keyframes bouncing-loader {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0.1;
+    transform: translateY(-1rem);
+  }
+}
+.bouncing-loader {
+  display: flex;
+  justify-content: center;
+}
+.bouncing-loader > div {
+  width: 1rem;
+  height: 1rem;
+  margin: 3rem 0.2rem;
+  background: #8385aa;
+  border-radius: 50%;
+  animation: bouncing-loader 0.6s infinite alternate;
+}
+.bouncing-loader > div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.bouncing-loader > div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.bouncing-position{
+  position:relative!important;
+}
+.bouncing-none{
+  display:none!important;
+}
 </style>

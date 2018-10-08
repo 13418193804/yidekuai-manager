@@ -1,6 +1,6 @@
 
 
-		<el-dialog width= "70vw" :close-on-click-modal="false" :visible.sync="formModel"  title="订单详情" v-loading="loading">
+		<el-dialog width= "70vw" :close-on-click-modal="false" :visible.sync="formModel"  title="订单详情" v-bouncing="loading">
  
  
 

@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
         <div>
         <h3>科室管理</h3>
         <div style="border-bottom: 1px solid #E5E5E5;padding-bottom:20px;">平台科室数量统计：{{departmentcount}}个</div>
@@ -89,7 +89,7 @@
         </el-dialog>
         
         <el-dialog title="修改科室" :visible.sync="dialogFormVisible1" @close="updatecancel('formLabelAlign1')" :close-on-click-modal="false">
-        <div v-loading="updateloading">
+        <div v-bouncing="updateloading">
         <el-form  label-width="100px" :model="formLabelAlign1" :rules="rules" ref="formLabelAlign1">
         <el-form-item label="科室名称" prop="departmentName">
             <el-input v-model="formLabelAlign1.departmentName"></el-input>

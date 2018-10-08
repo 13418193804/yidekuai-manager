@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
         <div style="border-bottom:1px #e5e5e5 solid;">
         <h3>医院管理</h3>
         <div style="border-bottom: 1px solid #E5E5E5;padding-bottom:20px;">平台医院数量统计：{{hospitalcount}}个</div>

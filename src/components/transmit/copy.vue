@@ -113,7 +113,7 @@
 </el-input>
 				</el-form-item>		
                     <el-form-item >
-                 <el-button size="mini" type="primary" @click="docreateDrug()" v-loading="loading">提交</el-button>
+                 <el-button size="mini" type="primary" @click="docreateDrug()" v-bouncing="loading">提交</el-button>
 				</el-form-item>	
 </el-form>
   </el-col>

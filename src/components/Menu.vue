@@ -11,16 +11,23 @@
       <block v-for="(item,index) in menu.children" :key="index" v-if="menu.menu_grade == 1&& dohavePermission(item.promissId)">
           <el-menu-item  :index="item.path" >
           <img :src="$route.path == item.path ?item.select_icon :item.icon " style="height:24px;width:24px;margin-right:5px;"/>
-           <span :style="$route.path == item.path?handleSelectColor():'color:#fff'">{{item.name}}</span>
+           <span :style="$route.path == item.path?handleSelectColor():'color:#fff'" v-if="!collapsed">{{item.name}}</span>
             </el-menu-item>
       </block>
-<el-submenu :index="menu.path" v-if="menu.menu_grade ==2 && handlePromiss(menu)">
+<el-submenu :index="menu.path" v-if="menu.menu_grade ==2 && handlePromiss(menu)" :class="!collapsed?'':'iscollapsed'">
         <template slot="title">
           <img :src="handleSelectImage(menu)?menu.select_icon :menu.icon " style="height:24px;width:24px;margin-right:5px;"/>
-           <span :style="handleSelectImage(menu)?handleSelectColor():'color:#fff'"> {{menu.name}}</span>
+           <span :style="handleSelectImage(menu)?handleSelectColor():'color:#fff'" v-if="!collapsed" style="position: relative;"> {{menu.name}} 
+        
+             <div class="bluedot" v-if="(menu.path == '1' && NEW_ORDER>0) || (menu.path == '2' && NEW_PRESCRIPTION>0)"></div>
+<!-- 
+             NEW_ORDER
+NEW_PRESCRIPTION -->
+             <!-- 最新处方或订单的状态 -->
+             </span>
         </template>
           <el-menu-item v-for="(items,indexs) in menu.children" :key="indexs" :index="items.path" v-if="dohavePermission(items.promissId)" >
-            <span :style="$route.path == items.path?handleSelectColor():'color:#fff'">{{items.name}}</span>
+            <span :style="$route.path == items.path?handleSelectColor():'color:#fff'" >{{items.name}}</span>
             </el-menu-item>
      </el-submenu>
       </block>
@@ -36,7 +43,7 @@ import Component from "vue-class-component";
 import axios from "axios";
 import * as sysApi from "../api/sysApi";
 import menu from "../router";
-
+import * as indexApi from "../api/indexApi";
 @Component
 export default class Menu extends Vue {
   collapsed = false;
@@ -88,6 +95,8 @@ export default class Menu extends Vue {
 
   roleId = "";
   mounted() {
+
+
     this.menuOption = menu["options"].routes;
     this.roleId = sessionStorage.roleId;
     if (
@@ -115,6 +124,41 @@ export default class Menu extends Vue {
           }
         });
     }
+
+
+//这里有处方或者订单权限时候再查
+
+   this.getYdkPrescriptionStatusNum()
+
+  //  setInterval(() => {
+  //  this.getYdkPrescriptionStatusNum()
+  //   }, 5000);
+
   }
+  NEW_ORDER = 0
+NEW_PRESCRIPTION = 0
+getYdkPrescriptionStatusNum(){
+      indexApi
+          .getYdkPrescriptionStatusNum({})
+          .then(res => {
+            if (res["retCode"]) {
+             this.NEW_ORDER = res.data.NEW_ORDER
+             this.NEW_PRESCRIPTION  = res.data.NEW_PRESCRIPTION
+            }
+          });
+}
 }
 </script>
+<style>
+
+
+.iscollapsed .el-submenu__icon-arrow{
+  display:none
+}
+.bluedot{
+  width:8px; height:8px;background-color:#409EFF;
+      position: absolute;z-index:999;border-radius: 50%;
+      right: -30px;top:5px;
+
+}
+</style>

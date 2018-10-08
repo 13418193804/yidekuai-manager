@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="backLoad">
+    <div v-bouncing="backLoad">
        
        <div style="display:flex;    align-items: center;padding:20px 0;">
 
@@ -24,6 +24,13 @@
 <div>
     {{ handleStatus(prodetail.presState)  }}
 </div>
+
+  <h4 style="margin:0;padding-left:10px;">处方类型：</h4>
+<div>
+    {{ handleprescriptionType(prodetail.prescriptionType)  }}
+</div>
+
+
 </div>
 <div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;">
     <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" >
@@ -94,10 +101,10 @@
     </div>
 
 
-<div v-for="(item,index) in prodeInfo">
+<div v-for="(item,index) in prodeInfo" >
 <h4 style="margin: 10px 0;">{{index == 0?'患者信息':'医生信息'}}</h4>
-<div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;" >
-  <div style=" margin-top:10px;margin-right:10px;" class=" flex  flex-align-center" v-for="items in item">
+<div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;height:12px;" >
+  <div style="margin-right:10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item">
 <span>{{items.title}}</span>
 <span v-if="items.value !== 'diagnose'">{{prodetail[items.value]}}</span>
 <span v-else>
@@ -108,7 +115,7 @@
 </div>
 </div>
 </div>
-
+<div style="height:20px;"></div>
 <el-row :gutter="24"  style="padding:0 0 20px;">
   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 <corpperlabel ref="cropper" :preImageList="preImageList"></corpperlabel>
@@ -393,7 +400,7 @@
 
 
                     <el-form-item >
-                 <el-button size="mini" type="primary" @click="docreateDrug()" v-loading="loading">提交</el-button>
+                 <el-button size="mini" type="primary" @click="docreateDrug()" v-bouncing="loading">提交</el-button>
 				</el-form-item>	
 </el-form>
   </el-col>
@@ -776,7 +783,7 @@ export default class AddGoods extends Vue {
   allPrescription() {
     indexApi.allPrescription().then(res => {
       if (res["retCode"]) {
-        this.allprescription = res.data;
+        this.allprescription = res.data.All;
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -789,6 +796,19 @@ export default class AddGoods extends Vue {
     return this.countPreByStatuObj["data5"]
       ? this.countPreByStatuObj["data5"].count
       : 0;
+  }
+
+    handleprescriptionType(prescriptionType){
+switch(prescriptionType){
+  case 'BACK_HANDWORK':
+  return '平台手工单'
+   case 'DOC_HANDWORK':
+  return '医生手工单'
+   case 'PHOTO':
+  return '普通单'
+        default:
+        return  ""
+}
   }
   instructions = "";
   handleStatus(status) {

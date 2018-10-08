@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
 
         <div style="border-bottom:1px #e5e5e5 solid;">
           <h3>在线咨询管理
@@ -14,18 +14,29 @@
   
 
 
-  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+  <el-col :xs="22" :sm="8" :md="8" :lg="8" :xl="5">
    <el-input
   placeholder="请输入关键字" style="margin-bottom:20px;" v-model="keystr"
   clearable>
 </el-input>
   </el-col>
 
-	<el-date-picker v-model="startDate" type="date" placeholder="开始日期">
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期">
-						</el-date-picker>
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-bottom:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
+  </el-col>
+
+    <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1">
 						<el-button type="primary" @click="queryOnlineList(true)">查询</el-button>
+  </el-col>
+            
 <!-- //   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
 
 // <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getpatientList()">查询</el-button>
@@ -108,12 +119,11 @@ sex
 
 
    
-       <el-table-column label="付款金额"   >
+       <!-- <el-table-column label="付款金额"   >
       <template slot-scope="scope">
 {{scope.row.money}}
-
  </template>
-    </el-table-column>
+    </el-table-column> -->
 
        <el-table-column label="付款状态"   >
       <template slot-scope="scope">
@@ -277,10 +287,8 @@ export default class AddGoods extends Vue {
       bigIcon = "";
   viewBig = false;
 onlineList:any = []
-  startDate:string = ""
-endDate  = ""
 keystr=''
-  
+  date=[]
 page=0
   pageSize = 10;
   total = 0;
@@ -293,27 +301,18 @@ loading = false
     if(filter){
       this.page = 0
     }
-  let startDate =''
-  let endDate =''
-    if ((this.startDate|| "") != "") {
-      startDate =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
 
-    if ((this.endDate || "") != "") {
-endDate=
-        moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
 this.loading=true
     indexApi.queryOnlineList(
-   startDate,endDate , this.page, this.pageSize ,this.keystr).then(res => {
+ this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+  this.page, this.pageSize ,this.keystr).then(res => {
 this.loading=false
       if (res["retCode"]) {
             this.onlineList=res.data.list
             this.total = res.data.page.total
       } else { 
         if(!res['islogin']){this.$alert(res["message"]);}
-        console.error("数据查询错误");
       }
     });
 

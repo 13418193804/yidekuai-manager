@@ -1,36 +1,49 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
 
         <div style="">
           <h3>转方管理
           </h3>
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">平台处方数量统计：{{allprescription}} 个</span>             
-<span style="margin-right:20px;">待转方数量：{{notCount}} 个</span>             
+<span style="margin-right:20px;">待转方数量：{{notCount}} 个</span>        
+     <el-button
+          size="small"
+          type="text"
+          @click="addPrescription()" >新增处方</el-button>
             </div>
         </div>
   <el-tabs v-model="prescriptionEnums1" type="card" @tab-click="handleClick">
     <el-tab-pane  :label="'未转方（'+notCount+'）'" name="name1">
 <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
-  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
   clearable>
 </el-input>
   </el-col>
- <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
+
+
+
   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
   </el-col>
 </el-row>
 </div>
-<transmittable  :table="prescriptionList"  :operationType="operationType">
+<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList"  :operationType="operationType">
 </transmittable>
     </el-tab-pane>
     <el-tab-pane :label="'全部（'+allprescription+'）'" name="name2">
@@ -72,18 +85,25 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
 <el-row :gutter="10" style="padding-left:80px;">
 
  
-  <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
   clearable>
 </el-input>
   </el-col>
- <el-col :xs="16" :sm="16" :md="10" :lg="10" :xl="10" style="min-width:500px;">
-  	<el-date-picker v-model="startDate" type="date" placeholder="开始日期" style="margin-top:20px;"  >
-						</el-date-picker>
-						<el-date-picker v-model="endDate" type="date" placeholder="结束日期" style="margin-top:20px;"  >
-						</el-date-picker>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
   </el-col>
+
   <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
   </el-col>
@@ -91,17 +111,86 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
 </el-row>
 </div>
 
-<transmittable  :table="prescriptionList" :operationType="operationType">
+<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
 </transmittable>
     </el-tab-pane>
 
-  </el-tabs>
 
-  
+    <el-tab-pane :label="`医生手工单（${DOC_HANDWORK}）`" name="name3">
+<div style="padding-bottom:20px;">
+<!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
+ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
+FAIL_TRANSLATED_PRESCRIPTION,        //转方失败
+REJECT_TRANSLATED_PRESCRIPTION,        //转方退回
+ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
+
+ALREADY_AUDIT_PRESCRIPTION,             //已审方
+FAIL_AUDIT_PRESCRIPTION,             //审方失败
+REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
+
+
+<el-row :gutter="10" style="margin-top:20px;">
+	 <el-form label-width="80px" :inline="true" >
+  <el-col :xs="24" :sm="14" :md="12" :lg="12" :xl="12">
+                <el-form-item  label="状态"  style="margin:0">
+  <el-select v-model="prescriptionEnums"  >
+      <el-option value="" label="全部"></el-option>
+      <el-option value="NOT_TRANSLATED_PRESCRIPTION" label="未转方"></el-option>
+      <el-option value="ALREADY_TRANSLATED_PRESCRIPTION" label="已转方"></el-option>
+      <!-- <el-option value="FAIL_TRANSLATED_PRESCRIPTION" label="转方失败"></el-option> -->
+            <el-option value="ALREADY_AUDIT_PRESCRIPTION" label="已审方"></el-option>
+      <el-option value="REJECT_TRANSLATED_PRESCRIPTION" label="已驳回开方"></el-option>
+      <el-option value="REJECT_AUDIT_PRESCRIPTION" label="审方退回"></el-option>
+    </el-select>
+				</el-form-item>
+
+  </el-col>
+        </el-form>
+</el-row>
+
+
+
+
+
+<el-row :gutter="10" style="padding-left:80px;">
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
+   <el-input
+  placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
+  clearable>
+</el-input>
+  </el-col>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
+  </el-col>
+
+  <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
+  </el-col>
+
+</el-row>
+</div>
+
+<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType" >
+</transmittable>
+
+    </el-tab-pane>
+
+  </el-tabs>
 		<el-col :span="24" class="toolbar">
 			<el-pagination layout="prev, pager, next" :current-page="page+1" :page-size="pageSize" :total="total" @current-change="onPageChange">
 			</el-pagination>
 		</el-col>
+
+
     </div>
  </template>
 
@@ -121,18 +210,23 @@ import moment from "moment";
   }
 })
 export default class AddGoods extends Vue {
+  addPrescription(){
+    (<any>this.$refs.transmittable).addPrescription('add')
+  }
+
   get notCount() {
     return this.countPreByStatuObj["data5"]
       ? this.countPreByStatuObj["data5"].count
       : 0;
   }
   allprescription = 0;
-
+DOC_HANDWORK = 0
   allPrescription() {
     indexApi.allPrescription().then(res => {
       if (res["retCode"]) {
         console.log(res.data);
-        this.allprescription = res.data;
+        this.allprescription = res.data.All;
+        this.DOC_HANDWORK = res.data.DOC_HANDWORK
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -162,12 +256,11 @@ export default class AddGoods extends Vue {
     this.getprescriptionList();
   }
   handleClick(e) {
-    this.startDate = "";
-    this.endDate = "";
-    this.key = ""
+    this.date = ["", ""];
+    this.key = "";
     this.page = 0;
 
-    if (this.prescriptionEnums1 == "name2") {
+    if (this.prescriptionEnums1 !== "name1") {
       this.prescriptionEnums = "";
     }
     this.getprescriptionList();
@@ -177,13 +270,13 @@ export default class AddGoods extends Vue {
   prescriptionEnums = "";
   prescriptionEnums1 = "name1";
 
-  startDate = "";
-  endDate = "";
+  date = [];
   key = "";
   operationType = "Translators";
   loading = false;
 
   getprescriptionList(filter = null) {
+
     if (filter) {
       this.page = 0;
     }
@@ -192,21 +285,24 @@ export default class AddGoods extends Vue {
       this.prescriptionEnums = "NOT_TRANSLATED_OR_REJECT_AUDIT_PRESCRIPTION";
     }
 
-    let startCreatTime = "";
-    let endCreatTime = "";
-    if ((this.startDate || "") != "") {
-      startCreatTime =
-        moment(this.startDate).format("YYYY-MM-DD") + " 00:00:00";
-    }
-    if ((this.endDate || "") != "") {
-      endCreatTime = moment(this.endDate).format("YYYY-MM-DD") + " 23:59:59";
-    }
+  
+
+
     let data = {
       prescriptionEnums: this.prescriptionEnums,
       key: this.key,
-      startCreatTime: startCreatTime,
-      endCreatTime: endCreatTime
+      startCreatTime: this.date[0]
+        ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
+        : "",
+      endCreatTime: this.date[1]
+        ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
+        : ""
     };
+
+  if(this.prescriptionEnums1 =='name3'){
+     data['preTypeEnum'] ='DOC_HANDWORK'
+   }
+
     sessionStorage.tranObject = JSON.stringify(data);
     Object.assign(data, {
       page: this.page,
@@ -216,7 +312,8 @@ export default class AddGoods extends Vue {
     this.loading = true;
     indexApi.findPrescriptionByType(data).then(res => {
       this.loading = false;
-  this.countPreByStatu();
+      this.$emit("updateYdkPrescriptionStatusNum", "NEW_PRESCRIPTION");
+      this.countPreByStatu();
       if (res["retCode"]) {
         this.prescriptionList = res.data.list;
         this.total = res.data.page.total;
@@ -229,6 +326,7 @@ export default class AddGoods extends Vue {
     });
   }
   mounted() {
+ 
     this.allPrescription();
     this.getprescriptionList();
   }
