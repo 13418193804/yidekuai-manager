@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
 
         <div style="=">
           <h3>催单管理
@@ -75,7 +75,7 @@
       <el-option value="ORDER_WAIT_SENDGOODS" label="待发货"></el-option>
       <el-option value="SENDGOODS_UNFINISHED" label="发货未完成"></el-option>
       <el-option value="ORDER_WAIT_RECVGOODS" label="待收货"></el-option>
-      <el-option value="ORDER_END_GOODS" label="已完成"></el-option>
+      <el-option value="ORDER_END_GOODS" label="订单已完成"></el-option>
     </el-select>
 				</el-form-item>
   </el-col>
@@ -201,7 +201,7 @@ export default class AddGoods extends Vue {
       case "ORDER_WAIT_RECVGOODS":
         return "待收货";
       case "ORDER_END_GOODS":
-        return "完成";
+        return "订单已完成";
       default:
         return "";
     }
@@ -313,6 +313,8 @@ this.rderStatus ="";
       })
       .then(res => {
     this.loading = false
+      this.$emit('updateYdkPrescriptionStatusNum','NEW_ORDER');
+
         this.queryOrderCount();
         if (res["retCode"]) {
    
@@ -344,6 +346,7 @@ this.rderStatus ="";
   }
 
   mounted() {
+
     // this.allPrescription();
     this.getOrderList();
 

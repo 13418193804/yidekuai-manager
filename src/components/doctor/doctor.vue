@@ -1,5 +1,6 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
+        <!-- <div> -->
         <div style="border-bottom:1px #e5e5e5 solid;">
         <h3>医生管理</h3>
         <div style="padding-bottom:20px;">平台医生数量统计：{{doctotcount}}个</div>
@@ -766,7 +767,9 @@ import  * as  confUrl from "../../api/conf";
 @Component({
   props: {},
   components: {
-    prescriptioninfo,remindertable,updatedoctor
+    prescriptioninfo,
+    remindertable,
+    updatedoctor
   }
 })
 export default class doctor extends Vue {

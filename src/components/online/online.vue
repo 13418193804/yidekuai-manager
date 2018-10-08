@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
 
         <div style="border-bottom:1px #e5e5e5 solid;">
           <h3>在线咨询管理

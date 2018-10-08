@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
 
         <div style="border-bottom:1px #e5e5e5 solid;">
           <h3>职位管理
@@ -113,7 +113,7 @@
 		</el-col>
 
 
-  <el-dialog v-loading="primssLoading" :visible.sync="primssModel" width="1050px" center size="tiny"  title="角色权限" :close-on-click-modal="false" top="40px">
+  <el-dialog v-bouncing="primssLoading" :visible.sync="primssModel" width="1050px" center size="tiny"  title="角色权限" :close-on-click-modal="false" top="40px">
 
 <!--     
     <el-checkbox-group v-model="checkboxGroup6" size="mini" >

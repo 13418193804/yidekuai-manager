@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
       <div style="">
           <h3>找药管理
           </h3>

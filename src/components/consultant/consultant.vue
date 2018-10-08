@@ -1,9 +1,14 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
     
         
          <div style="">
-          <h3>顾问数据</h3>
+
+          <h3>
+            {{$route.path === '/consultant-manager'?'顾问管理':''}}
+            {{$route.path === '/consultant'?'顾问数据':''}}
+            </h3>
+
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">顾问人数：{{adviserCount}} 个</span>             
 <span style="margin-right:20px;">药品成交金额：{{payOrderMoney}} 元</span>       
@@ -12,7 +17,7 @@
 <span style="margin-right:20px;">药品销售数量：{{drugQuantityTotal}} </span>             
             </div>
         </div>
-<div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
+<div style="margin-bottom:20px;">
 <el-row :gutter="10">
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
    <el-input v-model="name"
@@ -62,11 +67,13 @@
 
   <el-col :xs="5" :sm="5" :md="3" :lg="3" :xl="2" style="    min-width: 325px;">
 <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getConsultantList(true)">查询</el-button>
-<el-button type="primary" style="margin-top:20px;" @click="changeModel('add')">添加顾问</el-button>
+<el-button type="primary" style="margin-top:20px;" @click="changeModel('add')" v-if="$route.path === '/consultant-manager'">添加顾问</el-button>
   </el-col>
 </el-row>
 </div>
 
+  <el-tabs v-model="adviserType" type="card" @tab-click="handleClick">
+    <el-tab-pane v-for=" n in tabPaneList"  :label="n.label" :name="n.name" >
 <el-table border @sort-change="sortChange"
     :data="YdkAdviser"
     stripe height="600"
@@ -76,8 +83,6 @@
       prop="adviserName"
       label="顾问姓名"  width="150">
    </el-table-column>
-   
-
  <el-table-column
       prop="doctorNum" sortable="custom"
       label="管理医生数量"  width="150">
@@ -114,10 +119,6 @@
            {{scope.row.drugNum?scope.row.drugNum:0}}
       </template>
    </el-table-column>
-
-
-
-
  <el-table-column
       label="顾问类型">
       <template slot-scope="scope">
@@ -125,6 +126,14 @@
            {{scope.row.adviser_type=='INSIDE'?'内部顾问':''}}
       </template>
    </el-table-column>
+ <el-table-column v-if="adviserType == 'INSIDE'"
+      label="顾问职位">
+      <template slot-scope="scope">
+           {{scope.row.director_state=='1'?'主管顾问':''}}
+           {{scope.row.director_state=='0'?'普通顾问':''}}
+      </template>
+   </el-table-column>
+   
   <el-table-column
       prop="userName"
       label="手机号" width="150">
@@ -162,7 +171,7 @@
           type="text" @click="cleanConsultantItemShelf(scope.row)"
       >医生统计</el-button>
 
-				<el-button size="small" type="text" @click="openNotBindDoctorModel(scope.row)" >分配医生</el-button>
+				<el-button size="small" type="text" @click="openNotBindDoctorModel(scope.row)" v-if="$route.path === '/consultant-manager'">分配医生</el-button>
 
                       <el-button
           size="mini"
@@ -172,20 +181,22 @@
         <el-button
           size="mini"
           type="text"
-          @click="changeModel('edit',scope.row)" >编辑</el-button>
+          @click="changeModel('edit',scope.row)" v-if="$route.path === '/consultant-manager'">编辑</el-button>
         <el-button type="text"  style="margin-top:20px;" @click="viewBigIcon(scope.row.qrcode)">二维码</el-button>
 
          <el-button @click="doDelete(scope.row)"
           size="mini"
-          type="text"
+          type="text" v-if="$route.path === '/consultant-manager'"
         >删除</el-button>
       </template>
     </el-table-column>
 </el-table>
-		<el-col :span="24" class="toolbar">
+<el-col :span="24" class="toolbar">
 			<el-pagination layout="prev, pager, next"  :current-page="page+1" :page-size="pageSize" :total="total" @current-change="onPageChange">
 			</el-pagination>
 		</el-col>
+    </el-tab-pane>
+</el-tabs>
 
 
 <!--    ========================                    弹窗                ======================     -->
@@ -217,7 +228,13 @@
   <el-radio v-model="adviserTypeEnums" label="OUTSIDE">外部顾问</el-radio>
               					<!-- <el-input v-model="adviserObj.adviserAge"  placeholder="请输入年龄" style="max-width:400px;min-width:200px" ></el-input> -->
 			        	</el-form-item>	
-
+		<el-form-item label="主管顾问" prop="adviserTypeEnums" v-if="adviserTypeEnums =='INSIDE'">
+<el-switch
+  v-model="adviserObj.directorState1"
+  active-color="#13ce66"
+  inactive-color="#ff4949">
+</el-switch>
+			        	</el-form-item>	
                 
                        
                         		<el-form-item label="备注" >
@@ -266,7 +283,7 @@
 			        	</el-form-item>	 -->
 
 <!-- ==============         医生列表   ================================== -->
-		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="shelfModel" v-loading="shelfObj.loading" title="医生统计">
+		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="shelfModel" v-bouncing="shelfObj.loading" title="医生统计">
     
     
 <el-row :gutter="10" style="margin-bottom:20px;">
@@ -374,7 +391,7 @@
 
 
 <!-- =============      添加绑定的医生   ================ -->
-		<el-dialog width= "70vw" :close-on-click-modal="false" v-loading="notBindDoctorObj.addloading"  :append-to-body="true" :visible.sync="notBindDoctorObj.model"  title="分配医生">
+		<el-dialog width= "70vw" :close-on-click-modal="false" v-bouncing="notBindDoctorObj.addloading"  :append-to-body="true" :visible.sync="notBindDoctorObj.model"  title="分配医生">
 
 
  <el-row :gutter="10" style="margin-bottom:20px;">
@@ -458,7 +475,7 @@
 
 
 <!-- ==============        顾问查药品   ================================== -->
-		<el-dialog width= "70vw" :close-on-click-modal="false" v-loading="loading"  :append-to-body="true" :visible.sync="drugObj.model"  title="药品统计">
+		<el-dialog width= "70vw" :close-on-click-modal="false" v-bouncing="loading"  :append-to-body="true" :visible.sync="drugObj.model"  title="药品统计">
 
 <div class="flex">
 
@@ -572,6 +589,10 @@ import * as indexApi from "../../api/indexApi";
     // categoryView,
   }
 })
+
+     
+
+
 export default class AddGoods extends Vue {
   loading = false;
   viewBigIcon(qrcode) {
@@ -580,6 +601,20 @@ export default class AddGoods extends Vue {
   }
   bigIcon = "";
   viewBig = false;
+
+
+  tabPaneList =  [ {
+      label:'内部顾问',
+      name:'INSIDE'
+    },
+    {
+      label:'外部顾问',
+      name:'OUTSIDE'
+    }]
+handleClick(e){
+  this.getConsultantList(true);
+}
+
   page = 0;
   pageSize = 10;
   orderByStr = "";
@@ -592,9 +627,11 @@ export default class AddGoods extends Vue {
     this.getConsultantList();
   }
 
+
+adviserType ='INSIDE' 
   YdkAdviser = [];
 
-    date = []
+  date = [];
 
   getConsultantList(filter = null) {
     this.loading = true;
@@ -602,24 +639,27 @@ export default class AddGoods extends Vue {
       this.page = 0;
     }
 
-
     let data = {
       page: this.page,
       pageSize: this.pageSize,
+      adviserType:this.adviserType,
       userStatus: this.userStatus,
       name: this.name,
       drug: this.drug,
-        startcreateDate: this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-        endcreateDate:  this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+      startcreateDate: this.date[0]
+        ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
+        : "",
+      endcreateDate: this.date[1]
+        ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
+        : "",
       orderByStr: this.orderByStr
     };
     indexApi.getConsultantList1(data).then(res => {
- 
       if (res["retCode"]) {
         this.YdkAdviser = res.data.AdviserInfo;
         this.total = res.data.page.total;
-       this.loading = false;
-            if (res.data.TotalInfo.length > 0) {
+        this.loading = false;
+        if (res.data.TotalInfo.length > 0) {
           this.orderMoney = res.data.TotalInfo[0].orderMoney
             ? res.data.TotalInfo[0].orderMoney
             : 0;
@@ -645,19 +685,14 @@ export default class AddGoods extends Vue {
             ? res.data.TotalInfo[0].drugQuantityTotal
             : 0;
         }
-
-
-      
-        
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
         }
-             this.loading = false;
-   return
+        this.loading = false;
+        return;
       }
     });
-
   }
   payOrderMoney = 0;
   orderMoney = 0;
@@ -667,10 +702,6 @@ export default class AddGoods extends Vue {
   allAdviserNum = 0;
   drugNum = 0;
   drugQuantityTotal = 0;
-
-
-
-
 
   adviserObj: any = {};
   type = "add";
@@ -683,8 +714,12 @@ export default class AddGoods extends Vue {
     } else {
       let a = {};
       Object.assign(a, row);
+
+      row.directorState1 = row.director_state == "1" ? true : false;
+      
       this.adviserObj = a;
       this.userStatus1 = this.adviserObj.userStatus == "1" ? true : false;
+      
       this.adviserTypeEnums = row.adviser_type;
     }
     this.adviserModel = true;
@@ -706,11 +741,15 @@ export default class AddGoods extends Vue {
     }
 
     this.loading = true;
-    this.adviserObj["userPassword"] = "123456";
+
+
+
     this.adviserObj.userStatus = this.userStatus1 ? "1" : "0";
+    this.adviserObj.directorState =  this.adviserObj.directorState1 ? "1" : "0";
     this.adviserObj.adviserTypeEnums = this.adviserTypeEnums;
 
     if (this.type == "add") {
+      this.adviserObj["userPassword"] = "123456";
       this.adviserObj["userStatus"] = "";
       indexApi.addConsultantItem(this.adviserObj).then(res => {
         this.loading = false;
@@ -726,6 +765,7 @@ export default class AddGoods extends Vue {
         }
       });
     }
+
     if (this.type == "edit") {
       indexApi.updateConsultantItem(this.adviserObj).then(res => {
         this.loading = false;
@@ -741,6 +781,7 @@ export default class AddGoods extends Vue {
         }
       });
     }
+    
   }
   submitForm(formName) {
     let a: any = this.$refs[formName];
@@ -886,7 +927,7 @@ export default class AddGoods extends Vue {
     this.shelfObj.startcreateDate = this.date[0];
     this.shelfObj.endcreateDate = this.date[1];
     this.shelfObj.name = "";
-    this.consultantItemShelf(row,true);
+    this.consultantItemShelf(row, true);
   }
   consultantItemShelf(row, filter = null) {
     this.shelfObj.loading = true;
@@ -942,7 +983,7 @@ export default class AddGoods extends Vue {
         indexApi
           .adviserNotBindDoctor({
             doctorId: row.doctorId,
-                    adviserTypeEnums:this.shelfObj.row['adviser_type'],
+            adviserTypeEnums: this.shelfObj.row["adviser_type"]
           })
           .then(res => {
             this.shelfObj.loading = false;
@@ -1024,7 +1065,7 @@ export default class AddGoods extends Vue {
     indexApi
       .notBindDoctor({
         phone: this.notBindDoctorObj["phone"],
-        adviserTypeEnums:row.adviser_type,
+        adviserTypeEnums: row.adviser_type,
         page: this.notBindDoctorObj.page,
         pageSize: this.notBindDoctorObj.pageSize
       })
@@ -1058,7 +1099,7 @@ export default class AddGoods extends Vue {
           .adviserBindDoctor({
             adviserid: this.notBindDoctorObj.row["adviserId"],
             doctorid: row["doctorId"],
-            adviserTypeEnums:this.notBindDoctorObj.row['adviser_type']
+            adviserTypeEnums: this.notBindDoctorObj.row["adviser_type"]
           })
           .then(res => {
             this.notBindDoctorObj.addloading = false;
@@ -1109,7 +1150,7 @@ export default class AddGoods extends Vue {
   adviserGetDrugDoRow(row) {
     this.fontType = "";
     this.drugObj.startcreateDate = this.date[0];
-    this.drugObj.endcreateDate =this.date[1];
+    this.drugObj.endcreateDate = this.date[1];
     this.adviserGetDrug(row);
   }
   adviserGetDrug(row, filter = null) {
@@ -1274,6 +1315,8 @@ export default class AddGoods extends Vue {
   }
 
   mounted() {
+    
+
     this.getAdviserCount();
     this.getConsultantList();
   }

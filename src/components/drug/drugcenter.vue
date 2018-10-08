@@ -78,7 +78,7 @@
 </el-dialog>
 
 	<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="drugDetailModel"  title="药品详情">
-<div v-loading="drugDetailLoading">
+<div v-bouncing="drugDetailLoading">
 <div class="flex flex-warp-justify" style="marign-left:20px;">
     <div v-for="(item,index) in detailInfo" class="flex">
         <div style="height:40px;line-height:40px;min-width:120px;">

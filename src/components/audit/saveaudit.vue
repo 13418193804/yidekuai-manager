@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="backLoad">
+    <div v-bouncing="backLoad">
       
 
      
@@ -33,6 +33,12 @@
 <div>
     {{ handleStatus(prodetail.presState)  }}
 </div>
+
+  <h4 style="margin:0;padding-left:10px;">处方类型：</h4>
+<div>
+    {{ handleprescriptionType(prodetail.prescriptionType)  }}
+</div>
+
 </div>
 
 
@@ -103,8 +109,8 @@
 
 <div v-for="(item,index) in prodeInfo">
 <h4 style="margin: 10px 0;">{{index == 0?'患者信息':'医生信息'}}</h4>
-<div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;" >
-  <div style=" margin-top:10px;margin-right:10px;" v-for="items in item">
+<div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;height:12px;" >
+  <div style="margin-right:10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item">
 <span>{{items.title}}</span>
 <span>{{prodetail[items.value]}}</span>
 </div>
@@ -266,7 +272,7 @@ export default class AddGoods extends Vue {
     indexApi.allPrescription().then(res => {
       if (res["retCode"]) {
         console.log(res.data);
-        this.allprescription = res.data;
+        this.allprescription = res.data.All;
       } else {
         if(!res['islogin']){this.$alert(res["message"]);}
         console.error("数据查询错误");
@@ -274,6 +280,19 @@ export default class AddGoods extends Vue {
     });
   }
   backLoad = false;
+
+      handleprescriptionType(prescriptionType){
+switch(prescriptionType){
+  case 'BACK_HANDWORK':
+  return '平台手工单'
+   case 'DOC_HANDWORK':
+  return '医生手工单'
+   case 'PHOTO':
+  return '普通单'
+        default:
+        return  ""
+}
+  }
   handleStatus(status) {
     switch (status) {
       case "NOT_TRANSLATED_PRESCRIPTION":

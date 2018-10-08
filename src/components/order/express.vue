@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div>
 
   <el-tabs v-model="send_active"  type="border-card" @tab-click="getExpressPackageDrug" id="send_active">
     <el-tab-pane   label="商品信息"  name="goods_detail" v-if="type =='detail' && send_obj.splitFlag == '1' ">

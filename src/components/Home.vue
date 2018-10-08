@@ -34,14 +34,11 @@
 						<el-breadcrumb separator="/" class="breadcrumb-inner">
 							</el-breadcrumb>
 					</el-col>
-					<el-col :span="24" class="content-wrapper" v-loading="loading">
-
+					<el-col :span="24" class="content-wrapper" >
 <div>{{getDateFun}} </div>
-
-
 						<transition name="fade" mode="out-in">
-              
-							<router-view></router-view>
+							<router-view  @updateYdkPrescriptionStatusNum="updateYdkPrescriptionStatusNum"></router-view>
+
 						</transition>
 					</el-col>
 			</section>
@@ -54,25 +51,22 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import Axios from "axios";
 import moment from "moment";
+import * as indexApi from "../api/indexApi";
 
-import MenuComponent from "./Menu.vue"
-
-
+import MenuComponent from "./Menu.vue";
 
 @Component({
-    props: {
-    },
-    components: {
-        'menu-component': MenuComponent
-    }
+  props: {},
+  components: {
+    "menu-component": MenuComponent
+  }
 })
-
 export default class Home extends Vue {
   sysName = "医德快管理平台";
   collapsed = false;
   sysUserAvatar = "";
   sysUserName = sessionStorage.name;
-  roleName = ""
+  roleName = "";
   // sessionStorage.
   styleString = "230px";
 
@@ -80,9 +74,14 @@ export default class Home extends Vue {
     return "admin";
   }
 
-get getDateFun (){
-return '今天　' + moment(new Date()).format("YYYY/MM/DD") + "　星期" + "日一二三四五六".charAt(new Date().getDay())
-}
+  get getDateFun() {
+    return (
+      "今天　" +
+      moment(new Date()).format("YYYY/MM/DD") +
+      "　星期" +
+      "日一二三四五六".charAt(new Date().getDay())
+    );
+  }
   //退出登录
   logout() {
     this.$confirm("确认退出吗?", "提示", {
@@ -94,27 +93,31 @@ return '今天　' + moment(new Date()).format("YYYY/MM/DD") + "　星期" + "�
       })
       .catch(() => {});
   }
-  updatepassword(){
-    this.$router.push('/updatepassword')
+  updatepassword() {
+    this.$router.push("/updatepassword");
   }
   //折叠导航栏
   doCollapse() {
+    let dt: any = this.$refs["menuCom"];
+    dt.doCollapse();
+    this.collapsed = !this.collapsed;
+  }
 
-	let dt:any= this.$refs['menuCom']
-	 dt.doCollapse();
-     this.collapsed = !this.collapsed;
+  getYdkPrescriptionStatusNum() {
+    (<any>this.$refs.menuCom).getYdkPrescriptionStatusNum();
+  }
+updateYdkPrescriptionStatusNum(blueSignal){
+// NEW_PRESCRIPTION
+// NEW_ORDER
+indexApi.updateYdkPrescriptionStatusNum({blueSignal:blueSignal}).then(res => {
+  this.getYdkPrescriptionStatusNum()
+});
 
-   }
 
-
-
-
-   
-
-   
+}
   mounted() {
     var user = sessionStorage.getItem("user");
-    }
+  }
 }
 </script>
 
@@ -132,10 +135,10 @@ return '今天　' + moment(new Date()).format("YYYY/MM/DD") + "　星期" + "�
   color: #fff;
 }
 
-.header1{
-    height: 60px;
+.header1 {
+  height: 60px;
   line-height: 60px;
-  background: #409EFF;
+  background: #409eff;
   color: #fff;
 }
 .userinfo {
@@ -159,7 +162,7 @@ img {
 }
 
 .logo {
-  width:230px;
+  width: 230px;
   height: 60px;
   font-size: 22px;
   padding-left: 20px;
@@ -199,10 +202,10 @@ img {
   overflow: hidden;
 }
 aside {
-  flex: 0 0 230px ;
+  flex: 0 0 230px;
   width: 230px;
-  overflow:hidden;
-  text-align:left;
+  overflow: hidden;
+  text-align: left;
 }
 .el-menu {
   height: 200%;
@@ -255,6 +258,6 @@ aside {
   min-height: 100%;
   text-align: left;
   box-sizing: border-box;
-  padding:20px;
+  padding: 20px;
 }
 </style>

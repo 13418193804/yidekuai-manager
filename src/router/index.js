@@ -113,6 +113,24 @@ export default new Router({
         },
       ]
     },
+
+    {
+      path: '/',
+      component: Home,
+      position: 'menu',
+      menu_grade: 1,
+      children: [
+        {
+          path: '/consultant-manager',
+          icon: require('../assets/menu/首页.png'),
+          select_icon: require('../assets/menu/首页 (1).png'),
+          name: '顾问管理',
+          component: r => require.ensure([], () => r(require('@/components/consultant/consultant')))
+        },
+      
+      ]
+    },
+
     {
       path: '3',
       icon: require('../assets/menu/处方2.png'),
@@ -120,7 +138,7 @@ export default new Router({
       component: Home,
       position: 'menu',
       menu_grade: 2,
-      name: '顾问管理',
+      name: '数据统计',
       children: [
         {
           path: '/consultant',

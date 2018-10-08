@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading"> 
+    <div v-bouncing="loading"> 
     
          <div style="">
           <h3>药品数据
@@ -177,7 +177,7 @@
 
 
 		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="drugAdvObj.model"  title="查看顾问">
-<div v-loading="drugAdvObj.loading">
+<div v-bouncing="drugAdvObj.loading">
 <el-table border
     :data="drugAdvObj.AdviserInfo"
     stripe height="600"
@@ -255,7 +255,7 @@
    
 
 		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="drugDocObj.model"  title="查看医生">
-<div v-loading="drugDocObj.loading">
+<div v-bouncing="drugDocObj.loading">
 <el-table border
     :data="drugDocObj.DocterInfo"
     stripe height="600"

@@ -1,5 +1,7 @@
 <template>
-    <div v-loading="loading">
+    <!-- <div v-bouncing="loading"> -->
+
+      <div v-bouncing="loading" >
     <div style="font-size:14px;color:#666;">
   
   
@@ -177,6 +179,7 @@ this.preAuditing = res.data.preAuditing
   mounted() {
     this.date = [new Date(),new Date()]
     this.doQuery()
+
   }
 }
 </script>

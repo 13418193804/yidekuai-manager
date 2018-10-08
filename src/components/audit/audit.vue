@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="loading">
+    <div v-bouncing="loading">
 
         <div style="">
           <h3>审方管理
@@ -59,7 +59,7 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
  
 </div>
 
-<transmittable :table="prescriptionList"  :operationType="operationType">
+<transmittable ref="transmittable" @getprescriptionList="getprescriptionList" :table="prescriptionList"  :operationType="operationType">
 </transmittable>
     </el-tab-pane>
 
@@ -124,7 +124,7 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 </div>
 
 
-<transmittable :table="prescriptionList" :prescriptionEnums="prescriptionEnums" :operationType="operationType">
+<transmittable ref="transmittable" @getprescriptionList="getprescriptionList" :table="prescriptionList" :prescriptionEnums="prescriptionEnums" :operationType="operationType">
 </transmittable>
     </el-tab-pane>
 
@@ -164,7 +164,7 @@ export default class AddGoods extends Vue {
  indexApi.allPrescription().then(res => {
       if (res["retCode"]) {
         console.log(res.data);
-        this.allprescription =res.data
+        this.allprescription =res.data.All
       } else {
         if(!res['islogin']){this.$alert(res["message"]);}
         console.error("数据查询错误");
@@ -248,6 +248,7 @@ date= []
     indexApi
       .findPrescriptionByType(data).then(res => {
         this.loading =false
+        this.$emit('updateYdkPrescriptionStatusNum','NEW_PRESCRIPTION');
             this.countPreByStatu();
       if (res["retCode"]) {
         console.log(res.data);
@@ -261,6 +262,7 @@ date= []
     });
   }
   mounted() {
+
 this.allPrescription()
     this.getprescriptionList()
 

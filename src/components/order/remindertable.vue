@@ -646,7 +646,7 @@ sendGoods(row){
       case "ORDER_END_GOODS":
         return {
           type:"success",
-          title:"完成"
+          title:"订单已完成"
           }; 
       default:
         return {  type:"",
