@@ -64,6 +64,7 @@
                     <img v-if="idCardFrontUrl" :src="idCardFrontUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
+                <div v-if="idCardFrontUrl" @click="delUrl('idCardFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
             </div>
             <div class="flex flex-1">
                 <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">身份证背面</div>
@@ -75,6 +76,7 @@
                 <img v-if="idCardBackUrl" :src="idCardBackUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+            <div v-if="idCardBackUrl" @click="delUrl('idCardBackUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
             </div>
         </div>
         <el-form-item label="医师资格证号">
@@ -90,6 +92,7 @@
             <img v-if="pharmacistCertificateFrontUrl" :src="pharmacistCertificateFrontUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
+        <div v-if="pharmacistCertificateFrontUrl" @click="delUrl('pharmacistCertificateFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
         </div>
         <el-form-item label="医师执业证号">
             <el-input v-model="formLabelAlign1.qualificationCertificateNum"></el-input>
@@ -104,10 +107,10 @@
             <img v-if="qualificationCertificateFrontUrl" :src="qualificationCertificateFrontUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
+        <div v-if="qualificationCertificateFrontUrl" @click="delUrl('qualificationCertificateFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
         </div>
 
         <div class="flex">
-            <div class="flex flex-1">
                 <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医生头像：</div>
                 <el-upload
                     class="avatar-uploader"
@@ -117,11 +120,7 @@
                     <img v-if="pictureUrl" :src="pictureUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-            </div>
-            <div class="flex flex-1" v-if="formLabelAlign1.picture">
-                <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">原来头像</div>
-                <img :src="formLabelAlign1.picture" class="avatar">
-            </div>
+                <div v-if="pictureUrl" @click="delUrl('pictureUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
         </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -411,7 +410,7 @@ notPassupdatedoctor(){
                     this.formLabelAlign1.idCard=row.idCard
           this.formLabelAlign1.pharmacistCertificateNum=row.pharmacistCertificateNum
           this.formLabelAlign1.qualificationCertificateNum=row.qualificationCertificateNum
-          this.formLabelAlign1.picture=row.picture
+          this.pictureUrl=row.picture
             if(row.consultingFee==0){
                 this.formLabelAlign1['consultingFee']='0';
             }
@@ -483,6 +482,23 @@ notPassupdatedoctor(){
         }
         pictureSuccess(res, file) {
             this.pictureUrl = res.data.filename;        
+        }
+        delUrl(del){
+            if(del=='idCardFrontUrl'){
+                this.idCardFrontUrl=''
+            }
+            if(del=='idCardBackUrl'){
+                this.idCardBackUrl=''
+            }
+            if(del=='pharmacistCertificateFrontUrl'){
+                this.pharmacistCertificateFrontUrl=''
+            }
+            if(del=='qualificationCertificateFrontUrl'){
+                this.qualificationCertificateFrontUrl=''
+            }
+            if(del=='pictureUrl'){
+                this.pictureUrl=''
+            }
         }
 
 
