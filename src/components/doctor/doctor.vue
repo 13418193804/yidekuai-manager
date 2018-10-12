@@ -95,6 +95,7 @@
             <el-table-column prop="orderMoney" label="医生订单金额"></el-table-column>
             <el-table-column prop="doctorPatientNum" label="医生患者数量"></el-table-column>
             <el-table-column prop="createrTime" label="医生注册时间" width="150"></el-table-column>
+            <el-table-column prop="passTime" label="通过时间" width="150"></el-table-column>
             <el-table-column prop="hspCode" label="医院机构代码" width="150"></el-table-column>
             <el-table-column prop="remark" label="备注"></el-table-column>
             <el-table-column prop="age" label="年龄"></el-table-column>
@@ -393,240 +394,139 @@
       </el-dialog>
 
         <!-- 未审核医生详情 -->
-      <el-dialog width= "85%" :close-on-click-modal="false" :visible.sync="detailsshow">
+      <el-dialog width= "60%" :close-on-click-modal="false" :visible.sync="detailsshow">
             <div style=" border: 1px #e5e5e5 solid;">
-            <h3 style="text-align:center">医生详情</h3>
-                <el-form label-width="100px" :inline="true" >
+            <div class="min_title">医生详情</div>
+                <div style="display:flex;margin:15px;">
+                    <div style="min-width:220px;text-align:center;height: 100%;overflow: hidden;min-height: 385px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
+                        <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 6px;left: 0;"></i>
+                        <img v-if="formLabeldetails.picture" :src="formLabeldetails.picture" style="height:110px;width: 110px;margin: 5px 10px;">
+                        <img v-else  src="../../assets/876218396590085506.png" style="height:110px;width: 110px;margin: 5px 10px;">
+                        <div>{{formLabeldetails.name}}</div>
+                        <div>{{formLabeldetails.phone}}</div>
+                        <div style="text-align:left;">医院：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.hospitalName}}</span></div>
+                        <div style="text-align:left;">科室：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.hospitalDepartment}}</span></div>
+                        <div v-if="formLabeldetails.doctorTitle=='ASSISTANT_PHYSICIAN'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">住院医师</span></div>
+                        <div v-if="formLabeldetails.doctorTitle=='ATTENDING_DOCTOR'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">主治医师</span></div>
+                        <div v-if="formLabeldetails.doctorTitle=='DEPUTY_CHIEF_PHYSICIAN'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">副主任医师</span></div>
+                        <div v-if="formLabeldetails.doctorTitle=='CHIEF_PHYSICIAN'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">主任医师</span></div>
+                        <div style="text-align:left;">咨询价格：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.consultingFee?formLabeldetails.consultingFee:'0'}}元</span></div>
+                        <div v-if="formLabeldetails.age" style="text-align:left;">年龄：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.age}}</span></div>
+                        <div v-if="formLabeldetails.dsex" style="text-align:left;">性别：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.dsex}}</span></div>
+                    </div>
 
-            <el-row :gutter="24"  >
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                            <el-form-item  label="医生姓名：">
-                            {{formLabeldetails.name}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="帐号：">
-                            {{formLabeldetails.phone}}
-                            </el-form-item>
-            </el-col>
-                <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="所属医院：">
-                            {{formLabeldetails.hospitalName}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="所在科室：">
-                            {{formLabeldetails.hospitalDepartment}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="医生擅长：">
-                            {{formLabeldetails.doctorGood}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="医生简介：">
-                            {{formLabeldetails.doctorBrief}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="咨询价格：">
-                            {{formLabeldetails.consultingFee}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="备注：">
-                            {{formLabeldetails.remark}}
-                            </el-form-item>
-            </el-col>
-                        <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="年龄：">
-                            {{formLabeldetails.dsex}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="来源顾问：">
-                            {{formLabeldetails.resourceAdviserName}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="顾问手机：">
-                            {{formLabeldetails.resourceAdviserPhone}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="性别：">
-                            {{formLabeldetails.age}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="状态：">
-                    <el-tag v-if="formLabeldetails.doctorStatus=='UNANDITED'" type="success">待审核</el-tag>
-                    <el-tag v-if="formLabeldetails.doctorStatus=='AUDIT_NOT_PASS'" type="text">未通过</el-tag>
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="职称：">
-                    <span v-if="formLabeldetails.doctorTitle=='ASSISTANT_PHYSICIAN'">住院医师</span>
-                                    <span v-if="formLabeldetails.doctorTitle=='ATTENDING_DOCTOR'">主治医师</span>
-                                    <span v-if="formLabeldetails.doctorTitle=='DEPUTY_CHIEF_PHYSICIAN'">副主任医师</span>
-                                    <span v-if="formLabeldetails.doctorTitle=='CHIEF_PHYSICIAN'">主任医师</span>
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="身份证号：">
-                            {{formLabeldetails.idCard}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="资格证号：">
-                            {{formLabeldetails.pharmacistCertificateNum}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="执业证号：">
-                            {{formLabeldetails.qualificationCertificateNum}}
-                            </el-form-item>
-            </el-col>
-            </el-row>
-            <div v-if="formLabeldetails.picture" style="display:flex;">
-                <div style="padding-left:20px;">医生头像：</div>
-                <img  :src="formLabeldetails.picture" style="width:200px;height:200px;margin-left:20px;">
-            </div>
-            <img v-if="formLabeldetails.idCardFront" :src="formLabeldetails.idCardFront" style="width:200px;height:200px;">
-            <img v-if="formLabeldetails.idCardBack" :src="formLabeldetails.idCardBack" style="width:200px;height:200px;">
-            <img v-if="formLabeldetails.pharmacistCertificateFront" :src="formLabeldetails.pharmacistCertificateFront" style="width:200px;height:200px;">
-            <img v-if="formLabeldetails.qualificationCertificateFront" :src="formLabeldetails.qualificationCertificateFront" style="width:200px;height:200px;">
-            </el-form>
+                    <div style="width:100%;height: 100%;overflow: hidden;min-height: 385px;margin-left:15px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
+                        <div v-if="formLabeldetails.doctorGood" style="display: flex;flex-direction: column;">
+                            <div style="padding:10 0px;min-width:60px;background-color:#409eff;color:#fff;text-align: center;">擅长：</div>
+                            <div style="text-indent:2em;">{{formLabeldetails.doctorGood}}</div>
+                        </div>
+                        <div v-if="formLabeldetails.doctorBrief" style="display: flex;flex-direction: column;">
+                            <div style="padding:10 0px;min-width:60px;background-color:#409eff;color:#fff;text-align: center;">简介：</div>
+                            <div style="text-indent:2em;">{{formLabeldetails.doctorBrief}}</div>
+                        </div>
+                        <div v-if="formLabeldetails.remark" style="display: flex;flex-direction: column;">
+                            <div style="padding:10 0px;min-width:60px;background-color:#409eff;color:#fff;text-align: center;">备注：</div>
+                            <div style="text-indent:2em;">{{formLabeldetails.remark}}</div>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="min_title">来源顾问</div>
+                <div v-if="formLabeldetails.resourceAdviserName" style="padding-left:30px;">
+                    <div style="padding:5px 0;">来源顾问：{{formLabeldetails.resourceAdviserName}}</div>
+                    <div style="padding:5px 0;">顾问手机：{{formLabeldetails.resourceAdviserPhone}}</div>
+                </div>
+
+                <div class="min_title" v-if="formLabeldetails.idCard||formLabeldetails.idCardFront||formLabeldetails.idCardBack||formLabeldetails.pharmacistCertificateNum||formLabeldetails.pharmacistCertificateFront||formLabeldetails.qualificationCertificateNum||formLabeldetails.qualificationCertificateFront">证件信息</div>
+                <div v-if="formLabeldetails.idCard||formLabeldetails.idCardFront||formLabeldetails.idCardBack" style="padding:0 30px;display: flex;justify-content: space-between;">
+                    <div v-if="formLabeldetails.idCard" style="padding:5px 0;">身份证号：{{formLabeldetails.idCard}}</div>
+                    <img v-if="formLabeldetails.idCardFront" :src="formLabeldetails.idCardFront" style="height:110px;width: 110px;margin: 5px 10px;">
+                    <img v-if="formLabeldetails.idCardBack" :src="formLabeldetails.idCardBack" style="height:110px;width: 110px;margin: 5px 10px;">
+                </div>
+                <div v-if="formLabeldetails.pharmacistCertificateNum||formLabeldetails.pharmacistCertificateFront" style="padding:0 30px;display: flex;justify-content: space-between;">
+                    <div v-if="formLabeldetails.pharmacistCertificateNum" style="padding:5px 0;">资格证号：{{formLabeldetails.pharmacistCertificateNum}}</div>
+                    <img v-if="formLabeldetails.pharmacistCertificateFront" :src="formLabeldetails.pharmacistCertificateFront" style="height:110px;width: 110px;margin: 5px 10px;">
+                </div>
+                <div v-if="formLabeldetails.qualificationCertificateNum||formLabeldetails.qualificationCertificateFront" style="padding:0 30px;display: flex;justify-content: space-between;">
+                    <div v-if="formLabeldetails.qualificationCertificateNum" style="padding:5px 0;">执业证号：{{formLabeldetails.qualificationCertificateNum}}</div>
+                    <img v-if="formLabeldetails.qualificationCertificateFront" :src="formLabeldetails.qualificationCertificateFront" style="height:110px;width: 110px;margin: 5px 10px;">
+                </div>
+
+            </div>
 
             </el-dialog>
 
             <!-- 医生详情 -->
-      <el-dialog width= "85%" :close-on-click-modal="false" :visible.sync="detailsshow1">
+      <el-dialog width= "60%" :close-on-click-modal="false" :visible.sync="detailsshow1">
             <div style=" border: 1px #e5e5e5 solid;">
-            <h3 style="text-align:center">医生详情</h3>
-                <el-form label-width="100px" :inline="true" >
+            <div class="min_title">医生详情</div>
+                <div style="display:flex;margin:15px;">
+                    <div style="min-width:220px;text-align:center;height: 100%;overflow: hidden;min-height: 385px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
+                        <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 6px;left: 0;"></i>
+                        <img v-if="formLabeldetails1.picture" :src="formLabeldetails1.picture" style="height:110px;width: 110px;margin: 5px 10px;">
+                        <img v-else  src="../../assets/876218396590085506.png" style="height:110px;width: 110px;margin: 5px 10px;">
+                        <div>{{formLabeldetails1.name}}</div>
+                        <div>{{formLabeldetails1.phone}}</div>
+                        <div style="text-align:left;">医院：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.hospitalName}}</span></div>
+                        <div style="text-align:left;">科室：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.hospitalDepartment}}</span></div>
+                        <div v-if="formLabeldetails1.doctorTitle=='ASSISTANT_PHYSICIAN'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">住院医师</span></div>
+                        <div v-if="formLabeldetails1.doctorTitle=='ATTENDING_DOCTOR'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">主治医师</span></div>
+                        <div v-if="formLabeldetails1.doctorTitle=='DEPUTY_CHIEF_PHYSICIAN'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">副主任医师</span></div>
+                        <div v-if="formLabeldetails1.doctorTitle=='CHIEF_PHYSICIAN'" style="text-align:left;">职称：<span style=" color: #8492a6; font-size: 13px">主任医师</span></div>
+                        <div v-if="formLabeldetails1.resource=='H5'" style="text-align:left;">来源：<span style=" color: #8492a6; font-size: 13px">医生注册</span></div>
+                        <div v-if="formLabeldetails1.resource=='yjkexport'" style="text-align:left;">来源：<span style=" color: #8492a6; font-size: 13px">平台录入</span></div>
+                        <div v-if="formLabeldetails1.resource=='other'" style="text-align:left;">来源：<span style=" color: #8492a6; font-size: 13px">平台录入</span></div>
+                        <div style="text-align:left;">咨询价格：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.consultingFee?formLabeldetails1.consultingFee:'0'}}元</span></div>
+                        <div v-if="formLabeldetails1.age" style="text-align:left;">年龄：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.age}}</span></div>
+                        <div v-if="formLabeldetails1.dsex" style="text-align:left;">性别：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.dsex}}</span></div>
+                    </div>
 
-            <el-row :gutter="24"  >
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                            <el-form-item  label="医生姓名：">
-                            {{formLabeldetails1.name}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="帐号：">
-                            {{formLabeldetails1.phone}}
-                            </el-form-item>
-            </el-col>
-                <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="所属医院：">
-                            {{formLabeldetails1.hospitalName}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="所在科室：">
-                            {{formLabeldetails1.hospitalDepartment}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="医生擅长：">
-                            {{formLabeldetails1.doctorGood}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="医生简介：">
-                            {{formLabeldetails1.doctorBrief}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="咨询价格：">
-                            {{formLabeldetails1.consultingFee}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="备注：">
-                            {{formLabeldetails1.remark}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="处方数量：">
-                            {{formLabeldetails1.prescriptionNum}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="订单数量：">
-                            {{formLabeldetails1.orderNum}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="订单金额：">
-                            {{formLabeldetails1.orderMoney}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="患者数量：">
-                            {{formLabeldetails1.doctorPatientNum}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="来源顾问：">
-                            {{formLabeldetails1.resourceAdviserName}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="顾问手机：">
-                            {{formLabeldetails1.resourceAdviserPhone}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="年龄：">
-                            {{formLabeldetails1.dsex}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="性别：">
-                            {{formLabeldetails1.age}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="来源：">
-                            <span v-if="formLabeldetails1.resource=='H5'">医生注册</span>
-                    <span v-if="formLabeldetails1.resource=='yjkexport'">平台录入</span>
-                    <span v-if="formLabeldetails1.resource=='other'">平台录入</span>
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="职称：">
-                    <span v-if="formLabeldetails.doctorTitle=='ASSISTANT_PHYSICIAN'">住院医师</span>
-                                    <span v-if="formLabeldetails1.doctorTitle=='ATTENDING_DOCTOR'">主治医师</span>
-                                    <span v-if="formLabeldetails1.doctorTitle=='DEPUTY_CHIEF_PHYSICIAN'">副主任医师</span>
-                                    <span v-if="formLabeldetails1.doctorTitle=='CHIEF_PHYSICIAN'">主任医师</span>
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="身份证号：">
-                            {{formLabeldetails1.idCard}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="资格证号：">
-                            {{formLabeldetails1.pharmacistCertificateNum}}
-                            </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-                <el-form-item  label="执业证号：">
-                            {{formLabeldetails1.qualificationCertificateNum}}
-                            </el-form-item>
-            </el-col>
-            </el-row>
-            <img v-if="formLabeldetails1.idCardFront" :src="formLabeldetails1.idCardFront" style="width:200px;height:200px;">
-            <img v-if="formLabeldetails1.idCardBack" :src="formLabeldetails1.idCardBack" style="width:200px;height:200px;">
-            <img v-if="formLabeldetails1.pharmacistCertificateFront" :src="formLabeldetails1.pharmacistCertificateFront" style="width:200px;height:200px;">
-            <img v-if="formLabeldetails1.qualificationCertificateFront" :src="formLabeldetails1.qualificationCertificateFront" style="width:200px;height:200px;">
-            <img v-if="formLabeldetails1.picture" :src="formLabeldetails1.picture" style="width:200px;height:200px;">
-            </el-form>
+                    <div style="width:100%;height: 100%;overflow: hidden;min-height: 385px;margin-left:15px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
+                        <div v-if="formLabeldetails1.doctorGood" style="display: flex;flex-direction: column;">
+                            <div style="padding:10 0px;min-width:60px;background-color:#409eff;color:#fff;text-align: center;">擅长：</div>
+                            <div style="text-indent:2em;">{{formLabeldetails1.doctorGood}}</div>
+                        </div>
+                        <div v-if="formLabeldetails1.doctorBrief" style="display: flex;flex-direction: column;">
+                            <div style="padding:10 0px;min-width:60px;background-color:#409eff;color:#fff;text-align: center;">简介：</div>
+                            <div style="text-indent:2em;">{{formLabeldetails1.doctorBrief}}</div>
+                        </div>
+                        <div v-if="formLabeldetails1.remark" style="display: flex;flex-direction: column;">
+                            <div style="padding:10 0px;min-width:60px;background-color:#409eff;color:#fff;text-align: center;">备注：</div>
+                            <div style="text-indent:2em;">{{formLabeldetails1.remark}}</div>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="min_title">数量统计</div>
+                <div style="padding-left:30px;">
+                    <div style="padding:5px 0;">医生处方数量：{{formLabeldetails1.prescriptionNum}}</div>
+                    <div style="padding:5px 0;">医生订单数量：{{formLabeldetails1.orderNum}}</div>
+                    <div style="padding:5px 0;">医生订单金额：{{formLabeldetails1.orderMoney}}</div>
+                    <div style="padding:5px 0;">医生患者数量：{{formLabeldetails1.doctorPatientNum}}</div>
+                </div>
+
+                <div class="min_title">来源顾问</div>
+                <div v-if="formLabeldetails1.resourceAdviserName" style="padding-left:30px;">
+                    <div style="padding:5px 0;">来源顾问：{{formLabeldetails1.resourceAdviserName}}</div>
+                    <div style="padding:5px 0;">顾问手机：{{formLabeldetails1.resourceAdviserPhone}}</div>
+                </div>
+
+                <div class="min_title" v-if="formLabeldetails1.idCard||formLabeldetails1.idCardFront||formLabeldetails1.idCardBack||formLabeldetails1.pharmacistCertificateNum||formLabeldetails1.pharmacistCertificateFront||formLabeldetails1.qualificationCertificateNum||formLabeldetails1.qualificationCertificateFront">证件信息</div>
+                <div v-if="formLabeldetails1.idCard||formLabeldetails1.idCardFront||formLabeldetails1.idCardBack" style="padding:0 30px;display: flex;justify-content: space-between;">
+                    <div v-if="formLabeldetails1.idCard" style="padding:5px 0;">身份证号：{{formLabeldetails1.idCard}}</div>
+                    <img v-if="formLabeldetails1.idCardFront" :src="formLabeldetails1.idCardFront" style="height:110px;width: 110px;margin: 5px 10px;">
+                    <img v-if="formLabeldetails1.idCardBack" :src="formLabeldetails1.idCardBack" style="height:110px;width: 110px;margin: 5px 10px;">
+                </div>
+                <div v-if="formLabeldetails1.pharmacistCertificateNum||formLabeldetails1.pharmacistCertificateFront" style="padding:0 30px;display: flex;justify-content: space-between;">
+                    <div v-if="formLabeldetails1.pharmacistCertificateNum" style="padding:5px 0;">资格证号：{{formLabeldetails1.pharmacistCertificateNum}}</div>
+                    <img v-if="formLabeldetails1.pharmacistCertificateFront" :src="formLabeldetails1.pharmacistCertificateFront" style="height:110px;width: 110px;margin: 5px 10px;">
+                </div>
+                <div v-if="formLabeldetails1.qualificationCertificateNum||formLabeldetails1.qualificationCertificateFront" style="padding:0 30px;display: flex;justify-content: space-between;">
+                    <div v-if="formLabeldetails1.qualificationCertificateNum" style="padding:5px 0;">执业证号：{{formLabeldetails1.qualificationCertificateNum}}</div>
+                    <img v-if="formLabeldetails1.qualificationCertificateFront" :src="formLabeldetails1.qualificationCertificateFront" style="height:110px;width: 110px;margin: 5px 10px;">
+                </div>
+
+            </div>
 
             </el-dialog>
 
@@ -1543,10 +1443,12 @@ handlegenerate(index, row){
         formLabeldetails:any={};
         formLabeldetails1:any={};
         detailsdoctor(index,row){
+            this.formLabeldetails={}
             this.detailsshow=true;
             this.formLabeldetails=row
         }
         doctordetails(index,row){
+            this.formLabeldetails1={}            
             this.detailsshow1=true;
             this.formLabeldetails1=row
         }
