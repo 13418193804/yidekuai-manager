@@ -9,8 +9,6 @@
         </div>
          <div >
 
-           {{ temporaryPrescriptiondrugIds}}
-         {{presId}}
 <span style="margin-right:10px">平台处方数量统计 {{allprescription}} 个</span>             
 <span > 待转方数量 {{notCount}} 个</span>    
             </div>
@@ -123,7 +121,7 @@
   10px;margin-top: 10px;
   line-height: 12px;" class=" flex  flex-align-center" v-for="items in item" v-if="items.value !== 'consigneeAddress'">
 <span style="width:120px;">{{items.title}}</span>
-{{diagnosis}} 
+
  <el-input :disabled="index ==1 " v-if="items.model !== 'diagnose'" v-model="createForm[items.model]" size="small" :placeholder="'请输入'+items.title.replace('：','')"
  style="margin-right:10px;  "/>
   <el-input  v-else v-model="diagnosis" size="small" :placeholder="'请输入'+items.title.replace('：','')"
@@ -133,10 +131,10 @@
 </div>
 </div>
 </div>
-{{diagnosis}}
+
 <div style="height:20px;"></div>
 <el-row :gutter="24"  style="padding:0 0 20px;">
-  {{preImageList}}
+
   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 <corpperlabel ref="cropper" :preImageList="preImageList"></corpperlabel>
   <div style="margin-bottom:22px;" v-loading="add_upload_loading">
@@ -429,7 +427,6 @@
   </el-row>
 <div style="border-bottom:1px #e5e5e5 solid;padding:10px 0;">
 </div>
-{{preDrugList}}
 <el-table border
     :data="preDrugList"
     stripe
