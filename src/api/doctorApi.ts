@@ -60,7 +60,7 @@ export const setDoctorHIDEstatus = (doctorid) => {
         .then(res => res);
 }
 
-export const adddoctor = (form,hospital,department,idCardFront,idCardBack,pharmacistCertificateFront,qualificationCertificateFront) => {
+export const adddoctor = (form,hospital,department,idCardFront,idCardBack,pharmacistCertificateFront,qualificationCertificateFront,picture) => {
 
     let params = {
         token: sessionStorage.getItem("token"),
@@ -86,12 +86,13 @@ export const adddoctor = (form,hospital,department,idCardFront,idCardBack,pharma
         qualificationCertificateNum:form.qualificationCertificateNum,
         age:form.age,
         sex:form.sex,
+        picture:picture,        
     }
     return Api.requestForm2('/api/doctor/adddoctorother', params)
         .then(res => res);
 }
 
-export const updatedoctor = (form,hospital,department,idCardFront,idCardBack,pharmacistCertificateFront,qualificationCertificateFront) => {
+export const updatedoctor = (form,hospital,department,idCardFront,idCardBack,pharmacistCertificateFront,qualificationCertificateFront,picture) => {
 
     let params = {
         token: sessionStorage.getItem("token"),
@@ -108,7 +109,7 @@ export const updatedoctor = (form,hospital,department,idCardFront,idCardBack,pha
         consultingfee: form.consultingFee,
         remark:form.remark,
         doctortitle:form.doctorTitle,
-        idCard:form.idCard,
+        idcard:form.idCard,
         idCardFront:idCardFront,
         idCardBack:idCardBack,
         pharmacistCertificateFront:pharmacistCertificateFront,
@@ -117,6 +118,7 @@ export const updatedoctor = (form,hospital,department,idCardFront,idCardBack,pha
         qualificationCertificateNum:form.qualificationCertificateNum,
         sex:form.sex,
         age:form.age,
+        picture:picture,
     }
     return Api.requestForm2('/api/doctor/updatedoctor', params)
         .then(res => res);
@@ -228,7 +230,7 @@ export const notPassDoctor = (doctorId) => {
         .then(res => res);
 }
 
-export const notPassupdatedoctor = (form,hospital,department,idCardFront,idCardBack,pharmacistCertificateFront,qualificationCertificateFront) => {
+export const notPassupdatedoctor = (form,hospital,department,idCardFront,idCardBack,pharmacistCertificateFront,qualificationCertificateFront,picture) => {
 
     let params = {
         doctorid: form.doctorId,
@@ -243,7 +245,7 @@ export const notPassupdatedoctor = (form,hospital,department,idCardFront,idCardB
         consultingfee: form.consultingFee,
         remark:form.remark,
         doctortitle:form.doctorTitle,
-        idCard:form.idCard,
+        idcard:form.idCard,
         idCardFront:idCardFront,
         idCardBack:idCardBack,
         pharmacistCertificateFront:pharmacistCertificateFront,
@@ -252,6 +254,7 @@ export const notPassupdatedoctor = (form,hospital,department,idCardFront,idCardB
         qualificationCertificateNum:form.qualificationCertificateNum,
         sex:form.sex,
         age:form.age,
+        picture:picture,
     }
     return Api.requestForm2('/api/doctor/adviserPerfectDoc', params)
         .then(res => res);

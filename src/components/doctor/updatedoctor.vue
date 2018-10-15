@@ -64,6 +64,7 @@
                     <img v-if="idCardFrontUrl" :src="idCardFrontUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
+                <div v-if="idCardFrontUrl" @click="delUrl('idCardFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
             </div>
             <div class="flex flex-1">
                 <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">身份证背面</div>
@@ -75,6 +76,7 @@
                 <img v-if="idCardBackUrl" :src="idCardBackUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+            <div v-if="idCardBackUrl" @click="delUrl('idCardBackUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
             </div>
         </div>
         <el-form-item label="医师资格证号">
@@ -90,6 +92,7 @@
             <img v-if="pharmacistCertificateFrontUrl" :src="pharmacistCertificateFrontUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
+        <div v-if="pharmacistCertificateFrontUrl" @click="delUrl('pharmacistCertificateFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
         </div>
         <el-form-item label="医师执业证号">
             <el-input v-model="formLabelAlign1.qualificationCertificateNum"></el-input>
@@ -104,6 +107,20 @@
             <img v-if="qualificationCertificateFrontUrl" :src="qualificationCertificateFrontUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
+        <div v-if="qualificationCertificateFrontUrl" @click="delUrl('qualificationCertificateFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
+        </div>
+
+        <div class="flex">
+                <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医生头像：</div>
+                <el-upload
+                    class="avatar-uploader"
+                    :action="g_news_url"
+                    :show-file-list="false"
+                    :on-success="pictureSuccess">
+                    <img v-if="pictureUrl" :src="pictureUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                <div v-if="pictureUrl" @click="delUrl('pictureUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
         </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -230,6 +247,7 @@ updateloading=false;
           qualificationCertificateNum:'',
           sex:'',
           age:'',
+          picture:'',
 }
 // ASSISTANT_PHYSICIAN,//住院医师
 //     ATTENDING_DOCTOR,//主治医师
@@ -247,11 +265,9 @@ updatedoctorrules(formLabelAlign1){
       a.validate((valid) => {
       if (valid) {    
           if(this.update=='update'){
-              console.log(111111)
               this.updatedoctor();
           }
         if(this.update=='notPassUpdate'){
-            console.log(222222)
               this.notPassupdatedoctor();
           }
         return true;
@@ -282,7 +298,7 @@ console.log(this.formLabelAlign1.hospitalId)
                     console.log(res.data)
                     this.formLabelAlign1.sex=res.data.sex
                     this.formLabelAlign1.age=res.data.age
-                    doctorApi.updatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl).then(res => {
+                    doctorApi.updatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl,this.pictureUrl).then(res => {
                         this.loading=false
                     if (res["retCode"]) {
                         this.dialogFormVisible1 = false;
@@ -302,7 +318,7 @@ console.log(this.formLabelAlign1.hospitalId)
                 }
                 });
           }else{
-              doctorApi.updatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl).then(res => {
+              doctorApi.updatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl,this.pictureUrl).then(res => {
                     this.loading=false
                 if (res["retCode"]) {
                     this.dialogFormVisible1 = false;
@@ -337,7 +353,7 @@ notPassupdatedoctor(){
                     console.log(res.data)
                     this.formLabelAlign1.sex=res.data.sex
                     this.formLabelAlign1.age=res.data.age
-                    doctorApi.notPassupdatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl).then(res => {
+                    doctorApi.notPassupdatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl,this.pictureUrl).then(res => {
                             this.loading=false
                         if (res["retCode"]) {
                             this.dialogFormVisible1 = false;
@@ -357,7 +373,7 @@ notPassupdatedoctor(){
                 }
                 });
           }else{
-              doctorApi.notPassupdatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl).then(res => {
+              doctorApi.notPassupdatedoctor(this.formLabelAlign1,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl,this.pictureUrl).then(res => {
                 this.loading=false
             if (res["retCode"]) {
                 this.dialogFormVisible1 = false;
@@ -394,6 +410,7 @@ notPassupdatedoctor(){
                     this.formLabelAlign1.idCard=row.idCard
           this.formLabelAlign1.pharmacistCertificateNum=row.pharmacistCertificateNum
           this.formLabelAlign1.qualificationCertificateNum=row.qualificationCertificateNum
+          this.pictureUrl=row.picture
             if(row.consultingFee==0){
                 this.formLabelAlign1['consultingFee']='0';
             }
@@ -450,6 +467,7 @@ notPassupdatedoctor(){
         idCardBackUrl='';
         pharmacistCertificateFrontUrl='';
         qualificationCertificateFrontUrl='';
+        pictureUrl='';
         idCardFrontSuccess(res, file) {
             this.idCardFrontUrl = res.data.filename;
         }
@@ -461,6 +479,26 @@ notPassupdatedoctor(){
         }
         qualificationCertificateFrontSuccess(res, file) {
             this.qualificationCertificateFrontUrl = res.data.filename;        
+        }
+        pictureSuccess(res, file) {
+            this.pictureUrl = res.data.filename;        
+        }
+        delUrl(del){
+            if(del=='idCardFrontUrl'){
+                this.idCardFrontUrl=''
+            }
+            if(del=='idCardBackUrl'){
+                this.idCardBackUrl=''
+            }
+            if(del=='pharmacistCertificateFrontUrl'){
+                this.pharmacistCertificateFrontUrl=''
+            }
+            if(del=='qualificationCertificateFrontUrl'){
+                this.qualificationCertificateFrontUrl=''
+            }
+            if(del=='pictureUrl'){
+                this.pictureUrl=''
+            }
         }
 
 
