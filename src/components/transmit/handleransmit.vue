@@ -137,7 +137,7 @@
 
   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 <corpperlabel ref="cropper" :preImageList="preImageList"></corpperlabel>
-  <div style="margin-bottom:22px;" v-loading="add_upload_loading">
+  <div style="margin-bottom:22px;" v-loading="add_upload_loading" v-if="pres_type === 'BACK_HANDWORK'">
                 <el-upload :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
@@ -1100,8 +1100,7 @@ switch(prescriptionType){
 
     }
   
-
-
+if(this.pres_type == 'BACK_HANDWORK'){
 if (this.fileList.length > 0 ) {
       this.createForm.pictureIds = this.fileList
         .map(item => {
@@ -1112,6 +1111,7 @@ if (this.fileList.length > 0 ) {
       this.$message("请上传处方图片");
       return;
     }
+}
 
 
 
@@ -1153,12 +1153,9 @@ if (this.fileList.length > 0 ) {
                 if (res["retCode"]) {
               
                this.createForm.presId = res.data.prescription.presId
-              this.doUpdatePre()
-          
-
-
-
-
+              if(this.pres_type == 'BACK_HANDWORK'){
+                   this.doUpdatePre()
+               }
                   // this.tranRemake = "";
                   // if (res.data.nextPresId) {
                   //   this.getCountForList("xia", res.data.nextPresId);
@@ -1173,6 +1170,7 @@ if (this.fileList.length > 0 ) {
                 }
               });
           }
+          
         });
       })
       .catch(() => {
