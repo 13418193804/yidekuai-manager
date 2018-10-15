@@ -1459,7 +1459,7 @@ export const findmemberlike = (model) => {
 
 
 /**
-* 新增处方( 平台手工单 )
+* 新增处方( 直接开方 )
 */
 export const createphotoprescription = (model) => {
     
@@ -1501,4 +1501,64 @@ export const updatePre = (model) => {
 }
 
 
+/**
+*角色查权限
+*/
+export const getRolePermission = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/authority/getRolePermission', params)
+        .then(res => res);
+}
+
+
+/**
+*路径查权限
+*/
+export const getButtonPermission = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/authority/getButtonPermission', params)
+        .then(res => res);
+}
+
+
+
+/**
+*没有绑过的顾问
+*/
+export const getUndistributedAdviser = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/getUndistributedAdviser', params)
+        .then(res => res);
+}
+
+/**
+*组长绑定顾问 update
+*/
+export const directorDistributeAdviser = (model) => {
+    
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/api/adviser/directorDistributeAdviser', params)
+        .then(res => res);
+}
 

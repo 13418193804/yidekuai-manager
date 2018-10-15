@@ -2,9 +2,11 @@
     <div >
   
  
-		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="model"  title="处方详情">
+		<el-dialog width= "70vw" class="min_box" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="model"  title="处方详情">
 
-
+<div class="min_title">
+医患信息
+</div>
 
 
 
@@ -236,9 +238,9 @@ model = false
   handleprescriptionType(prescriptionType){
 switch(prescriptionType){
   case 'BACK_HANDWORK':
-  return '平台手工单'
+  return '直接开方'
    case 'DOC_HANDWORK':
-  return '医生手工单'
+  return '线下订单'
    case 'PHOTO':
   return '普通单'
         default:

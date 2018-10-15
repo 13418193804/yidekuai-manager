@@ -113,47 +113,18 @@
 		</el-col>
 
 
-  <el-dialog v-bouncing="primssLoading" :visible.sync="primssModel" width="1050px" center size="tiny"  title="角色权限" :close-on-click-modal="false" top="40px">
+  <el-dialog  :visible.sync="primssModel" width="1050px" center size="tiny"  title="角色权限" :close-on-click-modal="false" top="40px">
+    <div style="min-height:500px;" v-bouncing="primssLoading">
+      <div>
+<div v-for="item in AuthorityList">
+    <h4 style="margin: 0;">{{item.name}}</h4>
+  <el-checkbox-group v-model="checkboxGroup6" size="small">
+      <el-checkbox  v-for="items in item.ButtonPermissionList" :label="items.permissionId" :checked="items.haveFlag">{{items.name}}</el-checkbox>
+    </el-checkbox-group>
+   </el-checkbox-group>
+</div>
+</div>
 
-<!--     
-    <el-checkbox-group v-model="checkboxGroup6" size="mini" >
-      <el-checkbox v-for="(item,index) in AuthorityList" :label="item.permissionId" border :value="item.permissionId">{{item.name}}</el-checkbox>
-    </el-checkbox-group> -->
-    <div style="min-height:500px;">
-<el-input style="margin-bottom:20px;"
-  placeholder="输入关键字进行过滤"
-  v-model="filterText">
-</el-input>
-
-
-  <el-checkbox-group     v-model="checkboxGroup6"
-  >
-
-  
-         <!-- :default-checked-keys="checkboxGroup6" -->
-  
-
- <el-tree :props="defaultProps"
-      :data="AuthorityList"
-      node-key="permissionId"
-      default-expand-all
-  @check-change="handleCheckChange"  ref="tree2"
-      :expand-on-click-node="false"   :filter-node-method="filterNode">
-
-
-<span class="custom-tree-node" slot-scope="{ node, data }">
-     <span style="font-size:14px;">可见菜单:{{ data.name }}</span>
-        <span style="    position: absolute;
-    right: 0;">
-      <el-checkbox :label="data.permissionId" :key="1">启用</el-checkbox>
-        </span>
-      </span>
-
-
-    </el-tree>
-
-  </el-checkbox-group>
-    
     </div>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="primssModel = false">取 消</el-button>
@@ -278,8 +249,8 @@ this.model =true
   primssRow = {}
   showRolePrimss(row){
 
-this.primssLoading=true
-
+    this.primssLoading=true
+    this.AuthorityList = []
     let a = {}
     Object.assign(a,row)
     this.primssRow = a
@@ -287,22 +258,35 @@ this.primssLoading=true
     this.roleGetPrimss(row);
     this.primssModel = true;
   }
+
   primssLoading = false
 primssModel = false
   roleGetPrimss(row){
-indexApi.roleGetPrimss(
+indexApi.getRolePermission(
  {roleId: row.roleId}
 ).then(res => {
+        this.primssLoading=false
         if (res["retCode"]) {
-          if(res.data.rolepermission.length>0){
-            this.checkboxGroup6 = res.data.permissionIdList
-          }
+            this.AuthorityList = res.data.MenuButtonPermissionList
         } else {
           if(!res['islogin']){this.$alert(res["message"]);}
           console.error("数据查询错误");
         }
-        this.primssLoading=false
+  
       });
+// indexApi.roleGetPrimss(
+//  {roleId: row.roleId}
+// ).then(res => {
+//         if (res["retCode"]) {
+//           if(res.data.rolepermission.length>0){
+//             this.checkboxGroup6 = res.data.permissionIdList
+//           }
+//         } else {
+//           if(!res['islogin']){this.$alert(res["message"]);}
+//           console.error("数据查询错误");
+//         }
+//         this.primssLoading=false
+//       });
 
   }
 
@@ -469,7 +453,7 @@ this.$alert('请输入职位描述')
     this.getRoleList();
     this.getDepartment();
 
-    this.getPermission();
+    // this.getPermission();
   }
 }
 </script>

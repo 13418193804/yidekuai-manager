@@ -14,6 +14,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'typeface-roboto'
 import './common/js/bouncing'
+import * as indexApi from  './api/indexApi'
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false
@@ -29,8 +30,20 @@ Component.registerHooks([
 
 //日志
 router.beforeEach((to, from, next) => {
+
   console.log(`跳转页面提示:${to.name};当前地址:${window.location.origin}#${to.path}`)
-  next()
+  if(sessionStorage.roleAdmin == 'centerroleAdminFormIdTextYIDEKUAI'){
+    next()
+  }else{
+    indexApi.getButtonPermission({
+      url: to.path
+    }).then(res => {
+      if (res["retCode"]) {
+        Object.assign(to.meta, res['data'].ButtonPermissionHashMap)  
+      } 
+    });
+    next()
+  }
 })
 
 
@@ -53,6 +66,40 @@ Vue.prototype.dohavePermission = PermissionItem => {
   // return true
 };
 
+
+
+
+// 权限指令
+/**
+ *  v-promiss
+ *  .edit 编辑权限
+ *  任何区域指定指令将会根据权限判断是否显示
+ * 
+ */
+Vue.directive('promiss', {
+  bind: function (el, binding) {
+    if(sessionStorage.roleAdmin == 'centerroleAdminFormIdTextYIDEKUAI'){
+      return
+    }
+    for (let n in binding.modifiers) {
+      if (!router.app._route.meta[n]) {
+        el.style.display = 'none';
+      }
+    }
+  },
+  update: function (el, binding) {
+
+  },
+  // 当被绑定的元素插入到 DOM 中时……
+  inserted: function (el, binding) {
+
+  },
+  // 指令所在组件的 VNode 及其子 VNode 全部更新后调用。
+  componentUpdated: function (el, binding) {
+
+  }
+
+})
 
 
 

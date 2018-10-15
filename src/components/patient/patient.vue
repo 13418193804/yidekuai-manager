@@ -137,7 +137,7 @@
           <el-button
           size="mini"
           type="text"
-          @click="changeModel(scope.row)">编辑</el-button>
+          @click="changeModel(scope.row)" v-promiss.edit >编辑</el-button>
           
 
           <el-button
@@ -655,6 +655,7 @@ orderByStr = "";
   }
 
   mounted() {
+    console.log(this.$route)
     this.getpatientList();
     this.allUserCount();
   }

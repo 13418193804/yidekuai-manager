@@ -284,9 +284,9 @@ export default class AddGoods extends Vue {
       handleprescriptionType(prescriptionType){
 switch(prescriptionType){
   case 'BACK_HANDWORK':
-  return '平台手工单'
+  return '直接开方'
    case 'DOC_HANDWORK':
-  return '医生手工单'
+  return '线下订单'
    case 'PHOTO':
   return '普通单'
         default:

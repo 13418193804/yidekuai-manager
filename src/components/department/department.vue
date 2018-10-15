@@ -52,7 +52,7 @@
          <el-button
           size="mini"
           type="primary"
-          @click="changeModel(scope.row)" style="margin-bottom:20px;" >编辑</el-button>
+          @click="changeModel(scope.row)" style="margin-bottom:20px;"  v-promiss.edit>编辑</el-button>
           <el-button
           size="mini"
           type="text"

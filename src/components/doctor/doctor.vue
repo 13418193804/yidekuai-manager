@@ -44,7 +44,7 @@
                                 <el-button type="text" @click="detailsdoctor(scope.$index, scope.row)">查看详情</el-button>                                
                                 <el-button type="text" v-if="scope.row.doctorStatus=='UNANDITED'" @click="handlepassDoctor(scope.$index, scope.row)">通过</el-button>
                                 <el-button type="text" v-if="scope.row.doctorStatus=='UNANDITED'"  @click="handlenotPassDoctor(scope.$index, scope.row)">不通过</el-button>
-                                <el-button type="text" v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'" @click="handleEdit(scope.$index, scope.row,'notPassUpdate')">修改</el-button>
+                                <el-button type="text" v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'" @click="handleEdit(scope.$index, scope.row,'notPassUpdate')" v-promiss.edit>修改</el-button>
                                 <el-button type="text" v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'"  @click="handlepassDoctor(scope.$index, scope.row)">再通过</el-button>
                                 <el-button type="text"  @click="deleteDoctor(scope.$index, scope.row)">删除</el-button>
                             </template>
@@ -129,7 +129,7 @@
                         <el-button size="mini" type="text" @click="handlegenerate(scope.$index, scope.row)">二维码</el-button>
                         <el-button size="mini" type="text" @click="doctordetails(scope.$index, scope.row)">详情</el-button>
                         <el-button size="mini" type="text" @click="lookpatient(scope.$index, scope.row)">查看患者</el-button>
-                        <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row,'update')">编辑</el-button>
+                        <el-button size="mini" type="text" @click="handleEdit(scope.$index, scope.row,'update')" v-promiss.edit>编辑</el-button>
                         <el-button size="mini" type="text" @click="doSubmitStatus(scope.$index, scope.row)">{{scope.row.doctorStatus =='USE' ?'停用':''}}{{scope.row.doctorStatus =='STOP' ?'启用':''}}</el-button>
                     </template>
                     </el-table-column>

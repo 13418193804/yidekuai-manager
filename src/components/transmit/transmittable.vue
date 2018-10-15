@@ -122,7 +122,12 @@
           size="mini"
           type="text"
           @click="changeModel(scope.$index, scope.row)" >处方详情</el-button>
-       
+        
+   <el-button
+          size="mini"
+          type="text"
+          @click="addPrescription('edit', scope.row)" v-if="scope.row.presState == 'NOT_TRANSLATED_PRESCRIPTION' && (scope.row.prescriptionType == 'BACK_HANDWORK' || scope.row.prescriptionType == 'DOC_HANDWORK'  )" v-promiss.edit>完善</el-button>
+
         <el-button
           size="mini"
           type="primary"
@@ -135,12 +140,7 @@
           type="primary"
           @click="audit(scope.$index, scope.row)" v-if=" $route.path == '/audit' && (scope.row.presState == 'ALREADY_TRANSLATED_PRESCRIPTION' || scope.row.presState == 'FAIL_AUDIT_PRESCRIPTION')">{{ scope.row.presState == 'FAIL_AUDIT_PRESCRIPTION'?'重新审方':'审方'}}</el-button>
   
-  
-   <el-button
-          size="mini"
-          type="primary"
-          @click="addPrescription('edit', scope.row)" v-if="scope.row.presState == 'NOT_TRANSLATED_PRESCRIPTION' && (scope.row.prescriptionType == 'BACK_HANDWORK' || scope.row.prescriptionType == 'DOC_HANDWORK'  )">完善</el-button>
-
+ 
       
   <!-- <el-button
           size="mini"
@@ -158,7 +158,7 @@
 
 
 		<el-dialog class="min_box" width= "70vw" :close-on-click-modal="false" 
-    :title="add_model_type == 'add' ?'新增平台手工单':`完善手工单（${handleprescriptionType(createForm.prescriptionType).name}）`"
+    :title="add_model_type == 'add' ?'新增直接开方':`完善手工单（${handleprescriptionType(createForm.prescriptionType).name}）`"
      :append-to-body="true" :visible.sync="add_model"   >
 
 <div style="min-height:500px;" v-bouncing="add_model_loading">
@@ -201,11 +201,11 @@
    </div>
 </div>
 
-<div :style="!createForm.memberId?'opacity: 0.3;':''"  style="padding:0 10px 10px;" >
-     
-       <div class="filter_min_box  flex  flex-align-center flex-pack-center"  v-if="!createForm.memberId">
+<div  style="padding:0 10px 10px;" >
+     <!-- :style="!createForm.memberId?'opacity: 0.3;':''"  -->
+       <!-- <div class="filter_min_box  flex  flex-align-center flex-pack-center"  v-if="!createForm.memberId"> -->
    <!-- <i class="el-icon-plus" style="font-size:39px;" ></i> -->
-  </div>
+  <!-- </div> -->
 
 
      <el-form-item  label="患者姓名：" style="margin:0">
@@ -223,7 +223,7 @@
               </el-input>
   			</el-form-item>
 
-  <div v-if="add_model_type =='edit'">
+  <div >
 
 <div class="flex">
   <div>
@@ -314,7 +314,8 @@
 </div>
 <div style="padding: 15px;">
 
-  <div style="margin-bottom:22px;" v-bouncing="add_upload_loading">
+  <div style="margin-bottom:22px;" v-loading="add_upload_loading">
+
                 <el-upload :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
@@ -340,12 +341,8 @@
             </el-dialog>
 
 		<el-dialog class="filter_box" width= "70vw" :close-on-click-modal="false" title="搜索" :append-to-body="true" :visible.sync="filter_model"   >
-        
 
-
-
-
-<div>
+<div >
 <div style="padding: 10px;text-align: left;" class="filter_select">
  <el-input placeholder="请输入手机号" size="small" style="min-width:200px;max-width:400px;" v-model="mobile" class="input-with-select">
      <el-select v-model="filter_type" slot="prepend" placeholder="请选择" class="filter_select">
@@ -468,6 +465,8 @@ export default class AddGoods extends Vue {
 
 
 // 不判断患者Id
+
+
     // if (
     //   ((this.createForm.memberid || "") === "" &&
     //     this.add_model_type == "add") ||
@@ -557,7 +556,7 @@ this.cancelLoading = false
        this.$message("请输入收件人");
       return;
       }
-    if((this.createForm.consigneeAddress||'')===''){
+    if((this.createForm.consigneePhone||'')===''){
        this.$message("请输入收件号码");
       return;
       }
@@ -667,14 +666,14 @@ this.cancelLoading = false
       preTypeEnum: "BACK_HANDWORK"
     };
 
-    this.add_model_loading = true;
-    this.add_footer_loading = true;
     this.fileList = [];
     this.add_model_type = type;
 
     if (row) {
+          this.add_model_loading = true;
+    this.add_footer_loading = true;
       row.servicemoney = row.serviceMoney;
-      console.log()
+
       row.feeTypeEnum = row.feeHide;
       this.getPrePic(row.presId, () => {
         let a = {};
@@ -691,12 +690,18 @@ this.cancelLoading = false
         this.add_model_loading = false;
         this.add_footer_loading = false;
       });
-    } else {
-      this.add_model_loading = false;
-      this.add_footer_loading = false;
-    }
-
     this.add_model = !this.add_model;
+      
+    } else {
+
+
+      // 清除缓存
+ sessionStorage.presId = ""
+        //跳去转方
+ this.$router.push({name:'handleransmit',params:{
+  pres_type: 'BACK_HANDWORK'
+ }})
+    }
   }
   getPrePic(presId, callback) {
     indexApi.getPrePic({ preId: presId }).then(res => {
@@ -853,12 +858,12 @@ this.cancelLoading = false
     switch (prescriptionType) {
       case "BACK_HANDWORK":
         return {
-          name: "平台手工单",
+          name: "直接开方",
           type: "success"
         };
       case "DOC_HANDWORK":
         return {
-          name: "医生手工单",
+          name: "线下订单",
           type: "warning"
         };
       case "PHOTO":

@@ -248,7 +248,7 @@ date= []
     indexApi
       .findPrescriptionByType(data).then(res => {
         this.loading =false
-        this.$emit('updateYdkPrescriptionStatusNum','NEW_PRESCRIPTION');
+        // this.$emit('updateYdkPrescriptionStatusNum','NEW_PRESCRIPTION');
             this.countPreByStatu();
       if (res["retCode"]) {
         console.log(res.data);

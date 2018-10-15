@@ -116,7 +116,7 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
     </el-tab-pane>
 
 
-    <el-tab-pane :label="`医生手工单（${DOC_HANDWORK}）`" name="name3">
+    <el-tab-pane :label="`线下订单（${DOC_HANDWORK}）`" name="name3">
 <div style="padding-bottom:20px;">
 <!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
 ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
@@ -312,7 +312,7 @@ DOC_HANDWORK = 0
     this.loading = true;
     indexApi.findPrescriptionByType(data).then(res => {
       this.loading = false;
-      this.$emit("updateYdkPrescriptionStatusNum", "NEW_PRESCRIPTION");
+      // this.$emit("updateYdkPrescriptionStatusNum", "NEW_PRESCRIPTION");
       this.countPreByStatu();
       if (res["retCode"]) {
         this.prescriptionList = res.data.list;

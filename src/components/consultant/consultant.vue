@@ -124,7 +124,7 @@
       <template slot-scope="scope">
            {{scope.row.adviser_type=='OUTSIDE'?'外部顾问':''}}
            {{scope.row.adviser_type=='INSIDE'?'内部顾问':''}}
-      </template>
+      </template> 
    </el-table-column>
  <el-table-column v-if="adviserType == 'INSIDE'"
       label="顾问职位">
@@ -134,6 +134,14 @@
       </template>
    </el-table-column>
    
+     <el-table-column
+      prop="up_adviser_name"
+      label="上级顾问" width="150">
+   </el-table-column>
+      <el-table-column
+      prop="up_adviser_phone"
+      label="上级顾问手机号" width="150">
+   </el-table-column>
   <el-table-column
       prop="userName"
       label="手机号" width="150">
@@ -163,27 +171,23 @@
       label="备注"  width="180">
    </el-table-column>
 
- <el-table-column label="操作" fixed="right"  width="400">
+ <el-table-column label="操作" fixed="right"  :width="$route.path === '/consultant-manager'?'400':'200'">
       <template slot-scope="scope">
-
              <el-button
           size="mini"
           type="text" @click="cleanConsultantItemShelf(scope.row)"
       >医生统计</el-button>
-
-				<el-button size="small" type="text" @click="openNotBindDoctorModel(scope.row)" v-if="$route.path === '/consultant-manager'">分配医生</el-button>
-
-                      <el-button
+    
+    		<el-button size="small" type="text" @click="openNotBindDoctorModel(scope.row)" v-if="$route.path === '/consultant-manager'">分配医生</el-button>
+        <el-button
           size="mini"
           type="text" @click="adviserGetDrugDoRow(scope.row)"
         >药品统计</el-button>
-
         <el-button
           size="mini"
           type="text"
           @click="changeModel('edit',scope.row)" v-if="$route.path === '/consultant-manager'">编辑</el-button>
         <el-button type="text"  style="margin-top:20px;" @click="viewBigIcon(scope.row.qrcode)">二维码</el-button>
-
          <el-button @click="doDelete(scope.row)"
           size="mini"
           type="text" v-if="$route.path === '/consultant-manager'"
@@ -200,9 +204,10 @@
 
 
 <!--    ========================                    弹窗                ======================     -->
-		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="adviserModel"  :title="type=='add'?'新增顾问':'编辑顾问'">
+		<el-dialog class="min_box" width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="adviserModel"  :title="type=='add'?'新增顾问':'编辑顾问'">
 
-   <el-form label-width="120px" ref="ruleForm" :model="adviserObj"  :rules="rules">
+
+   <el-form label-width="100px" ref="ruleForm" :model="adviserObj"  :rules="rules">
 				<el-form-item label="顾问姓名" prop="adviserName" >
               					<el-input v-model="adviserObj.adviserName"  placeholder="请输入顾问姓名" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>
@@ -228,51 +233,39 @@
   <el-radio v-model="adviserTypeEnums" label="OUTSIDE">外部顾问</el-radio>
               					<!-- <el-input v-model="adviserObj.adviserAge"  placeholder="请输入年龄" style="max-width:400px;min-width:200px" ></el-input> -->
 			        	</el-form-item>	
-		<el-form-item label="主管顾问" prop="adviserTypeEnums" v-if="adviserTypeEnums =='INSIDE'">
-<el-switch
-  v-model="adviserObj.directorState1"
-  active-color="#13ce66"
-  inactive-color="#ff4949">
-</el-switch>
+		<el-form-item label="顾问职位" prop="adviserTypeEnums" >
+  <el-radio v-model="adviserObj.directorState1" :label="true">主管顾问</el-radio>
+  <el-radio v-model="adviserObj.directorState1" :label="false">普通顾问</el-radio>
+			        	</el-form-item>	
+		<el-form-item label="上级顾问" v-if="!adviserObj.directorState1" >
+  <el-select v-model="adviserObj.adviserDirectorId"    filterable clearable placeholder="请选择上级顾问" >
+    <el-option
+      v-for="item in selectdirectorList"
+      :key="item.adviserId"
+      :label="item.adviserName+'/'+item.phone"
+      :value="item.adviserId">
+    </el-option>
+  </el-select>
+
 			        	</el-form-item>	
                 
-                       
-                        		<el-form-item label="备注" >
+                     		<el-form-item label="备注" >
               					<el-input type="textarea" v-model="adviserObj.remark"  placeholder="备注"  :rows="4" style="max-width:400px;min-width:200px" ></el-input>
 			        	</el-form-item>	
-                
-                
-                
                   		<el-form-item label="状态"  v-if="type!=='add'">
-                      <el-switch
-  v-model="userStatus1"
-  active-color="#13ce66"
-  inactive-color="#ff4949">
-</el-switch>
-                         <!-- <el-select v-model="adviserObj.userStatus" placeholder="请选择状态">
-                          <el-option
-                            label="启用"
-                            value="1">
-                          </el-option>
-                          <el-option
-                            label="停用"
-                            value="0">
-                          </el-option>
-                        </el-select> -->
+                   <el-radio v-model="userStatus1" :label="true">启用</el-radio>
+  <el-radio v-model="userStatus1" :label="false">停用</el-radio>
+        <el-button
+          size="mini"  v-if="type!=='add'" style="margin-left:20px;"
+          type="primary" @click="updateStatue('password',adviserObj)"
+          >重置密码</el-button>
+                        
 			        	</el-form-item>	
                 
                     </el-form >
-                    	<div style="    margin-left: 120px;
-    margin-bottom: 10px;" v-if="type!=='add'">
-          <el-button
-          size="mini"
-          type="primary" @click="updateStatue('password',adviserObj)"
-          >重置密码</el-button>
-                <!-- <el-button
-          size="mini"
-          type="text" @click="updateStatue('status',adviserObj)"
-          >{{adviserObj.userStatus=='1'?'停用':'启用'}}</el-button> -->
-  </div>
+            
+  
+
 			<span slot="footer" class="dialog-footer" >
 				<el-button @click="adviserModel = false">取 消</el-button>
 				<el-button type="primary" @click="submitForm('ruleForm')" :disabled="loading">保 存</el-button>
@@ -283,8 +276,8 @@
 			        	</el-form-item>	 -->
 
 <!-- ==============         医生列表   ================================== -->
-		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="shelfModel" v-bouncing="shelfObj.loading" title="医生统计">
-    
+		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="shelfModel"  title="医生统计">
+    <div v-bouncing="shelfObj.loading">
     
 <el-row :gutter="10" style="margin-bottom:20px;">
 
@@ -386,13 +379,14 @@
 			<el-pagination layout="prev, pager, next"  :current-page="shelfObj.page+1" :page-size="shelfObj.pageSize" :total="shelfObj.total" @current-change="shelfObj.onPageChange">
 			</el-pagination>
 		</el-col>
+    </div>
             </el-dialog>
 
 
 
 <!-- =============      添加绑定的医生   ================ -->
-		<el-dialog width= "70vw" :close-on-click-modal="false" v-bouncing="notBindDoctorObj.addloading"  :append-to-body="true" :visible.sync="notBindDoctorObj.model"  title="分配医生">
-
+		<el-dialog width= "70vw" :close-on-click-modal="false" :append-to-body="true" :visible.sync="notBindDoctorObj.model"  title="分配医生">
+ <div  v-bouncing="notBindDoctorObj.addloading" >
 
  <el-row :gutter="10" style="margin-bottom:20px;">
 
@@ -463,6 +457,7 @@
 			<el-pagination layout="prev, pager, next" :current-page="notBindDoctorObj.page+1" :page-size="notBindDoctorObj.pageSize" :total="notBindDoctorObj.total" @current-change="notBindDoctorObj.onPageChange">
 			</el-pagination>
 		</el-col>
+    </div>
             </el-dialog>
 
 
@@ -475,9 +470,9 @@
 
 
 <!-- ==============        顾问查药品   ================================== -->
-		<el-dialog width= "70vw" :close-on-click-modal="false" v-bouncing="loading"  :append-to-body="true" :visible.sync="drugObj.model"  title="药品统计">
+		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="drugObj.model"  title="药品统计">
 
-<div class="flex">
+<div class="flex" v-bouncing="loading" >
 
     <div class="fontfilter " :class="fontType=='day'?'filtercheck':''" @click="checkTime('day')">本日</div>
     <div class="fontfilter" :class="fontType=='week'?'filtercheck':''" @click="checkTime('week')">本周</div>
@@ -706,51 +701,85 @@ adviserType ='INSIDE'
   adviserObj: any = {};
   type = "add";
   adviserModel = false;
+
+
   changeModel(type, row) {
+    this.getConsultantList1()
     this.adviserTypeEnums = "";
     this.type = type;
     if (type == "add") {
       this.adviserObj = {};
     } else {
       let a = {};
-      Object.assign(a, row);
-
       row.directorState1 = row.director_state == "1" ? true : false;
-      
+      Object.assign(a, row);
       this.adviserObj = a;
       this.userStatus1 = this.adviserObj.userStatus == "1" ? true : false;
-      
       this.adviserTypeEnums = row.adviser_type;
+
     }
+
     this.adviserModel = true;
   }
+
+selectdirectorList = []
+getConsultantList1(){
+
+
+ indexApi.getConsultantList1({
+   adviserType:'DIRECTOR',
+   page:0,
+   pageSize:1000
+ }).then(res => {
+        if (res["retCode"]) {
+          //列表
+console.log('res.data',res.data)
+this.selectdirectorList = res.data.AdviserInfo
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+          console.error("数据查询错误");
+        }
+      });
+
+}
+
+
+
   adviserTypeEnums: string = "";
   userStatus1: boolean = false;
   doSubmit() {
+    
     if ((this.adviserObj.adviserName || "") == "") {
-      this.$alert("请填写顾问姓名");
+      this.$message("请填写顾问姓名");
       return;
     }
     if ((this.adviserObj.userName || "") == "") {
-      this.$alert("请填写顾问手机号码");
+      this.$message("请填写顾问手机号码");
       return;
     }
     if ((this.adviserTypeEnums || "") == "") {
-      this.$alert("请选择顾问类型");
+      this.$message("请选择顾问类型");
       return;
     }
-
     this.loading = true;
-
-
-
     this.adviserObj.userStatus = this.userStatus1 ? "1" : "0";
-    this.adviserObj.directorState =  this.adviserObj.directorState1 ? "1" : "0";
-    this.adviserObj.adviserTypeEnums = this.adviserTypeEnums;
+    if(this.adviserObj.directorState1 === false ){
+    if((this.adviserObj.adviserDirectorId||'')===''){
+      this.$message('请选择上级顾问')
+      return 
+    }
+    this.adviserObj.directorState =  "0";
+    }else{
+    this.adviserObj.directorState =  "1";
+    }
 
+    this.adviserObj.adviserTypeEnums = this.adviserTypeEnums;
     if (this.type == "add") {
       this.adviserObj["userPassword"] = "123456";
       this.adviserObj["userStatus"] = "";
+
       indexApi.addConsultantItem(this.adviserObj).then(res => {
         this.loading = false;
         if (res["retCode"]) {
@@ -765,9 +794,8 @@ adviserType ='INSIDE'
         }
       });
     }
-
     if (this.type == "edit") {
-      indexApi.updateConsultantItem(this.adviserObj).then(res => {
+      indexApi.updateConsultantItem(this.adviserObj).then(res => { 
         this.loading = false;
         if (res["retCode"]) {
           this.adviserModel = false;
@@ -781,7 +809,6 @@ adviserType ='INSIDE'
         }
       });
     }
-    
   }
   submitForm(formName) {
     let a: any = this.$refs[formName];
@@ -1316,8 +1343,11 @@ adviserType ='INSIDE'
 
   mounted() {
     
-
-    this.getAdviserCount();
+ if(this.$route.path === '/consultant'){
+this.date = [this.getMonth1(),moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"]
+ }
+ 
+ this.getAdviserCount();
     this.getConsultantList();
   }
 }

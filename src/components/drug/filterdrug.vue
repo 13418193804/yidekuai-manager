@@ -1,6 +1,6 @@
 <template>
-    <div v-bouncing="loading">
-
+    <div >
+<!-- v-bouncing="loading" -->
         
 <div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
 <el-row :gutter="10">
@@ -118,7 +118,7 @@
                 <el-button
           size="mini"
           type="primary"
-         @click="changeModel('edit', scope.row)" >编辑</el-button>
+         @click="changeModel('edit', scope.row)" v-promiss.edit>编辑</el-button>
  
         
 

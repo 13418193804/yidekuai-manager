@@ -35,7 +35,7 @@ export default new Router({
         },
         {
           path: '/hospital',
-          promissId: 'PER3ca7dae514ae42e9b37658ee48ef9165',
+          promissId: 'PER91c119290f1c401e8be4d02b3fc5a704',
           icon: require('../assets/menu/商店.png'),
           select_icon: require('../assets/menu/医院.png'),
           name: '医院管理',
@@ -43,7 +43,7 @@ export default new Router({
         },
         {
           path: '/department',
-          promissId: 'PERc351e16134a645c0a4ef1ca0f2aab418',
+          promissId: 'PER95260d386704485cb90824d0c439b146',
           icon: require('../assets/menu/全科.png'),
           select_icon: require('../assets/menu/科室.png'),
           name: '科室管理',
@@ -51,7 +51,7 @@ export default new Router({
         },
         {
           path: '/doctor',
-          promissId: 'PER713760ecaf194ac7928b703eda25a119',
+          promissId: 'PERb671c5710d24440094eb85b07f7a21c3',
           icon: require('../assets/menu/医生 (2).png'),
           select_icon: require('../assets/menu/医生 (1).png'),
           name: '医生管理',
@@ -59,7 +59,7 @@ export default new Router({
         },
         {
           path: '/patient',
-          promissId: 'PER3ffb4a78d039460ba2e5637c6bfbfea7',
+          promissId: 'PERc63031a20d12438299bddd0f339572ef',
           icon: require('../assets/menu/我的.png'),
           select_icon: require('../assets/menu/患者.png'),
           name: '患者管理',
@@ -78,13 +78,13 @@ export default new Router({
       children: [
         {
           path: '/transmit',
-          promissId: 'PER71e6d509dd0c42a39603c381fd855f33',
+          promissId: 'PERe43eed7612e84c32bec028cb27962e6e',
           name: '转方管理',
           component: r => require.ensure([], () => r(require('@/components/transmit/transmit')))
         },
         {
           path: '/audit',
-          promissId: 'PER7bc70b8eb9fe496f876ba8ee7c5ec841',
+          promissId: 'PER6beb4afa30674c8eb92bfc7e648ccd50',
           name: '审方管理',
           component: r => require.ensure([], () => r(require('@/components/audit/audit')))
         }]
@@ -100,14 +100,14 @@ export default new Router({
       children: [
         {
           path: '/reminder',
-          promissId: 'PER79bc93beb8a44e8bb3c82d1a1a4771f6',
+          promissId: 'PER20ff2e7848ed46e88b92127c8b8eadc3',
           name: '催单客服',
           component: r => require.ensure([], () => r(require('@/components/order/reminder')))
         },
 
         {
           path: '/afterorder',
-          promissId: 'PERe9d8deb13d6641d4aeaf062588e28412',
+          promissId: 'PER3e1f859d89ab40b589d402027ef8c526',
           name: '售后客服',
           component: r => require.ensure([], () => r(require('@/components/order/afterorder')))
         },
@@ -116,12 +116,14 @@ export default new Router({
 
     {
       path: '/',
+ 
       component: Home,
       position: 'menu',
       menu_grade: 1,
       children: [
         {
           path: '/consultant-manager',
+          promissId: 'PER4c5ecb8c13c34a7195a0e8bdfa65991c',
           icon: require('../assets/menu/首页.png'),
           select_icon: require('../assets/menu/首页 (1).png'),
           name: '顾问管理',
@@ -142,19 +144,19 @@ export default new Router({
       children: [
         {
           path: '/consultant',
-          promissId: 'PERe23db0fb4a70444389e26ce3dc899da6',
+          promissId: 'PERa287380fb59c47b4928b1f91bec8cddd',
           name: '顾问数据',
           component: r => require.ensure([], () => r(require('@/components/consultant/consultant')))
         },
         {
           path: '/adviserdrug',
-          promissId: 'PERd710cce272da4a8c8c39aabcfa635e60',
+          promissId: 'PERb2b295741b414d6eabb05f88d846f15b',
           name: '药品数据',
           component: r => require.ensure([], () => r(require('@/components/consultant/adviserdrug')))
         },
         {
           path: '/doctordata',
-          promissId: 'PER2d8b2d474b274da4b7c0a4d8d4a23b5c',
+          promissId: 'PER9162198b10f249ab98af0977af9b28e5',
           name: '医生数据',
           component: r => require.ensure([], () => r(require('@/components/consultant/doctordata')))
         },
@@ -202,12 +204,12 @@ export default new Router({
       children: [
         {
           path: '/drug',
-          promissId: 'PERecc2af8eb68a48fcb68bbc782bab1554',
+          promissId: 'PER128b6e20354e46bd9c5822cbb43c2656',
           name: '药品库管理',
           component: r => require.ensure([], () => r(require('@/components/drug/drug')))
         },
         {
-          promissId: 'PERbcadcaeff2814e1baae0dcb661855617',
+          promissId: 'PERa09fba11fa164d088ca00b5e93643b3e',
           path: '/requiredrug',
           name: '找药管理',
           component: r => require.ensure([], () => r(require('@/components/drug/requiredrug')))
@@ -238,7 +240,7 @@ export default new Router({
 
         {
           path: '/online',
-          promissId: 'PER296d2b20d79c4601bad1408e09f687b6',
+          promissId: 'PER4807652e18e84b8993e4db1ca1274c3a',
           icon: require('../assets/menu/询问 (1).png'),
           select_icon: require('../assets/menu/咨询.png'),
           name: '在线咨询管理',

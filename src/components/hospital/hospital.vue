@@ -72,7 +72,7 @@
         <el-table-column label="操作" fixed="right"  width="200">
             <template slot-scope="scope">
                 <el-button size="mini" type="text" @click="detailshospital(scope.$index, scope.row)">查看详情</el-button>
-                <el-button size="mini" type="text" @click="edithospital(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini" type="text" v-promiss.edit @click="edithospital(scope.$index, scope.row)">编辑</el-button>
                 <el-button size="mini" type="text" @click="delethospital(scope.$index, scope.row)">删除</el-button>
             </template>
             </el-table-column>
