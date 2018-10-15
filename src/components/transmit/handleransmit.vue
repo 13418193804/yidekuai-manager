@@ -562,7 +562,7 @@
 		<el-dialog class="filter_box" width= "70vw" :close-on-click-modal="false" title="搜索" :append-to-body="true" :visible.sync="filter_model"   >
 <div >
 <div style="padding: 10px;text-align: left;" class="filter_select">
- <el-input placeholder="请输入手机号" size="small" style="min-width:200px;max-width:400px;" v-model="mobile" class="input-with-select">
+ <el-input :placeholder="`请${filter_type === 'doctor' ? '医生':'患者' }输入手机号`" size="small" style="min-width:200px;max-width:400px;" v-model="mobile" class="input-with-select">
      <el-select v-model="filter_type" slot="prepend" placeholder="请选择" class="filter_select">
       <el-option label="医生" value="doctor" ></el-option>
       <el-option label="患者" value="menber"></el-option>
