@@ -124,30 +124,59 @@
     stripe 
     style="width: 100%">
  
-  <el-table-column  fixed="left"
+
+  <el-table-column fixed="left"
       prop="drugName"
-      label="药品名称">
+      label="通用名">
    </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
+   </el-table-column>
+
   <el-table-column
       prop="partnerName"
       label="供应商">
    </el-table-column>
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="dosageforms"
+      label="剂型">
+   </el-table-column>
+
+
   <el-table-column
       prop="specification"
       label="药品规格">
    </el-table-column>
+
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
+   </el-table-column>
+
  <el-table-column
       prop="usages"
       label="用法">
    </el-table-column>
+ 
+   
  <el-table-column
       prop="dosage"
       label="用量">
    </el-table-column>
-    <el-table-column
+
+  <el-table-column
       prop="instructions"
       label="使用说明">
    </el-table-column>
+
   <el-table-column
       prop="frequency"
       label="频次">
@@ -162,16 +191,18 @@
       prop="price"
       label="药品价格">
    </el-table-column>
-
+   
   <el-table-column
       prop="shouldpay"
       label="药品合计">
    </el-table-column>
 
-    <el-table-column
+  <el-table-column
       prop="createDate"
       label="提交时间">
-      </el-table-column>
+   </el-table-column>
+
+   
     </el-table>
 <div style="text-align:right; margin-top:20px;    padding-top: 10px;border-top: 1px #e5e5e5 solid;">
 <div>治疗服务费：<span style="color:red">￥{{row.serviceMoney}}</span></div>

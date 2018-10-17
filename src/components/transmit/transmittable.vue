@@ -123,10 +123,10 @@
           type="text"
           @click="changeModel(scope.$index, scope.row)" >处方详情</el-button>
         
-   <el-button
+   <!-- <el-button
           size="mini"
           type="text"
-          @click="addPrescription('edit', scope.row)" v-if="scope.row.presState == 'NOT_TRANSLATED_PRESCRIPTION' && (scope.row.prescriptionType == 'BACK_HANDWORK' || scope.row.prescriptionType == 'DOC_HANDWORK'  )" v-promiss.edit>完善</el-button>
+          @click="addPrescription('edit', scope.row)" v-if="scope.row.presState == 'NOT_TRANSLATED_PRESCRIPTION' && (scope.row.prescriptionType == 'BACK_HANDWORK' || scope.row.prescriptionType == 'DOC_HANDWORK'  )" v-promiss.edit>完善</el-button> -->
 
         <el-button
           size="mini"
@@ -315,7 +315,6 @@
 <div style="padding: 15px;">
 
   <div style="margin-bottom:22px;" v-loading="add_upload_loading">
-
                 <el-upload :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
@@ -826,8 +825,11 @@ this.cancelLoading = false
   }
 
   handleransmit(index, row) {
+
     sessionStorage.presId = row.presId;
-    this.$router.push("/handleransmit");
+        //跳去转方
+ this.$router.push({name:'handleransmit',
+ params:row.prescriptionType ==="DOC_HANDWORK" ?{pres_type: 'DOC_HANDWORK'} :null})
   }
   preIndex = 0;
   handleStatus(status) {

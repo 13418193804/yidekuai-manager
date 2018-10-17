@@ -8,38 +8,60 @@
 
         </div>
          <div >
-
 <span style="margin-right:10px">平台处方数量统计 {{allprescription}} 个</span>             
 <span > 待转方数量 {{notCount}} 个</span>    
             </div>
-<div style="text-align:right;float:right;" v-if="pres_type !== 'BACK_HANDWORK'">
+     
+<div style="text-align:right;float:right;">
      <el-button size="small" type="primary" @click="getCountForList('shang')" :disabled="leftDis"  icon="el-icon-arrow-left">上一条</el-button>
                  <el-button size="small" type="primary" @click="getCountForList('xia')" :disabled="rightDis">下一条<i class="el-icon-arrow-right"></i></el-button>
 </div>
 
 
-    <div class="flex flex-warp-justify" style="margin-top:10px;" v-if="pres_type !== 'BACK_HANDWORK'">
+    <div class="flex flex-warp-justify" style="margin-top:10px;line-height:28px;">
  
  
-  <h4 style="margin:0" v-if="pres_type !== 'BACK_HANDWORK'">处方状态：</h4>
-<div >
+ 
+  <h4 style="margin:0"  v-if="(presId ||'') !==''">处方状态：</h4>
+<div  v-if="(presId ||'') !==''">
     {{ handleStatus(prodetail.presState)  }}
 </div>
-
   <h4 style="margin:0;padding-left:10px;">处方类型：</h4>
 <div>
-    {{ handleprescriptionType(prodetail.prescriptionType)  }}
+  <span  v-if="(presId ||'') !==''">  {{ handleprescriptionType(prodetail.prescriptionType)  }}</span>
+  <span v-else> 直接开方</span>
 </div>
-</div>
-    <div class="flex flex-warp-justify" style="margin-top:10px;" v-else>
-  <h4 style="margin:0;">处方类型：</h4>
+
+
+<div class="flex flex-warp-justify"  >
+  <h4 style="margin:0;padding-left:10px;">支付状态：</h4>
 <div>
-    直接开方
+    <el-select v-model="createForm.payModeEnum" size="mini" placeholder="请选择">
+    <el-option
+      label="未支付"
+      value="PAY_WAIT">
+    </el-option>
+        <el-option
+      label="已支付"
+      value="PAY_SUCCESS">
+    </el-option>
+         <el-option
+      label="货到付款"
+      value="ORDER_PAY_ONDEV">
+    </el-option>
+  </el-select>
 </div>
+
+</div>
+
 </div>
 
 
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK'">
+
+
+
+
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK' && pres_type !=='DOC_HANDWORK'">
     <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" >
     开方时间：{{prodetail.createDate}}
     </div>
@@ -51,7 +73,7 @@
     </div>
     </div>
 
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK'">
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK' && pres_type !=='DOC_HANDWORK'">
      <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" v-if=" prodetail.presState !=  'NOT_TRANSLATED_PRESCRIPTION'">
     转方时间：{{prodetail.transDate}}
     </div>
@@ -76,7 +98,7 @@
 <!-- 退回医生名字 -->
     </div>
 
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK'">
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK' && pres_type !=='DOC_HANDWORK'">
     <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" v-if=" prodetail.presState !=  'NOT_TRANSLATED_PRESCRIPTION' && prodetail.presState !=  'REJECT_AUDIT_PRESCRIPTION'  && prodetail.presState != 'REJECT_TRANSLATED_PRESCRIPTION'&& prodetail.presState !='ALREADY_TRANSLATED_PRESCRIPTION'">
     审方时间：{{prodetail.auditingDate}}
     </div>
@@ -97,11 +119,11 @@
     </div>
     </div>
 
-<div v-if="pres_type !== 'BACK_HANDWORK'">
-<div v-for="(item,index) in prodeInfo" >
-<h4 style="margin: 10px 0;">{{index == 0?'患者信息':'医生信息'}}</h4>
+<div v-if="pres_type !== 'BACK_HANDWORK' && pres_type !=='DOC_HANDWORK'">
+<div v-for="(item,index) in prodeInfo" v-if="index!==1">
+<h4 style="margin: 10px 0;">{{item.title+'信息'}}</h4>
 <div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;height:12px;" >
-  <div style="margin-right:10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item">
+  <div style="margin-right:10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item.list">
 <span>{{items.title}}</span>
 <span v-if="items.value !== 'diagnose'">{{prodetail[items.value]}}</span>
 <span v-else>
@@ -113,20 +135,73 @@
 </div>
 </div>
 </div>
+
+
+
 <div  v-else>
 <div v-for="(item,index) in prodeInfo">
-<h4 style="margin: 10px 0;">{{index == 0?'患者信息':'医生信息'}} <span @click="changefilter_box(index == 0?'menber':'doctor')">选择已有的{{index == 0?'患者信息':'医生信息'}}</span></h4>
-<div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;" >
-  <div style="margin-right:
-  10px;margin-top: 10px;
-  line-height: 12px;" class=" flex  flex-align-center" v-for="items in item" v-if="items.value !== 'consigneeAddress'">
-<span style="width:120px;">{{items.title}}</span>
+<div style="margin: 10px 0;" class="flex">
+    <h4 style="margin:0;">{{item.title+'信息'}}</h4>
+   <div class="flex  flex-align-center opactiy" style="cursor: pointer;margin-left:15px;" @click="changefilter_box(index == 0?'menber':'doctor')" v-if="(index  ==0  &&  pres_type ==='DOC_HANDWORK') || pres_type !=='DOC_HANDWORK'">
+    <i class="iconfont icon-sousuo1"></i>
+      <div>搜{{item.title}}</div>
+   </div>
+  </div>
 
- <el-input :disabled="index ==1 " v-if="items.model !== 'diagnose'" v-model="createForm[items.model]" size="small" :placeholder="'请输入'+items.title.replace('：','')"
- style="margin-right:10px;  "/>
+<div v-if="index ===1">
+<div style="display:flex;flex-wrap: wrap;margin-bottom:10px;" >
+  <div style="margin-right:10px;margin-top: 10px;line-height: 12px;" class=" flex  flex-align-center">
+<span style="width:130px;white-space: nowrap;" >收件人：</span>
+ <el-input  v-model="createForm.consigneeName" size="small" placeholder="请输入收件人"
+ style="margin-right:10px;"/>
+</div>
+ <div style="margin-right:10px;margin-top: 10px;line-height: 12px;" class=" flex  flex-align-center">
+<span style="width:130px;white-space: nowrap;" >收件号码：</span>
+ <el-input  v-model="createForm.consigneePhone" size="small" placeholder="请输入收件号码"
+ style="margin-right:10px;"/>
+</div>
+</div>
+
+<div style="display:flex;flex-wrap: wrap;margin-bottom:10px;" >
+  <div style="margin-right:10px;margin-top: 10px;line-height: 12px;" class=" flex  flex-align-center">
+<span style="width:130px;white-space: nowrap;" >收货地区：</span>
+ <div class="el-input el-input--small" style="margin-left: 10px;">
+<el-select v-model="createForm.provinceid" @change="queryCityList()" size="small" >
+<el-option v-for="(n,index) in provinceList" :key="index" :label="n.name" :value="n.id" ></el-option>
+</el-select>
+ </div>
+
+ <div class="el-input el-input--small"  style="margin-left: 10px;">
+        <el-select v-model="createForm.cityid" @change="queryCountryList()" size="small">
+<el-option v-for="(n,index) in cityList" :key="index" :label="n.name" :value="n.id"></el-option>
+</el-select>
+ </div>
+
+ <div class="el-input el-input--small"  style="margin-left: 10px;">
+        <el-select v-model="createForm.areaid" size="small">
+<el-option v-for="(n,index) in countryList" :key="index" :label="n.name" :value="n.id"></el-option>
+</el-select>
+ </div>
+</div>
+</div>
+
+  <div style="margin-right:10px;margin-top: 10px;line-height: 12px;" class=" flex  flex-align-center">
+ <div style="margin-right:10px;margin-top: 10px;line-height: 12px;" class=" flex  flex-align-center">
+<span style="width:130px;white-space: nowrap;" >收件地址：</span>
+ <el-input  v-model="createForm.consigneeAddress" size="small" placeholder="请输入收件地址"
+ style="margin-right:10px;"/>
+</div>
+</div>
+</div>
+
+
+<div style="display:flex;flex-wrap: wrap;margin-bottom:10px;" >
+  <div style="margin-right:10px;margin-top: 10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item.list" v-if="items.value !== 'consigneeAddress'">
+<span style="width:130px;white-space: nowrap;" :class=" items.value === 'memberName' ||items.value==='memberPhone' || items.model == 'diagnose'?'vaild_icon':''">{{items.title}}</span>
+ <el-input :disabled="index ==2" v-if="items.model !== 'diagnose'" v-model="createForm[items.model]" size="small" :placeholder="'请输入'+items.title.replace('：','')"
+ style="margin-right:10px;"/>
   <el-input  v-else v-model="diagnosis" size="small" :placeholder="'请输入'+items.title.replace('：','')"
- style="margin-right:10px;  "/>
- 
+ style="margin-right:10px;"/>
 </div>
 </div>
 </div>
@@ -136,22 +211,17 @@
 <el-row :gutter="24"  style="padding:0 0 20px;">
 
   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-<corpperlabel ref="cropper" :preImageList="preImageList"></corpperlabel>
-  <div style="margin-bottom:22px;" v-loading="add_upload_loading" v-if="pres_type === 'BACK_HANDWORK'">
+
+    <div style="position: relative;">
+<corpperlabel  ref="cropper" :preImageList="preImageList" :style="pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK' ? 'visibility: hidden;' : ''"></corpperlabel>
+  <div style="margin-bottom:22px;" class="pre_update_upload" v-loading="add_upload_loading" v-if=" pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK'">
+ <h4>处方图片</h4>
                 <el-upload :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
 </div>
-
-      <!-- <div style="display: flex;align-items: center;height: 60vh;min-width:500px;
-    justify-content: center;    overflow: hidden;
-   ">
-                   <img :src="preImageList[preIndex]?preImageList[preIndex].presImageUrl:''"/>
-
-      </div> -->
-
-
-
+  
+</div>
   </el-col>
   <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
 	 <el-form label-width="120px">
@@ -175,52 +245,9 @@
   </el-select>
 
 
-
-                       <!-- <el-input v-model="drug.commonName"
-  placeholder="请选择药品"   disabled
-  clearable>
-</el-input> -->
-
-
 				</el-form-item>		
-            
-	<!-- <el-form-item label="药品规格：" >
- <el-select style="width:100%;"
-    v-model="drug.specification"
-    placeholder="请输入药品规格"
-    :loading="loading" 
-    @change="selectSpecification">
-    <el-option
-      v-for="item in specificationList"
-      :key="item.specification"
-      :label="item"
-      :value="item">
-    </el-option>
-  </el-select>
-				</el-form-item>	 -->
-           <!-- <el-input v-model="drug.specification"
-  placeholder="请输入药品规格"  
-  clearable>
-</el-input> -->
-          
+     
                   <el-form-item label="供应商：" >
-
-
-
-                    <!-- <el-select style="width:100%;"
-    placeholder="请输入供应商"
-    :loading="loading" 
-    @change="changePartnerName"
-    >
-    @change="selectSpecification"
-    <el-option
-      v-for="item in partnerNameList"
-      :key="item"
-      :label="item.partnerName"
-      :value="item">
-    </el-option>
-    
-  </el-select> -->
 
 
 <el-autocomplete style="width:100%;"
@@ -232,12 +259,6 @@
       placeholder="请输入供应商"
     ></el-autocomplete>
 
-
-<!-- 
-                      <el-input v-model="drug.manufacturer"
-  placeholder="请输入供应商"  
-  clearable>
-</el-input> -->
 				</el-form-item>		
 
 
@@ -247,7 +268,6 @@
     placeholder="请输入单位"
     :loading="loading"
     >
-    <!-- @change="selectSpecification" -->
     <el-option
       v-for="item in packingUnitList"
       :key="item"
@@ -257,13 +277,6 @@
     
   </el-select>
 
-
-
-<!-- 
-                      <el-input v-model="drug.manufacturer"
-  placeholder="请输入供应商"  
-  clearable>
-</el-input> -->
 				</el-form-item>		
 
 
@@ -273,7 +286,6 @@
     placeholder="请输入剂型"
     :loading="loading" 
     >
-    <!-- @change="selectSpecification" -->
     <el-option
       v-for="item in dosageformsList"
       :key="item"
@@ -283,102 +295,26 @@
     
   </el-select>
 
-
-
-<!-- 
-                      <el-input v-model="drug.manufacturer"
-  placeholder="请输入供应商"  
-  clearable>
-</el-input> -->
 				</el-form-item>		
 
 
                   <el-form-item label="用法：" >
-
- <!-- <el-select
-    v-model="drug.usages"
-    filterable
-        
-    placeholder="请输入用法"
-    :loading="loading" >
-    <el-option
-      v-for="item in usagesList"
-      :key="item"
-      :label="item"
-      :value="item">
-    </el-option>
-  </el-select> -->
-
-
-
-
-    <!-- <el-input v-model="drug.usages"
-  placeholder="请输入用法"  
-  clearable>
-</el-input> -->
-
 <el-autocomplete style="width:100%;"
       class="inline-input"
       v-model="drug.usages"
       :fetch-suggestions="querySearch1"
       placeholder="请输入用法"
     ></el-autocomplete>
-
-
-
 				</el-form-item>		
-
          <el-form-item label="单次用量：" >
- <!-- <el-select
-    v-model="drug.dosage"
-    filterable     
-    placeholder="请输入用量"
-    :loading="loading" >
-    <el-option
-      v-for="item in dosageList"
-      :key="item"
-      :label="item"
-      :value="item">dosage
-    </el-option>
-  </el-select> -->
-  
-                      <!-- <el-input v-model="drug.dosage"
-  placeholder="请输入单次用量"  
-  clearable>
-</el-input> -->
-
-
 <el-autocomplete style="width:100%;"
       class="inline-input"
       v-model="drug.dosage"
       :fetch-suggestions="querySearch2"
       placeholder="请输入单次用量"
     ></el-autocomplete>
-
-
-
-
 				</el-form-item>		
          <el-form-item label="频次：" >
- <!-- <el-select
-    v-model="drug.frequency"
-    filterable     
-    placeholder="请输入频次"
-    :loading="loading" >
-    <el-option
-      v-for="item in frequencyList"
-      :key="item"
-      :label="item"
-      :value="item">
-    </el-option>
-  </el-select> -->
-           
-                      <!-- <el-input v-model="drug.frequency"
-  placeholder="请输入频次"  
-  clearable>
-</el-input> -->
-
-
 <el-autocomplete style="width:100%;"
       class="inline-input"
       v-model="drug.frequency"
@@ -535,11 +471,18 @@
   placeholder="转方备注/退回原因"
   v-model="tranRemake" style=""/>
 </div>
-
-
   <div style="    text-align: right;
     margin-right: 20px;">
-  <div>治疗服务费：<span style="color:red" >￥{{serviceMoney}}</span></div>
+
+  <div v-if="pres_type =='DOC_HANDWORK' || pres_type == 'BACK_HANDWORK'">
+    治疗服务费：
+          <el-input    v-model="createForm.serviceMoney" size="small"  :rows="4"
+  placeholder="请输入治疗服务费"   style="max-width:180px;">
+      <template slot="append">元</template>
+      </el-input>
+  </div>
+
+  <div v-else>治疗服务费：<span style="color:red" >￥{{serviceMoney}}</span></div>
       <div>药品合计：<span style="color:red" >￥{{presscriptionMoney}}</span></div>
   <div>合计：<span style="color:red" >￥{{orderMoney}}</span></div>
 </div>
@@ -547,24 +490,23 @@
 <div style="    display: flex;
     justify-content: space-between;padding:15px">
 <div>
-  <el-button  type="text" @click="doSubmit()" >退回</el-button>
+  <el-button  type="text" @click="doSubmit()" :disabled="pres_type === 'BACK_HANDWORK'">退回</el-button>
 </div>
- 
 <div>
                  <el-button type="primary" @click="dotransmit()" >转方</el-button>
 </div>
-
- 
 </div>
     <el-dialog  :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
+
+
 		<el-dialog class="filter_box" width= "70vw" :close-on-click-modal="false" title="搜索" :append-to-body="true" :visible.sync="filter_model"   >
 <div >
 <div style="padding: 10px;text-align: left;" class="filter_select">
- <el-input :placeholder="`请${filter_type === 'doctor' ? '医生':'患者' }输入手机号`" size="small" style="min-width:200px;max-width:400px;" v-model="mobile" class="input-with-select">
+ <el-input :placeholder="`请${filter_type === 'doctor' ? '医生':'患者' }输入姓名或手机号`" size="small" style="min-width:200px;max-width:400px;" v-model="mobile" class="input-with-select">
      <el-select v-model="filter_type" slot="prepend" placeholder="请选择" class="filter_select">
-      <el-option label="医生" value="doctor" ></el-option>
+      <el-option label="医生" value="doctor" :disabled="pres_type=='DOC_HANDWORK'"></el-option>
       <el-option label="患者" value="menber"></el-option>
     </el-select>
     <el-button slot="append" icon="el-icon-search" @click="filtering()"></el-button>
@@ -627,6 +569,7 @@ import * as indexApi from "../../api/indexApi";
 import corpperlabel from "./corpperlabel";
 import * as Config from "../../api/conf";
 import * as doctorApi from "../../api/doctorApi";
+import * as ApiOrder from "../../api/orderapi";
 
 @Component({
   props: {},
@@ -703,22 +646,29 @@ export default class AddGoods extends Vue {
 
   editPrice = true;
   prodeInfo = [
-    [
+    
+  { title:"患者",
+     list:[
       { title: "患者姓名：", value: "memberName" ,model:"memberName"},
       { title: "患者手机：", value: "memberPhone",model:"memberPhone" },
       { title: "患者性别：", value: "patientSex" ,model:"patientSex"},
       { title: "患者年龄：", value: "memberAge",model:"memberAge" },
-      { title: "患者身份证", value: "memberIdcard",model:"memberIdcard" },
+      { title: "患者身份证：", value: "memberIdcard",model:"memberIdcard" },
       { title: "地址：", value: "consigneeAddress",model:"a" },
+    ]},
       
-    ],
-    [
+  { title:"地址",
+     list:[
+      
+    ]},
+      { title:"医生",
+     list:[
       { title: "医生姓名：", value: "docterName",model:"docterName" },
       { title: "医生电话：", value: "doctorMobile" ,model:"doctorMobile"},
      { title: "医生医院：", value: "hospitalName",model:"hospitalName" },
       { title: "科室：", value: "docterDept",model:"docterDept" },
       { title: "诊断：", value: "diagnose" ,model:"diagnose"}
-    ]
+    ]}
   ];
 
 
@@ -743,11 +693,7 @@ export default class AddGoods extends Vue {
     //清空数据
     this.commonList();
   }
-  // selectSpecification() {
 
-  //   // 清空数据
-  //   this.commonList();
-  // }
   changePartnerName() {
     // 清空数据
     this.commonList();
@@ -921,14 +867,19 @@ switch(prescriptionType){
           .then(res => {
             this.backLoad = false;
             if (res["retCode"]) {
-              this.$message("退回成功");
-              this.tranRemake = "";
 
+              if(this.pres_type == 'BACK_HANDWORK' || this.pres_type ==  'DOC_HANDWORK'){
+                   this.doUpdatePre(res.data.nextPresId,'退回成功')
+               }else{
+              this.tranRemake = "";
               if (res.data.nextPresId) {
                 this.getCountForList("xia", res.data.nextPresId);
               } else {
                 this.$router.push("/transmit");
               }
+                  }
+
+
             } else {
               if (!res["islogin"]) {
                 this.$alert(res["message"]);
@@ -1022,7 +973,11 @@ switch(prescriptionType){
     indexApi.docreateDrug(this.drug).then(res => {
       this.loading = false;
       if (res["retCode"]) {
+
+              if(this.pres_type == 'BACK_HANDWORK'){
           this.presId = res.data.prescriptionId
+              }
+
         this.drug = {};
         this.instructions = "";
         this.queryPresDrug();
@@ -1061,7 +1016,23 @@ switch(prescriptionType){
   dotransmit() {
 //修改时的验证要提过来这边判断
 
- if(this.pres_type === 'BACK_HANDWORK'){
+  //     if((this.createForm.patientSex||'')  ===''){
+  //           this.$message("请选择患者性别");
+  //     return;
+  //       }
+
+  //     if((this.createForm.memberAge||'')  ===''){
+  //           this.$message("请输入患者年龄");
+  //     return;
+  //       }
+  //  if((this.createForm.memberIdcard||'')  ===''){
+  //           this.$message("请输入患者身份证");
+  //     return;
+  //       }
+
+
+
+ if(this.pres_type === 'BACK_HANDWORK'  || this.pres_type == 'DOC_HANDWORK' ){
   
     if (
       (this.createForm.docterId || "") === ""
@@ -1079,28 +1050,9 @@ switch(prescriptionType){
             this.$message("请输入患者手机号");
       return;
         }
-
-
-
-
-  //     if((this.createForm.patientSex||'')  ===''){
-  //           this.$message("请选择患者性别");
-  //     return;
-  //       }
-
-  //     if((this.createForm.memberAge||'')  ===''){
-  //           this.$message("请输入患者年龄");
-  //     return;
-  //       }
-  //  if((this.createForm.memberIdcard||'')  ===''){
-  //           this.$message("请输入患者身份证");
-  //     return;
-  //       }
-
-
     }
   
-if(this.pres_type == 'BACK_HANDWORK'){
+if(this.pres_type == 'BACK_HANDWORK' || this.pres_type == 'DOC_HANDWORK'){
 if (this.fileList.length > 0 ) {
       this.createForm.pictureIds = this.fileList
         .map(item => {
@@ -1153,15 +1105,17 @@ if (this.fileList.length > 0 ) {
                 if (res["retCode"]) {
               
                this.createForm.presId = res.data.prescription.presId
-              if(this.pres_type == 'BACK_HANDWORK'){
-                   this.doUpdatePre()
+               
+              if(this.pres_type == 'BACK_HANDWORK' || this.pres_type ==  'DOC_HANDWORK'){
+                   this.doUpdatePre(res.data.nextPresId,'转方成功')
+               }else{
+                  this.tranRemake = "";
+                  if ((res.data.nextPresId||'')!=='') {
+                    this.getCountForList("xia", res.data.nextPresId);
+                  } else {
+                    this.$router.push("/transmit");
+                  }
                }
-                  // this.tranRemake = "";
-                  // if (res.data.nextPresId) {
-                  //   this.getCountForList("xia", res.data.nextPresId);
-                  // } else {
-                  //   this.$router.push("/transmit");
-                  // }
                 } else {
                   if (!res["islogin"]) {
                     this.$alert(res["message"]);
@@ -1186,6 +1140,11 @@ if (this.fileList.length > 0 ) {
     indexApi.getPrePic({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.preImageList = res.data;
+      this.fileList = res.data.map(item=>{
+   return {
+          url:item.presImageUrl
+        }
+      })        
         if (res.data.length > 0) {
           let a: any = this.$refs.cropper;
           a.changePreImageUrl(0);
@@ -1204,14 +1163,55 @@ if (this.fileList.length > 0 ) {
     indexApi.queryPresDetatil({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.prodetail = res.data;
+
+
+      this.pres_type = this.prodetail['prescriptionType']
+      if(this.prodetail['prescriptionType'] === 'DOC_HANDWORK'  ||this.prodetail['prescriptionType']   == 'BACK_HANDWORK'){
+      this.createForm.memberId = this.prodetail['memberId']?this.prodetail['memberId']:'';
+      this.createForm.memberid = this.prodetail['memberId']?this.prodetail['memberId']:'';
+      this.createForm.memberName = this.prodetail['memberName']?this.prodetail['memberName']:'';
+      this.createForm.memberPhone = this.prodetail['memberPhone']?this.prodetail['memberPhone']:'';
+      this.createForm.patientSex = this.prodetail['memberSex']?this.prodetail['memberSex']:'';
+      this.createForm.memberIdcard = this.prodetail['memberIdcard']?this.prodetail['memberIdcard']:'';
+      this.createForm.memberAge = this.prodetail['memberAge']?this.prodetail['memberAge']:'';
+      //  this.pres_type ='DOC_HANDWORK'
+       this.createForm.docterId = this.prodetail['docterId']
+       this.createForm.docterName = this.prodetail['docterName']
+       this.createForm.docterName = this.prodetail['docterName']
+       this.createForm.serviceMoney = this.prodetail['serviceMoney']
+       this.createForm.doctorMobile = this.prodetail['doctorMobile']
+       this.createForm.hospitalName = this.prodetail['hospitalName']
+       this.createForm.docterDept = this.prodetail['docterDept']
+       this.createForm.diagnose = this.prodetail['diagnose']
+   if((this.prodetail['payStatus']||'')!==''){
+            this.createForm.payModeEnum = this.prodetail['payStatus']
+          }
+
+
+      
+      if((this.prodetail['provinceid']||'')!==''){
+   this.createForm.provinceid = this.prodetail['provinceid']
+         this.queryCityList();
+      } 
+      if((this.prodetail['cityid']||'')!==''){
+   this.createForm.cityid = this.prodetail['cityid']
+         this.queryCountryList();
+      }
+      this.createForm.areaid = this.prodetail['areaid']?this.prodetail['areaid']:''
+      this.createForm.consigneeAddress = this.prodetail['consigneeAddress']?this.prodetail['consigneeAddress']:''
+
+    
+
+       }
         if( res.data){
         this.diagnosis = res.data.diagnose;
         }
+      //  if(this.pres_type==='BACK_HANDWORK'){
+      // }   
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
         }
-        console.error("数据查询错误");
       }
     });
   }
@@ -1272,6 +1272,7 @@ if (this.fileList.length > 0 ) {
     Object.assign(a, { presId: sessionStorage.presId });
     indexApi.findPrescriptionByType(a).then(res => {
       if (res["retCode"]) {
+          this.presId = ""
         if (presId) {
           sessionStorage.presId = presId;
           this.init();
@@ -1299,65 +1300,28 @@ if (this.fileList.length > 0 ) {
       }
     });
   }
-  doUpdatePre(){
-    
-   
-      
-    // if (
-    //   ((this.createForm.servicemoney || "") === "" &&
-    //     this.add_model_type == "add") ||
-    //   ((this.createForm.serviceMoney || "") === "" &&
-    //     this.add_model_type == "edit")
-    // ) {
-    //   this.$message("请输入治疗服务费");
-    //   return;
-    // }
-// let showLoading = ()=>{
-//  this.add_model_loading = true
-// this.add_footer_loading =  true
-// this.cancelLoading = true
-// }
-// let closeLoading = ()=>{
-//    this.add_model_loading = false
-// this.add_footer_loading =  false
-// this.cancelLoading = false
-// }
+  doUpdatePre(nextPresId,message){
 
-
-//  this.createForm.presId = this.presId
-      this.createForm.serviceMoney = this.createForm.servicemoney
             this.createForm.feeHide= this.createForm.feeTypeEnum ;
-            this.createForm.consigneeName = this.createForm.memberName
-            this.createForm.consigneePhone = this.createForm.memberPhone
+            // this.createForm.consigneeName = this.createForm.memberName
+            // this.createForm.consigneePhone = this.createForm.memberPhone
+
+           if(this.pres_type ==='BACK_HANDWORK'){
             this.createForm.prescriptionType = "BACK_HANDWORK"
-    //   if((this.createForm.consigneeName||'')===''){
-    //    this.$message("请输入收件人");
-    //   return;
-    //   }
-    // if((this.createForm.consigneeAddress||'')===''){
-    //    this.$message("请输入收件号码");
-    //   return;
-    //   }
-    //   if((this.createForm.provinceid||'')==='' || (this.createForm.cityid||'')==='' || (this.createForm.areaid||'')==='' ){
-    //          this.$message("请选择收货地区");
-    //   return;
-    //   }
-    //       if((this.createForm.consigneeAddress||'')===''){
-    //    this.$message("请输入收件地址");
-    //   return;
-    //   }
-
-
-// 改类型
-
-
+           }
+   
 
       indexApi.updatePre(this.createForm).then(res => {
         if (res["retCode"]) {
-              this.$message("转方成功");
-          // this.$message("更新成功");
-          //执行转方
-      //  this.dotransmit()
+              this.$message(message);
+          this.tranRemake = "";
+                  if ((nextPresId||'')!=='') {
+                    this.getCountForList("xia", nextPresId);
+                  } else {
+                    this.$router.push("/transmit");
+                  }
+
+
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -1365,8 +1329,6 @@ if (this.fileList.length > 0 ) {
           console.error("数据查询错误");
         }
       });
-      
-
   }
   mobile = ""
 filter_model = false
@@ -1382,6 +1344,7 @@ noMessage_loading = false
     this.mobile = "";
   }
   select_item(item) {
+    
     if (item.doctorId) {
       this.createForm.doctorid = item.doctorId;
       this.createForm.docterId = item.doctorId;
@@ -1395,7 +1358,7 @@ noMessage_loading = false
       this.createForm.memberid = item.memberId;
       this.createForm.memberName = item.name;
       this.createForm.memberPhone = item.phone;
-      this.createForm.memberSex = item.sex;
+      this.createForm.patientSex = item.sex;
       this.createForm.memberIdcard = item.idCard;
       this.createForm.memberAge = item.age;
       //查询默认收货地址
@@ -1404,7 +1367,6 @@ noMessage_loading = false
     this.filter_model = false;
   }
   filtering() {
-    console.log('-0')
     if (!this.mobile) {
       return;
     }
@@ -1455,22 +1417,21 @@ noMessage_loading = false
   }
 
   init() {
-
-
-
     this.backLoad = true;
-
-    if(!this.presId){
+    if((this.presId||'')===''){
     this.presId = sessionStorage.presId;
     }
-    
+
     this.allPrescription();
     this.countPreByStatu();
+
     if((this.presId||'')!==''){
          this.queryPresDrug();
-    this.getPrePic();
     this.queryPresDetatil();
+    this.getPrePic();
     }
+
+
     this.backLoad = false;
     this.drug = {};
     this.instructions = "";
@@ -1505,13 +1466,6 @@ createForm:any = {}
       url: response.data.filename
     };
     this.fileList.push(dt);
-  this.preImageList =  this.fileList.map(
-    item=>{
-      return {
-     pictureId:   item.url
-      }
-    }
-  )
     this.add_upload_loading = false;
   }
 
@@ -1524,13 +1478,32 @@ createForm:any = {}
         break;
       }
     }
-      this.preImageList =  this.fileList.map(
-    item=>{
-      return {
-     pictureId:   item.url
-      }
-    }
-  )
+
+  }
+
+  provinceList = [];
+  cityList = [];
+  countryList = [];
+
+
+  queryCountryList() {
+    this.createForm.areaid = "";
+    ApiOrder.queryCountryList(this.createForm.cityid).then(res => {
+      this.countryList = res.data.region;
+    });
+  }
+  queryCityList() {
+    this.createForm.cityid = "";
+    this.createForm.areaid = "";
+    ApiOrder.queryCityList(this.createForm.provinceid).then(res => {
+      this.cityList = res.data.region;
+    });
+  }
+
+  queryProvinceList() {
+    ApiOrder.queryProvinceList().then(res => {
+      this.provinceList = res.data.region;
+    });
   }
 
 
@@ -1538,18 +1511,15 @@ createForm:any = {}
 pres_type = ""
   mounted() {
 
-
        this.fileUploadUrl = Config.g_upload_url;
        if((this.$route.params.pres_type||'')=='' && (sessionStorage.presId||'')===''){
          this.$router.replace('/transmit')       
-         return 
+         return
          }
+    this.queryProvinceList();
+
 
     this.pres_type = this.$route.params.pres_type
-
-     
-
-
     // 判断是否是锁单了
     this.init();
     // this.getDrugList()//获取默认药品列表
@@ -1659,5 +1629,19 @@ pres_type = ""
   z-index: 100;
 }
 .filter_min_box:hover {
+}
+.pre_update_upload{
+      position: absolute;
+    top: 0;
+    height: 750px;
+    background-color: #fff;
+    width: 100%;  min-width:500px;
+}
+
+
+.vaild_icon::before{
+  content: "*";
+    color: #f56c6c;
+    margin-right: 4px;
 }
 </style>

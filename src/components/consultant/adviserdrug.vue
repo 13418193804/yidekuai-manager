@@ -7,11 +7,13 @@
           
  <div style="padding-bottom:20px;">
 <span style="margin-right:20px;">药品总数：{{countDrug}} 个</span>    
-<span style="margin-right:20px;">药品成交金额：{{payOrderMoney}} 元</span>       
+<span style="margin-right:20px;">订单实收金额：{{payOrderMoney}} 元</span>       
 <span style="margin-right:20px;">处方数量：{{prescriptionNum}} </span>       
-<span style="margin-right:20px;">订单数量（已成交）{{payOrderNum}} </span>       
+<span style="margin-right:20px;">实收订单数：{{payOrderNum}} </span>       
 <span style="margin-right:20px;">全部顾问数量：{{allAdviserNum}} </span>             
-<span style="margin-right:20px;">药品销售数量：{{drugQuantityTotal}} </span>           
+<span style="margin-right:20px;">药品销售数量：{{drugQuantityTotal}} </span>    
+<span style="margin-right:20px;">失败订单数量：{{giveupOrderNum}} </span>               
+       
             </div>
         </div>
      
@@ -45,7 +47,8 @@
       unlink-panels
       range-separator="至"
       start-placeholder="开始日期"
-      end-placeholder="结束日期">
+      end-placeholder="结束日期"
+       :picker-options="pickerOptions2">
     </el-date-picker>
   </el-col>
 
@@ -319,6 +322,30 @@ export default class getDrugByKeyword extends Vue {
     this.adviserdrug();
   }
 
+ pickerOptions2 = {
+    shortcuts: [
+      {
+        text: "本月",
+        onClick(picker) {
+        picker.$emit("pick", [window['mmvue'].getMonth1(),moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"]);
+        }
+      },
+      {
+        text: "本周",
+        onClick(picker) {
+   
+          picker.$emit("pick", [window['mmvue'].getWeek(),moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"]);
+        }
+      },
+      {
+        text: "本日",
+        onClick(picker) {
+
+          picker.$emit("pick", [window['mmvue'].getToday(),moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"]);
+        }
+      }
+    ]
+  };
   orderByStr = "";
 date=[]
   name = "";
@@ -361,6 +388,7 @@ date=[]
   payOrderMoney = 0;
   payOrderNum = 0;
   drugQuantityTotal = 0;
+    giveupOrderNum = 0;
   ypStartcreateDate(data) {
     data.ypStartcreateDate = data.startcreateDate;
     data.ypEndcreateDate = data.endcreateDate;
@@ -369,6 +397,9 @@ date=[]
         if (res.data.AdviserInfo.length > 0) {
           this.orderMoney = res.data.AdviserInfo[0].orderMoney
             ? res.data.AdviserInfo[0].orderMoney
+            : 0;
+                  this.giveupOrderNum = res.data.AdviserInfo[0].giveupOrderNum
+            ? res.data.AdviserInfo[0].giveupOrderNum
             : 0;
           this.prescriptionNum = res.data.AdviserInfo[0].prescriptionNum
             ? res.data.AdviserInfo[0].prescriptionNum
@@ -548,7 +579,69 @@ date=[]
     this.adviserdrug(true);
   }
 
+  getWeek() {
+    //按周日为一周的最后一天计算
+    var date = new Date();
+
+    //今天是这周的第几天
+    var today = date.getDay();
+
+    //上周日距离今天的天数（负数表示）
+    var stepSunDay = -today + 1;
+
+    // 如果今天是周日
+    if (today == 0) {
+      stepSunDay = -7;
+    }
+
+    // 周一距离今天的天数（负数表示）
+    var stepMonday = 7 - today;
+
+    var time = date.getTime();
+
+    var monday = new Date(time + stepSunDay * 24 * 3600 * 1000);
+    var sunday = new Date(time + stepMonday * 24 * 3600 * 1000);
+
+    //本周一的日期 （起始日期）
+    var startDate = this.transferDate(monday); // 日期变换
+
+    return startDate + " 00:00:00";
+  }
+
+  getToday() {
+    return moment(new Date()).format("YYYY-MM-DD") + " 00:00:00";
+  }
+  getMonth1() {
+    // 获取当前月的第一天
+    var start = new Date();
+    start.setDate(1);
+    var startDate = this.transferDate(start);
+    return startDate + " 00:00:00";
+  }
+  transferDate(date) {
+    // 年
+    var year = date.getFullYear();
+    // 月
+    var month = date.getMonth() + 1;
+    // 日
+    var day = date.getDate();
+
+    if (month >= 1 && month <= 9) {
+      month = "0" + month;
+    }
+    if (day >= 0 && day <= 9) {
+      day = "0" + day;
+    }
+
+    var dateString = year + "-" + month + "-" + day;
+
+    return dateString;
+  }
   mounted() {
+this.date = [this.getMonth1(),moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"]
+  window['mmvue'] = this
+
+
     this.adviserdrug();
     this.getcountDrug();
   }

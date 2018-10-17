@@ -4,7 +4,7 @@ import Vue from 'vue';
 import * as Config from './conf';
 import querystring from 'querystring';
 let base = Config.g_base_url;
-axios.defaults.timeout =  60000;
+axios.defaults.timeout =  120000;
 
 //let base = 'http://127.0.0.1:9090';
 // let base ='http://127.0.0.1:9090/';
@@ -61,11 +61,11 @@ export const requestForm2 = Vue.prototype.ydkManager=='test'? (urlPath, params) 
         })
         .then(res => {
             if (res.status != 200) {
-                console.log(`响应请求:${urlPath}`,{
-                    reqUrl :`${base}${urlPath}`,
-                    params:params,
-                    httpStatus:res.status,
-                })
+                // console.log(`响应请求:${urlPath}`,{
+                //     reqUrl :`${base}${urlPath}`,
+                //     params:params,
+                //     httpStatus:res.status,
+                // })
                 return {
                     retCode: false,
                     message: "网络数据异常",
@@ -73,13 +73,13 @@ export const requestForm2 = Vue.prototype.ydkManager=='test'? (urlPath, params) 
                 }
             }
             
-            console.log(`响应请求:${urlPath}`,{
-                reqUrl :`${base}${urlPath}`,
-                params:params,
-                httpStatus:res.status,
-                resStatus:res.data.status,
-                message:`响应信息:${res.data.message}`
-            })
+            // console.log(`响应请求:${urlPath}`,{
+            //     reqUrl :`${base}${urlPath}`,
+            //     params:params,
+            //     httpStatus:res.status,
+            //     resStatus:res.data.status,
+            //     message:`响应信息:${res.data.message}`
+            // })
 
             if (res.data.status != 200) {
 
@@ -101,11 +101,11 @@ export const requestForm2 = Vue.prototype.ydkManager=='test'? (urlPath, params) 
             return { retCode: true, message: '', data: res.data.data }
         })
         .catch(error => {
-                console.log(`捕捉错误:${urlPath}`,{
-                    reqUrl :`${base}${urlPath}`,
-                    params:params,
-                    error:error
-                })
+                // console.log(`捕捉错误:${urlPath}`,{
+                //     reqUrl :`${base}${urlPath}`,
+                //     params:params,
+                //     error:error
+                // })
             return {
                 retCode: false,
                 message: `网络请求异常 请求路径 ${urlPath},错误信息 ${error}`,
@@ -169,15 +169,10 @@ export const requestGoodsDetail = (goodsId) => {
 
     return requestGet('/goods/info/query?goodsId=' + goodsId)
         .then(res => {
-            console.log(res)
             if (res.status == 200 && res.data.status == 200) {
 
                 return { retCode: true, message: '', data: res.data.data }
             } else {
-
-                console.log(res.data)
-
-                console.log(res.data.message)
                 return {
                     retCode: false,
                     message: res.data.message,

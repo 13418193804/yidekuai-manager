@@ -116,15 +116,17 @@
   <el-dialog  :visible.sync="primssModel" width="1050px" center size="tiny"  title="角色权限" :close-on-click-modal="false" top="40px">
     <div style="min-height:500px;" v-bouncing="primssLoading">
       <div>
+
+ <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+
 <div v-for="item in AuthorityList">
     <h4 style="margin: 0;">{{item.name}}</h4>
-  <el-checkbox-group v-model="checkboxGroup6" size="small">
+  <el-checkbox-group v-model="checkboxGroup6" size="small"  @change="handleCheckedCitiesChange">>
       <el-checkbox  v-for="items in item.ButtonPermissionList" :label="items.permissionId" :checked="items.haveFlag">{{items.name}}</el-checkbox>
     </el-checkbox-group>
    </el-checkbox-group>
 </div>
 </div>
-
     </div>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="primssModel = false">取 消</el-button>
@@ -375,7 +377,35 @@ this.$alert('请输入职位描述')
     this.getRoleList();
   }
 
+  isIndeterminate= true
+checkAll =false
+ handleCheckAllChange(val) {
+   let cityOptions = []
+        this.AuthorityList.forEach(item=>{
+      let a =    item.ButtonPermissionList.map(items=>{
+          return  items.permissionId
+          })
+    
+        cityOptions =   cityOptions.concat(a)
+       
+        })
 
+        this.checkboxGroup6 = val ? cityOptions : [];
+        this.isIndeterminate = false;
+      }
+
+     handleCheckedCitiesChange(value) {
+    
+    
+    let length =0
+     this.AuthorityList.forEach(item=>{
+           length += item.ButtonPermissionList.length 
+       })
+       console.log(length)
+        let checkedCount = value.length;
+        this.checkAll = checkedCount ===length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < length;
+      }
 
   getRoleList(filter=null) {
     if(filter){

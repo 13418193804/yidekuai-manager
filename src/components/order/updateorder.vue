@@ -107,7 +107,7 @@
 
 <div style="    font-size: 15px;     margin-right:10px;">
   <span>付款状态：</span>
-  <span>{{handlePayStatus(order.payStatus)}}</span>
+  <span>{{handlePayStatus(order.payStatus).title}}</span>
 </div>
 </div>
 
@@ -115,7 +115,10 @@
 <div style="font-size:14.8px" class="flex flex-warp-justify" v-if="order.orderStatue !== 'ORDER_INIT' &&  order.orderStatue !== 'ORDER_WAIT_PAY' && order.orderStatue !== 'ORDER_CANCEL_PAY'">
   <div style="margin:0">支付方式：</div>
 <div>
+    
     {{handlePaymentMode(order.paymentMode)}}
+
+
 </div>
 
 <div v-if="order.paymentMode == 'ONLINE_PAYMENT'" style="margin-left:20px;">
@@ -324,29 +327,65 @@
     stripe 
     style="width: 100%">
 
-  <el-table-column  fixed="left"
+
+
+  <el-table-column fixed="left"
       prop="drugName"
-      label="药品名称">
+      label="通用名">
    </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
+   </el-table-column>
+
+  <el-table-column
+      prop="partnerName"
+      label="供应商">
+   </el-table-column>
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="dosageforms"
+      label="剂型">
+   </el-table-column>
+
 
   <el-table-column
       prop="specification"
       label="药品规格">
    </el-table-column>
+
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
+   </el-table-column>
+
  <el-table-column
       prop="usages"
       label="用法">
    </el-table-column>
+ 
+   
  <el-table-column
       prop="dosage"
       label="用量">
    </el-table-column>
- 
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
   <el-table-column
       prop="frequency"
       label="频次">
    </el-table-column>
-     <el-table-column v-if="expressPackageList.length>0 && OrderSplitFlag !== '1'"
+ <el-table-column v-if="expressPackageList.length>0 && OrderSplitFlag !== '1'"
       prop="surplusSend"
       label="剩余数量">
    </el-table-column>
@@ -354,27 +393,12 @@
       prop="quantity"
       label="数量">
    </el-table-column>
+
   <el-table-column
       prop="drugPrice"
       label="药品库价格">
    </el-table-column>
 
-  <el-table-column
-      prop="price"
-      label="售价">
-   </el-table-column>
-  <el-table-column
-      prop="manufacturer"
-      label="厂家">
-   </el-table-column>
-  <el-table-column
-      prop="partnerName"
-      label="供应商">
-   </el-table-column>
-   <el-table-column
-      prop="instructions"
-      label="使用说明">
-   </el-table-column>
     </el-table>
     
 
@@ -810,18 +834,27 @@ doUpdate(){
               this.$emit("getOrderDetail", this.order.presId);
 }
 
-
   handlePayStatus(status) {
     switch (status) {
       case "PAY_WAIT":
-        return "等待支付";
-      case "PAY_SUCCESS":
-        return "支付成功";
+        return {
+          type:"danger",
+          title:"未支付"
+          };  
+        case "PAY_SUCCESS":
+        return  {
+          type:"success",
+          title:"已支付"
+          };  
+      case "ORDER_PAY_ONDEV":
+        return {
+          type:"warning",
+          title:"货到付款"
+          }; 
       default:
         return "";
     }
   }
-  
 
   sendModel = false;
   doSend() {

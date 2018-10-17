@@ -295,8 +295,6 @@ this.rderStatus ="";
     if(filter){
       this.page = 0
     }
- 
-
     this.reminderVEnums == "ALL";
     this.loading = true
     indexApi
@@ -313,8 +311,6 @@ this.rderStatus ="";
       })
       .then(res => {
     this.loading = false
-      // this.$emit('updateYdkPrescriptionStatusNum','NEW_ORDER');
-
         this.queryOrderCount();
         if (res["retCode"]) {
    

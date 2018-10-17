@@ -9,8 +9,8 @@
 <span style="margin-right:20px;">待转方数量：{{notCount}} 个</span>        
      <el-button
           size="small"
-          type="text"
-          @click="addPrescription()" >新增处方</el-button>
+          type="primary"
+          @click="addPrescription()"  >直接开方</el-button>
             </div>
         </div>
   <el-tabs v-model="prescriptionEnums1" type="card" @tab-click="handleClick">
@@ -44,74 +44,6 @@
 </el-row>
 </div>
 <transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList"  :operationType="operationType">
-</transmittable>
-    </el-tab-pane>
-    <el-tab-pane :label="'全部（'+allprescription+'）'" name="name2">
-<div style="padding-bottom:20px;">
-<!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
-ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
-FAIL_TRANSLATED_PRESCRIPTION,        //转方失败
-REJECT_TRANSLATED_PRESCRIPTION,        //转方退回
-ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
-
-ALREADY_AUDIT_PRESCRIPTION,             //已审方
-FAIL_AUDIT_PRESCRIPTION,             //审方失败
-REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
-
-
-<el-row :gutter="10" style="margin-top:20px;">
-	 <el-form label-width="80px" :inline="true" >
-  <el-col :xs="24" :sm="14" :md="12" :lg="12" :xl="12">
-                <el-form-item  label="状态"  style="margin:0">
-  <el-select v-model="prescriptionEnums"  >
-      <el-option value="" label="全部"></el-option>
-      <el-option value="NOT_TRANSLATED_PRESCRIPTION" label="未转方"></el-option>
-      <el-option value="ALREADY_TRANSLATED_PRESCRIPTION" label="已转方"></el-option>
-      <!-- <el-option value="FAIL_TRANSLATED_PRESCRIPTION" label="转方失败"></el-option> -->
-            <el-option value="ALREADY_AUDIT_PRESCRIPTION" label="已审方"></el-option>
-      <el-option value="REJECT_TRANSLATED_PRESCRIPTION" label="已驳回开方"></el-option>
-      <el-option value="REJECT_AUDIT_PRESCRIPTION" label="审方退回"></el-option>
-    </el-select>
-				</el-form-item>
-
-  </el-col>
-        </el-form>
-</el-row>
-
-
-
-
-
-<el-row :gutter="10" style="padding-left:80px;">
-
- 
-  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
-   <el-input
-  placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
-  clearable>
-</el-input>
-  </el-col>
-
- <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
-   <el-date-picker style="margin-top:20px;"
-      v-model="date"
-      type="daterange"
-      align="right"
-      unlink-panels
-      range-separator="至"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期">
-    </el-date-picker>
-  </el-col>
-
-  <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
-<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
-  </el-col>
-
-</el-row>
-</div>
-
-<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
 </transmittable>
     </el-tab-pane>
 
@@ -183,6 +115,77 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
 </transmittable>
 
     </el-tab-pane>
+
+    <el-tab-pane :label="'全部（'+allprescription+'）'" name="name2">
+<div style="padding-bottom:20px;">
+<!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
+ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
+FAIL_TRANSLATED_PRESCRIPTION,        //转方失败
+REJECT_TRANSLATED_PRESCRIPTION,        //转方退回
+ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
+
+ALREADY_AUDIT_PRESCRIPTION,             //已审方
+FAIL_AUDIT_PRESCRIPTION,             //审方失败
+REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
+
+
+<el-row :gutter="10" style="margin-top:20px;">
+	 <el-form label-width="80px" :inline="true" >
+  <el-col :xs="24" :sm="14" :md="12" :lg="12" :xl="12">
+                <el-form-item  label="状态"  style="margin:0">
+  <el-select v-model="prescriptionEnums"  >
+      <el-option value="" label="全部"></el-option>
+      <el-option value="NOT_TRANSLATED_PRESCRIPTION" label="未转方"></el-option>
+      <el-option value="ALREADY_TRANSLATED_PRESCRIPTION" label="已转方"></el-option>
+      <!-- <el-option value="FAIL_TRANSLATED_PRESCRIPTION" label="转方失败"></el-option> -->
+            <el-option value="ALREADY_AUDIT_PRESCRIPTION" label="已审方"></el-option>
+      <el-option value="REJECT_TRANSLATED_PRESCRIPTION" label="已驳回开方"></el-option>
+      <el-option value="REJECT_AUDIT_PRESCRIPTION" label="审方退回"></el-option>
+    </el-select>
+				</el-form-item>
+
+  </el-col>
+        </el-form>
+</el-row>
+
+
+
+
+
+<el-row :gutter="10" style="padding-left:80px;">
+
+ 
+  <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
+   <el-input
+  placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
+  clearable>
+</el-input>
+  </el-col>
+
+ <el-col :xs="2" :sm="2" :md="2" :lg="2" :xl="2" style="min-width:360px;">
+   <el-date-picker style="margin-top:20px;"
+      v-model="date"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
+  </el-col>
+
+  <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getprescriptionList(true)">查询</el-button>
+  </el-col>
+
+</el-row>
+</div>
+
+<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
+</transmittable>
+    </el-tab-pane>
+
+
 
   </el-tabs>
 		<el-col :span="24" class="toolbar">
