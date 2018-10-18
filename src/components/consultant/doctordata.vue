@@ -403,8 +403,8 @@ export default class AddGoods extends Vue {
       pageSize: this.pageSize,
       keyword: this.keyword,
       phone: this.phone,
-              startcreateDate: this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-        endcreateDate:  this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+              startcreateDate: this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+        endcreateDate:  this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
       doctorStatus: this.doctorStatus,
       orderByStr: this.orderByStr
     };

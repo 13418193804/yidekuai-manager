@@ -16,12 +16,7 @@
      <el-button size="small" type="primary" @click="getCountForList('shang')" :disabled="leftDis"  icon="el-icon-arrow-left">上一条</el-button>
                  <el-button size="small" type="primary" @click="getCountForList('xia')" :disabled="rightDis">下一条<i class="el-icon-arrow-right"></i></el-button>
 </div>
-
-
     <div class="flex flex-warp-justify" style="margin-top:10px;line-height:28px;">
- 
- 
- 
   <h4 style="margin:0"  v-if="(presId ||'') !==''">处方状态：</h4>
 <div  v-if="(presId ||'') !==''">
     {{ handleStatus(prodetail.presState)  }}
@@ -33,10 +28,10 @@
 </div>
 
 
-<div class="flex flex-warp-justify"  >
+<div class="flex flex-warp-justify" v-if="pres_type === 'BACK_HANDWORK' || pres_type ==='DOC_HANDWORK'" >
   <h4 style="margin:0;padding-left:10px;">支付状态：</h4>
 <div>
-    <el-select v-model="createForm.payModeEnum" size="mini" placeholder="请选择">
+    <el-select v-model="payModeEnum" size="mini" placeholder="请选择">
     <el-option
       label="未支付"
       value="PAY_WAIT">
@@ -51,29 +46,27 @@
     </el-option>
   </el-select>
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-
-
-
-
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK' && pres_type !=='DOC_HANDWORK'">
-    <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" >
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;">
+    <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;"  class=" flex  flex-align-center" v-if="prodetail.createDate " >
     开方时间：{{prodetail.createDate}}
     </div>
-     <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" >
-    医生给患者备注：{{prodetail.patientRemake}}
-    </div>
-    <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" >
-    医生给转方备注：{{prodetail.remark}}
-    </div>
+     <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" class=" flex  flex-align-center">
+    <div style="    width: 130px;white-space: nowrap;">医生给患者备注：</div>
+    <span v-if="pres_type !== 'BACK_HANDWORK'">{{prodetail.patientRemake}}</span>
+    <el-input  v-else v-model="createForm.patientRemake" size="small" placeholder="医生给患者备注"
+ style="margin-right:10px;"/>
     </div>
 
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK' && pres_type !=='DOC_HANDWORK'">
+    <div style="margin-top:10px;margin-bottom:10px;margin-right:10px;" class=" flex  flex-align-center" v-if="pres_type !== 'BACK_HANDWORK' || prodetail.presState === 'NOT_TRANSLATED_PRESCRIPTION'">
+    医生给转方备注：{{prodetail.remark}}
+    </div>
+
+    </div>
+
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="pres_type !== 'BACK_HANDWORK'">
      <div style=" margin-top:10px;margin-bottom:10px;margin-right:10px;" v-if=" prodetail.presState !=  'NOT_TRANSLATED_PRESCRIPTION'">
     转方时间：{{prodetail.transDate}}
     </div>
@@ -122,11 +115,11 @@
 <div v-if="pres_type !== 'BACK_HANDWORK' && pres_type !=='DOC_HANDWORK'">
 <div v-for="(item,index) in prodeInfo" v-if="index!==1">
 <h4 style="margin: 10px 0;">{{item.title+'信息'}}</h4>
-<div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;height:12px;" >
+<div style="display:flex;flex-wrap: wrap;margin-bottom:10px;height:12px;" >
   <div style="margin-right:10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item.list">
 <span>{{items.title}}</span>
 <span v-if="items.value !== 'diagnose'">{{prodetail[items.value]}}</span>
-<span v-else>
+<span v-else >
  <el-input
   placeholder="诊断"
   v-model="diagnosis" style=""/>
@@ -135,18 +128,21 @@
 </div>
 </div>
 </div>
-
-
-
 <div  v-else>
-<div v-for="(item,index) in prodeInfo">
-<div style="margin: 10px 0;" class="flex">
+
+  <el-collapse   v-model="activeNames" style="margin-top:20px;  " class="diy_collapse">
+     <el-collapse-item  v-for="(item,index) in prodeInfo" :title="item.title+'信息'" :name="index" >
+<div style="margin-left:20px;">
+<!-- <div style="margin: 10px 0;" class="flex">
     <h4 style="margin:0;">{{item.title+'信息'}}</h4>
-   <div class="flex  flex-align-center opactiy" style="cursor: pointer;margin-left:15px;" @click="changefilter_box(index == 0?'menber':'doctor')" v-if="(index  ==0  &&  pres_type ==='DOC_HANDWORK') || pres_type !=='DOC_HANDWORK'">
+  </div> -->
+
+ <div class="flex  flex-align-center opactiy" style="cursor: pointer;" @click="changefilter_box(index == 0?'menber':'doctor')" v-if="((index  ==0  &&  pres_type ==='DOC_HANDWORK') || pres_type !=='DOC_HANDWORK')&& index!==1   ">
     <i class="iconfont icon-sousuo1"></i>
       <div>搜{{item.title}}</div>
    </div>
-  </div>
+
+
 
 <div v-if="index ===1">
 <div style="display:flex;flex-wrap: wrap;margin-bottom:10px;" >
@@ -205,7 +201,17 @@
 </div>
 </div>
 </div>
+
+  </el-collapse-item>
+</el-collapse>
+
 </div>
+
+
+
+
+
+
 
 <div style="height:20px;"></div>
 <el-row :gutter="24"  style="padding:0 0 20px;">
@@ -216,8 +222,8 @@
 <corpperlabel  ref="cropper" :preImageList="preImageList" :style="pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK' ? 'visibility: hidden;' : ''"></corpperlabel>
   <div style="margin-bottom:22px;" class="pre_update_upload" v-loading="add_upload_loading" v-if=" pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK'">
  <h4>处方图片</h4>
-                <el-upload :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
-                  <i class="el-icon-plus"></i>
+                <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl"  list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
+              <i class="el-icon-plus"></i>
                 </el-upload>
 </div>
   
@@ -484,7 +490,7 @@
 
   <div v-else>治疗服务费：<span style="color:red" >￥{{serviceMoney}}</span></div>
       <div>药品合计：<span style="color:red" >￥{{presscriptionMoney}}</span></div>
-  <div>合计：<span style="color:red" >￥{{orderMoney}}</span></div>
+  <div v-if="pres_type !=='DOC_HANDWORK' && pres_type !== 'BACK_HANDWORK'">合计：<span style="color:red" >￥{{orderMoney}}</span></div>
 </div>
 
 <div style="    display: flex;
@@ -578,7 +584,6 @@ import * as ApiOrder from "../../api/orderapi";
     corpperlabel
   }
 })
-
 export default class AddGoods extends Vue {
   //供应商
   querySearch4(queryString, cb) {
@@ -643,34 +648,48 @@ export default class AddGoods extends Vue {
       return restaurant.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
     };
   }
+  beforeAvatarUpload(file) {
+    const isJPG = file.type === "image/jpeg";
+    const isLt2M = file.size / 1024 / 1024 < 2;
 
+    if (!isJPG) {
+      this.$message.error("上传头像图片只能是 JPG 格式!");
+    }
+    if (!isLt2M) {
+      this.$message.error("上传头像图片大小不能超过 2MB!");
+    }
+    return isJPG && isLt2M;
+  }
   editPrice = true;
   prodeInfo = [
-    
-  { title:"患者",
-     list:[
-      { title: "患者姓名：", value: "memberName" ,model:"memberName"},
-      { title: "患者手机：", value: "memberPhone",model:"memberPhone" },
-      { title: "患者性别：", value: "patientSex" ,model:"patientSex"},
-      { title: "患者年龄：", value: "memberAge",model:"memberAge" },
-      { title: "患者身份证：", value: "memberIdcard",model:"memberIdcard" },
-      { title: "地址：", value: "consigneeAddress",model:"a" },
-    ]},
-      
-  { title:"地址",
-     list:[
-      
-    ]},
-      { title:"医生",
-     list:[
-      { title: "医生姓名：", value: "docterName",model:"docterName" },
-      { title: "医生电话：", value: "doctorMobile" ,model:"doctorMobile"},
-     { title: "医生医院：", value: "hospitalName",model:"hospitalName" },
-      { title: "科室：", value: "docterDept",model:"docterDept" },
-      { title: "诊断：", value: "diagnose" ,model:"diagnose"}
-    ]}
-  ];
+    {
+      title: "患者",
+      list: [
+        { title: "患者姓名：", value: "memberName", model: "memberName" },
+        { title: "患者手机：", value: "memberPhone", model: "memberPhone" },
+        { title: "患者性别：", value: "patientSex", model: "patientSex" },
+        { title: "患者年龄：", value: "memberAge", model: "memberAge" },
+        { title: "患者身份证：", value: "memberIdcard", model: "memberIdcard" },
+        { title: "地址：", value: "consigneeAddress", model: "a" }
+      ]
+    },
 
+    {
+      title: "地址",
+      list: []
+    },
+    {
+      title: "医生",
+      list: [
+        { title: "医生姓名：", value: "docterName", model: "docterName" },
+        { title: "医生电话：", value: "doctorMobile", model: "doctorMobile" },
+        { title: "医生医院：", value: "hospitalName", model: "hospitalName" },
+        { title: "科室：", value: "docterDept", model: "docterDept" },
+        { title: "诊断：", value: "diagnose", model: "diagnose" }
+      ]
+    }
+  ];
+  activeNames = [0, 1, 2];
 
   selectDrug(drugId) {
     this.drug = {};
@@ -683,12 +702,12 @@ export default class AddGoods extends Vue {
     this.drug["specification"] = a[0].specification;
     this.drug["drugPrice"] = a[0].drugPrice;
     this.drug["primarykeyID"] = a[0].id;
-    this.drug['manufacturer'] = a[0].manufacturer
-    this.drug['oldprice'] = a[0].oldprice
-    if(this.drug.oldprice){
-    this.drug['price'] = a[0].oldprice.toString()
-    }else{
-    this.drug['price'] = a[0].drugPrice.toString()
+    this.drug["manufacturer"] = a[0].manufacturer;
+    this.drug["oldprice"] = a[0].oldprice;
+    if (this.drug.oldprice) {
+      this.drug["price"] = a[0].oldprice.toString();
+    } else {
+      this.drug["price"] = a[0].drugPrice.toString();
     }
     //清空数据
     this.commonList();
@@ -709,7 +728,7 @@ export default class AddGoods extends Vue {
     let data = {
       commonName: this.drug.commonName
     };
-      
+
     if (this.drug.manufacturer) {
       Object.assign(data, { manufacturer: this.drug.manufacturer });
     }
@@ -790,7 +809,6 @@ export default class AddGoods extends Vue {
     });
   }
 
-
   drug: any = {};
   allprescription = 0;
   allPrescription() {
@@ -811,17 +829,17 @@ export default class AddGoods extends Vue {
       : 0;
   }
 
-    handleprescriptionType(prescriptionType){
-switch(prescriptionType){
-  case 'BACK_HANDWORK':
-  return '直接开方'
-   case 'DOC_HANDWORK':
-  return '线下订单'
-   case 'PHOTO':
-  return '普通单'
-        default:
-        return  ""
-}
+  handleprescriptionType(prescriptionType) {
+    switch (prescriptionType) {
+      case "BACK_HANDWORK":
+        return "直接开方";
+      case "DOC_HANDWORK":
+        return "线下订单";
+      case "PHOTO":
+        return "普通单";
+      default:
+        return "";
+    }
   }
   instructions = "";
   handleStatus(status) {
@@ -867,19 +885,19 @@ switch(prescriptionType){
           .then(res => {
             this.backLoad = false;
             if (res["retCode"]) {
-
-              if(this.pres_type == 'BACK_HANDWORK' || this.pres_type ==  'DOC_HANDWORK'){
-                   this.doUpdatePre(res.data.nextPresId,'退回成功')
-               }else{
-              this.tranRemake = "";
-              if (res.data.nextPresId) {
-                this.getCountForList("xia", res.data.nextPresId);
+              if (
+                this.pres_type == "BACK_HANDWORK" ||
+                this.pres_type == "DOC_HANDWORK"
+              ) {
+                this.doUpdatePre(res.data.nextPresId, "退回成功");
               } else {
-                this.$router.push("/transmit");
+                this.tranRemake = "";
+                if (res.data.nextPresId) {
+                  this.getCountForList("xia", res.data.nextPresId);
+                } else {
+                  this.$router.push("/transmit");
+                }
               }
-                  }
-
-
             } else {
               if (!res["islogin"]) {
                 this.$alert(res["message"]);
@@ -973,10 +991,9 @@ switch(prescriptionType){
     indexApi.docreateDrug(this.drug).then(res => {
       this.loading = false;
       if (res["retCode"]) {
-
-              if(this.pres_type == 'BACK_HANDWORK'){
-          this.presId = res.data.prescriptionId
-              }
+        if (this.pres_type == "BACK_HANDWORK") {
+          this.presId = res.data.prescriptionId;
+        }
 
         this.drug = {};
         this.instructions = "";
@@ -998,7 +1015,6 @@ switch(prescriptionType){
   queryPresDrug() {
     indexApi.queryPresDrug({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
- 
         this.preDrugList = res.data.data;
         this.presscriptionMoney = res.data.drugMoney;
         this.orderMoney = res.data.orderMoney;
@@ -1013,59 +1029,90 @@ switch(prescriptionType){
   }
   tranRemake = "";
   diagnosis = "";
+  checkPhone = /^1[345789]\d{9}$/;
+
   dotransmit() {
-//修改时的验证要提过来这边判断
+    //修改时的验证要提过来这边判断
 
-  //     if((this.createForm.patientSex||'')  ===''){
-  //           this.$message("请选择患者性别");
-  //     return;
-  //       }
+    //     if((this.createForm.patientSex||'')  ===''){
+    //           this.$message("请选择患者性别");
+    //     return;
+    //       }
 
-  //     if((this.createForm.memberAge||'')  ===''){
-  //           this.$message("请输入患者年龄");
-  //     return;
-  //       }
-  //  if((this.createForm.memberIdcard||'')  ===''){
-  //           this.$message("请输入患者身份证");
-  //     return;
-  //       }
+    //     if((this.createForm.memberAge||'')  ===''){
+    //           this.$message("请输入患者年龄");
+    //     return;
+    //       }
+    //  if((this.createForm.memberIdcard||'')  ===''){
+    //           this.$message("请输入患者身份证");
+    //     return;
+    //       }
 
-
-
- if(this.pres_type === 'BACK_HANDWORK'  || this.pres_type == 'DOC_HANDWORK' ){
-  
     if (
-      (this.createForm.docterId || "") === ""
+      this.pres_type === "BACK_HANDWORK" ||
+      this.pres_type == "DOC_HANDWORK"
     ) {
-      this.$message("请选择医生");
-      return;
-    }
-    
-      if((this.createForm.memberName||'')  ===''){
-            this.$message("请输入患者姓名");
-      return;
+      if ((this.createForm.docterId || "") === "") {
+        this.$message("请选择医生");
+        return;
+      }
+
+      if ((this.createForm.memberName || "") === "") {
+        this.$message("请输入患者姓名");
+        return;
+      }
+  let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
+          this.$message("请输入0-130岁的年龄");
+          return;
         }
 
-      if((this.createForm.memberPhone||'')  ===''){
-            this.$message("请输入患者手机号");
-      return;
+      if ((this.createForm.memberPhone || "") === "") {
+        this.$message("请输入患者手机号");
+        return;
+      }
+      if (!this.checkPhone.test(this.createForm.memberPhone)) {
+        this.$message("请输入正确的患者手机号");
+        return;
+      }
+
+      if ((this.createForm.memberIdcard || "") !== "") {
+        this.vaild_memberIdcard(() => {
+          this.after_vaild();
+        });
+        return;
+      } else {
+        this.after_vaild();
+        return;
+      }
+    }
+  }
+  vaild_memberIdcard(callback) {
+    indexApi.checkidcard({ idcard: this.createForm.memberIdcard }).then(res => {
+      if (res["retCode"]) {
+        callback();
+        return;
+      } else {
+        if (!res["islogin"]) {
+          this.$message(res["message"]);
         }
+        return;
+      }
+    });
+  }
+  after_vaild() {
+    if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
+      if (this.fileList.length > 0) {
+        this.createForm.pictureIds = this.fileList
+          .map(item => {
+            return item.url;
+          })
+          .join(",");
+      } else {
+        this.$message("请上传处方图片");
+        return;
+      }
     }
-  
-if(this.pres_type == 'BACK_HANDWORK' || this.pres_type == 'DOC_HANDWORK'){
-if (this.fileList.length > 0 ) {
-      this.createForm.pictureIds = this.fileList
-        .map(item => {
-          return item.url;
-        })
-        .join(",");
-    } else {
-      this.$message("请上传处方图片");
-      return;
-    }
-}
-
-
 
     //验证
     if (this.preDrugList.length == 0) {
@@ -1103,19 +1150,21 @@ if (this.fileList.length > 0 ) {
               .then(res => {
                 this.backLoad = false;
                 if (res["retCode"]) {
-              
-               this.createForm.presId = res.data.prescription.presId
-               
-              if(this.pres_type == 'BACK_HANDWORK' || this.pres_type ==  'DOC_HANDWORK'){
-                   this.doUpdatePre(res.data.nextPresId,'转方成功')
-               }else{
-                  this.tranRemake = "";
-                  if ((res.data.nextPresId||'')!=='') {
-                    this.getCountForList("xia", res.data.nextPresId);
+                  this.createForm.presId = res.data.prescription.presId;
+
+                  if (
+                    this.pres_type == "BACK_HANDWORK" ||
+                    this.pres_type == "DOC_HANDWORK"
+                  ) {
+                    this.doUpdatePre(res.data.nextPresId, "转方成功");
                   } else {
-                    this.$router.push("/transmit");
+                    this.tranRemake = "";
+                    if ((res.data.nextPresId || "") !== "") {
+                      this.getCountForList("xia", res.data.nextPresId);
+                    } else {
+                      this.$router.push("/transmit");
+                    }
                   }
-               }
                 } else {
                   if (!res["islogin"]) {
                     this.$alert(res["message"]);
@@ -1124,7 +1173,6 @@ if (this.fileList.length > 0 ) {
                 }
               });
           }
-          
         });
       })
       .catch(() => {
@@ -1140,11 +1188,11 @@ if (this.fileList.length > 0 ) {
     indexApi.getPrePic({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.preImageList = res.data;
-      this.fileList = res.data.map(item=>{
-   return {
-          url:item.presImageUrl
-        }
-      })        
+        this.fileList = res.data.map(item => {
+          return {
+            url: item.presImageUrl
+          };
+        });
         if (res.data.length > 0) {
           let a: any = this.$refs.cropper;
           a.changePreImageUrl(0);
@@ -1159,55 +1207,79 @@ if (this.fileList.length > 0 ) {
   }
   presId = "";
   prodetail = {};
+
+  payModeEnum = "";
   queryPresDetatil() {
     indexApi.queryPresDetatil({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.prodetail = res.data;
 
+        this.pres_type = this.prodetail["prescriptionType"];
+        if (
+          this.prodetail["prescriptionType"] === "DOC_HANDWORK" ||
+          this.prodetail["prescriptionType"] == "BACK_HANDWORK"
+        ) {
+          this.createForm.memberId = this.prodetail["memberId"]
+            ? this.prodetail["memberId"]
+            : "";
+          this.createForm.memberid = this.prodetail["memberId"]
+            ? this.prodetail["memberId"]
+            : "";
+          this.createForm.memberName = this.prodetail["memberName"]
+            ? this.prodetail["memberName"]
+            : "";
+          this.createForm.memberPhone = this.prodetail["memberPhone"]
+            ? this.prodetail["memberPhone"]
+            : "";
+          this.createForm.patientSex = this.prodetail["patientSex"]
+            ? this.prodetail["patientSex"]
+            : "";
+          this.createForm.memberIdcard = this.prodetail["memberIdcard"]
+            ? this.prodetail["memberIdcard"]
+            : "";
+          this.createForm.memberAge = this.prodetail["memberAge"]
+            ? this.prodetail["memberAge"]
+            : "";
+          this.createForm.consigneeName = this.prodetail["consigneeName"];
+          this.createForm.consigneePhone = this.prodetail["consigneePhone"];
+          this.createForm.docterId = this.prodetail["docterId"];
+          this.createForm.docterName = this.prodetail["docterName"];
+          this.createForm.docterName = this.prodetail["docterName"];
+          this.createForm.serviceMoney = this.prodetail["serviceMoney"];
+          this.createForm.doctorMobile = this.prodetail["doctorMobile"];
+          this.createForm.hospitalName = this.prodetail["hospitalName"];
+          this.createForm.docterDept = this.prodetail["docterDept"];
+          this.createForm.diagnose = this.prodetail["diagnose"];
+          this.createForm.patientRemake = this.prodetail["patientRemake"];
 
-      this.pres_type = this.prodetail['prescriptionType']
-      if(this.prodetail['prescriptionType'] === 'DOC_HANDWORK'  ||this.prodetail['prescriptionType']   == 'BACK_HANDWORK'){
-      this.createForm.memberId = this.prodetail['memberId']?this.prodetail['memberId']:'';
-      this.createForm.memberid = this.prodetail['memberId']?this.prodetail['memberId']:'';
-      this.createForm.memberName = this.prodetail['memberName']?this.prodetail['memberName']:'';
-      this.createForm.memberPhone = this.prodetail['memberPhone']?this.prodetail['memberPhone']:'';
-      this.createForm.patientSex = this.prodetail['memberSex']?this.prodetail['memberSex']:'';
-      this.createForm.memberIdcard = this.prodetail['memberIdcard']?this.prodetail['memberIdcard']:'';
-      this.createForm.memberAge = this.prodetail['memberAge']?this.prodetail['memberAge']:'';
-      //  this.pres_type ='DOC_HANDWORK'
-       this.createForm.docterId = this.prodetail['docterId']
-       this.createForm.docterName = this.prodetail['docterName']
-       this.createForm.docterName = this.prodetail['docterName']
-       this.createForm.serviceMoney = this.prodetail['serviceMoney']
-       this.createForm.doctorMobile = this.prodetail['doctorMobile']
-       this.createForm.hospitalName = this.prodetail['hospitalName']
-       this.createForm.docterDept = this.prodetail['docterDept']
-       this.createForm.diagnose = this.prodetail['diagnose']
-   if((this.prodetail['payStatus']||'')!==''){
-            this.createForm.payModeEnum = this.prodetail['payStatus']
+          if ((this.prodetail["payStatus"] || "") !== "") {
+            if (this.prodetail["payStatus"] === "PAY_ON_DELIVERY") {
+              this.payModeEnum = "ORDER_PAY_ONDEV";
+            } else {
+              this.payModeEnum = this.prodetail["payStatus"];
+            }
           }
 
-
-      
-      if((this.prodetail['provinceid']||'')!==''){
-   this.createForm.provinceid = this.prodetail['provinceid']
-         this.queryCityList();
-      } 
-      if((this.prodetail['cityid']||'')!==''){
-   this.createForm.cityid = this.prodetail['cityid']
-         this.queryCountryList();
-      }
-      this.createForm.areaid = this.prodetail['areaid']?this.prodetail['areaid']:''
-      this.createForm.consigneeAddress = this.prodetail['consigneeAddress']?this.prodetail['consigneeAddress']:''
-
-    
-
-       }
-        if( res.data){
-        this.diagnosis = res.data.diagnose;
+          if ((this.prodetail["provinceid"] || "") !== "") {
+            this.createForm.provinceid = this.prodetail["provinceid"];
+            this.queryCityList();
+          }
+          if ((this.prodetail["cityid"] || "") !== "") {
+            this.createForm.cityid = this.prodetail["cityid"];
+            this.queryCountryList();
+          }
+          this.createForm.areaid = this.prodetail["areaid"]
+            ? this.prodetail["areaid"]
+            : "";
+          this.createForm.consigneeAddress = this.prodetail["consigneeAddress"]
+            ? this.prodetail["consigneeAddress"]
+            : "";
         }
-      //  if(this.pres_type==='BACK_HANDWORK'){
-      // }   
+        if (res.data) {
+          this.diagnosis = res.data.diagnose;
+        }
+        //  if(this.pres_type==='BACK_HANDWORK'){
+        // }
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -1218,7 +1290,6 @@ if (this.fileList.length > 0 ) {
   specificationList = [];
   partnerNameList = [];
   remoteMethod(query) {
-
     if (query == undefined || query == null) {
       return;
     }
@@ -1241,7 +1312,7 @@ if (this.fileList.length > 0 ) {
     indexApi
       .getGrugList({
         keyFName: query,
-        preId :   this.presId 
+        preId: this.presId
       })
       .then(res => {
         if (res["retCode"]) {
@@ -1272,7 +1343,7 @@ if (this.fileList.length > 0 ) {
     Object.assign(a, { presId: sessionStorage.presId });
     indexApi.findPrescriptionByType(a).then(res => {
       if (res["retCode"]) {
-          this.presId = ""
+        this.presId = "";
         if (presId) {
           sessionStorage.presId = presId;
           this.init();
@@ -1300,51 +1371,46 @@ if (this.fileList.length > 0 ) {
       }
     });
   }
-  doUpdatePre(nextPresId,message){
+  doUpdatePre(nextPresId, message) {
+    this.createForm.feeHide = this.createForm.feeTypeEnum;
+    // this.createForm.consigneeName = this.createForm.memberName
+    // this.createForm.consigneePhone = this.createForm.memberPhone
+    this.createForm.payModeEnum = this.payModeEnum;
 
-            this.createForm.feeHide= this.createForm.feeTypeEnum ;
-            // this.createForm.consigneeName = this.createForm.memberName
-            // this.createForm.consigneePhone = this.createForm.memberPhone
+    if (this.pres_type === "BACK_HANDWORK") {
+      this.createForm.prescriptionType = "BACK_HANDWORK";
+    }
 
-           if(this.pres_type ==='BACK_HANDWORK'){
-            this.createForm.prescriptionType = "BACK_HANDWORK"
-           }
-   
-
-      indexApi.updatePre(this.createForm).then(res => {
-        if (res["retCode"]) {
-              this.$message(message);
-          this.tranRemake = "";
-                  if ((nextPresId||'')!=='') {
-                    this.getCountForList("xia", nextPresId);
-                  } else {
-                    this.$router.push("/transmit");
-                  }
-
-
+    indexApi.updatePre(this.createForm).then(res => {
+      if (res["retCode"]) {
+        this.$message(message);
+        this.tranRemake = "";
+        if ((nextPresId || "") !== "") {
+          this.getCountForList("xia", nextPresId);
         } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
+          this.$router.push("/transmit");
         }
-      });
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
+        console.error("数据查询错误");
+      }
+    });
   }
-  mobile = ""
-filter_model = false
-filter_type = ""
-resultList = []
-noMessage_model = false
-noMessage_loading = false
+  mobile = "";
+  filter_model = false;
+  filter_type = "";
+  resultList = [];
+  noMessage_model = false;
+  noMessage_loading = false;
   changefilter_box(filter_type) {
-
     this.filter_type = filter_type;
     this.filter_model = !this.filter_model;
     this.resultList = [];
     this.mobile = "";
   }
   select_item(item) {
-    
     if (item.doctorId) {
       this.createForm.doctorid = item.doctorId;
       this.createForm.docterId = item.doctorId;
@@ -1418,27 +1484,24 @@ noMessage_loading = false
 
   init() {
     this.backLoad = true;
-    if((this.presId||'')===''){
-    this.presId = sessionStorage.presId;
+    if ((this.presId || "") === "") {
+      this.presId = sessionStorage.presId;
     }
 
     this.allPrescription();
     this.countPreByStatu();
 
-    if((this.presId||'')!==''){
-         this.queryPresDrug();
-    this.queryPresDetatil();
-    this.getPrePic();
+    if ((this.presId || "") !== "") {
+      this.queryPresDrug();
+      this.queryPresDetatil();
+      this.getPrePic();
     }
-
 
     this.backLoad = false;
     this.drug = {};
     this.instructions = "";
-  
   }
-createForm:any = {}
-
+  createForm: any = {};
 
   dialogImageUrl = "";
   dialogVisible = false;
@@ -1457,7 +1520,6 @@ createForm:any = {}
     }
     return isLt5M;
   }
-
 
   fileList: any = [];
   handleSuccess1(response, file, fileList) {
@@ -1478,23 +1540,21 @@ createForm:any = {}
         break;
       }
     }
-
   }
 
   provinceList = [];
   cityList = [];
   countryList = [];
 
-
   queryCountryList() {
-    this.createForm.areaid = "";
+    delete this.createForm.areaid;
     ApiOrder.queryCountryList(this.createForm.cityid).then(res => {
       this.countryList = res.data.region;
     });
   }
   queryCityList() {
-    this.createForm.cityid = "";
-    this.createForm.areaid = "";
+    delete this.createForm.cityid;
+    delete this.createForm.areaid;
     ApiOrder.queryCityList(this.createForm.provinceid).then(res => {
       this.cityList = res.data.region;
     });
@@ -1506,20 +1566,19 @@ createForm:any = {}
     });
   }
 
-
-
-pres_type = ""
+  pres_type = "";
   mounted() {
-
-       this.fileUploadUrl = Config.g_upload_url;
-       if((this.$route.params.pres_type||'')=='' && (sessionStorage.presId||'')===''){
-         this.$router.replace('/transmit')       
-         return
-         }
+    this.fileUploadUrl = Config.g_upload_url;
+    if (
+      (this.$route.params.pres_type || "") == "" &&
+      (sessionStorage.presId || "") === ""
+    ) {
+      this.$router.replace("/transmit");
+      return;
+    }
     this.queryProvinceList();
 
-
-    this.pres_type = this.$route.params.pres_type
+    this.pres_type = this.$route.params.pres_type;
     // 判断是否是锁单了
     this.init();
     // this.getDrugList()//获取默认药品列表
@@ -1556,12 +1615,6 @@ pres_type = ""
 .iconcropper:active {
   opacity: 0.5;
 }
-
-
-
-
-
-
 
 .flex-space {
   display: flex;
@@ -1630,18 +1683,18 @@ pres_type = ""
 }
 .filter_min_box:hover {
 }
-.pre_update_upload{
-      position: absolute;
-    top: 0;
-    height: 750px;
-    background-color: #fff;
-    width: 100%;  min-width:500px;
+.pre_update_upload {
+  position: absolute;
+  top: 0;
+  height: 750px;
+  background-color: #fff;
+  width: 100%;
+  min-width: 500px;
 }
 
-
-.vaild_icon::before{
+.vaild_icon::before {
   content: "*";
-    color: #f56c6c;
-    margin-right: 4px;
+  color: #f56c6c;
+  margin-right: 4px;
 }
 </style>

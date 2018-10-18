@@ -164,16 +164,18 @@
     </div>
 
 <div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;">
-    <div style="     font-size: 15px;     margin-right:10px;" v-if=" order.presState !=  'NOT_TRANSLATED_PRESCRIPTION' && order.presState !=  'REJECT_AUDIT_PRESCRIPTION'  && order.presState != 'REJECT_TRANSLATED_PRESCRIPTION'&& order.presState !='ALREADY_TRANSLATED_PRESCRIPTION'">
+    <div style="font-size: 15px;     margin-right:10px;" v-if="order.presState !=  'NOT_TRANSLATED_PRESCRIPTION' && order.presState !=  'REJECT_AUDIT_PRESCRIPTION'  && order.presState != 'REJECT_TRANSLATED_PRESCRIPTION'&& order.presState !='ALREADY_TRANSLATED_PRESCRIPTION'">
     审方时间：{{order.auditingDate}}
     </div>
-   <div style="     font-size: 15px;     margin-right:10px;" v-if=" order.presState !=  'NOT_TRANSLATED_PRESCRIPTION' && order.presState != 'REJECT_AUDIT_PRESCRIPTION' &&  order.presState !='ALREADY_TRANSLATED_PRESCRIPTION'">
+   <div style="font-size: 15px;     margin-right:10px;" v-if=" order.presState !=  'NOT_TRANSLATED_PRESCRIPTION' && order.presState != 'REJECT_AUDIT_PRESCRIPTION' &&  order.presState !='ALREADY_TRANSLATED_PRESCRIPTION'">
     审方医生：{{order.auditingName}}
     </div>
    <!-- <div style="     font-size: 15px;     margin-right:10px;" v-if=" order.presState !=  'NOT_TRANSLATED_PRESCRIPTION' && order.presState != 'REJECT_AUDIT_PRESCRIPTION' &&  order.presState !='ALREADY_TRANSLATED_PRESCRIPTION'">
     审方备注：{{order.auditingRemake}}
     </div> -->
     </div>
+
+
 
 <div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;">
       <div style="     font-size: 15px;     margin-right:10px;" v-if="order.presState == 'REJECT_AUDIT_PRESCRIPTION' ||order.rejectAuditTime">
@@ -183,6 +185,14 @@
     审方退回原因：{{order.rejectAuditReason}}
     </div>
     </div>
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="order.presState == 'GIVEUP_PRESCRIPTION'">
+      <div style="     font-size: 15px;     margin-right:10px;" v-if="order.presState == 'GIVEUP_PRESCRIPTION'">
+    弃单备注：{{order.giveupReason}}
+    </div>
+    </div>
+
+
+
   </el-collapse-item>
 
  <el-collapse-item title="发票" v-if="order.orderStatue == 'ORDER_END_GOODS'">
@@ -1004,7 +1014,7 @@ splitFlag:this.send_obj.splitFlag,
       case "ORDER_PAY_ONDEV":
         return "货到付款";
       case "ORDER_CANCEL_PAY":
-        return "取消支付";
+        return "交易关闭";
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
           case "SENDGOODS_UNFINISHED":

@@ -31,7 +31,7 @@
  <el-table-column 
       label="支付方式" width="120">
 <template slot-scope="scope">
- <el-tag 
+ <el-tag v-if="handlePaymentMode(scope.row.paymentMode).type !==''"
   :type="scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ? handlePayStatus(scope.row.payStatus).type  :handlePaymentMode(scope.row.paymentMode).type">
   {{ scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ?handlePayStatus(scope.row.payStatus).title :  handlePaymentMode(scope.row.paymentMode).title}}
   </el-tag>
@@ -46,12 +46,12 @@
 </el-tag>
       </template>
    </el-table-column>
-        <el-table-column  
+        <!-- <el-table-column  
       label="订单类型" width="150">
       <template slot-scope="scope">
      {{scope.row.orderSplitFlag==='1'?'拆分订单':'普通订单'}}
       </template>
-   </el-table-column>
+   </el-table-column> -->
 
 
   <el-table-column
@@ -75,7 +75,7 @@
    </el-table-column>
 
 
-      <el-table-column v-if="payStatus!='ORDER_WAIT_PAY'"
+      <el-table-column 
       label="订单类型"  width="150">
      <template slot-scope="scope">
      {{ handleOrderType(scope.row)}}
@@ -179,17 +179,16 @@
           type="text"
           @click="changeModel('edit', scope.row)"  v-promiss.edit>完善</el-button>
 
-         
                <el-button
           size="mini"
-          type="primary" @click="sendGoods(scope.row)"   v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED')" > 发货 </el-button>
+          type="primary" @click="sendGoods(scope.row)"   v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED'||scope.row.orderStatue =='ORDER_PAY_ONDEV')" > 发货 </el-button>
          
 
 
                <!-- <el-button size="mini" 
           :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button> -->
          <el-button size="mini" 
-          :type="scope.row.presState == 'GIVEUP_PRESCRIPTION'?'':'primary'" @click="doGiveup(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY'" :disabled="scope.row.presState == 'GIVEUP_PRESCRIPTION'"  >{{  scope.row.presState == 'GIVEUP_PRESCRIPTION'?'已弃单':'弃单'}}</el-button>
+          :type="scope.row.presState == 'GIVEUP_PRESCRIPTION'?'':'primary'" @click="doGiveup(scope.row)" v-if="pagetype =='reminder'" :disabled="scope.row.presState == 'GIVEUP_PRESCRIPTION'"  >{{  scope.row.presState == 'GIVEUP_PRESCRIPTION'?'已弃单':'弃单'}}</el-button>
   
 
      </template>
@@ -256,9 +255,9 @@
  <el-table-column 
       label="支付方式" width="120">
 <template slot-scope="scope">
- <el-tag
+ <el-tag  v-if="handlePaymentMode(scope.row.paymentMode).type !==''"
   :type="scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ? handlePayStatus(scope.row.payStatus).type  :handlePaymentMode(scope.row.paymentMode).type">
-  {{ scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ?handlePayStatus(scope.row.payStatus).title :  handlePaymentMode(scope.row.paymentMode).title}}
+  {{ scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ? handlePayStatus(scope.row.payStatus).title :  handlePaymentMode(scope.row.paymentMode).title}}
   </el-tag>
 </template>
    </el-table-column>
@@ -272,12 +271,12 @@
 </el-tag>
       </template>
    </el-table-column>
-    <el-table-column  
+    <!-- <el-table-column  
       label="订单类型" width="150">
       <template slot-scope="scope">
      {{scope.row.orderSplitFlag==='1'?'拆分订单':'普通订单'}}
       </template>
-   </el-table-column>
+   </el-table-column> -->
 
   <el-table-column
       label="申请开票时间" width="180">
@@ -324,6 +323,12 @@
    </el-table-column>
 
 
+    <el-table-column 
+      label="订单类型"  width="150">
+     <template slot-scope="scope">
+     {{ handleOrderType(scope.row)}}
+     </template>
+   </el-table-column>
 
    <el-table-column
       prop="patientSex"
@@ -378,6 +383,7 @@
          <el-button
           size="mini"
           type="text" @click="getorderInfo(scope.row)">订单详情</el-button>
+          
                <el-button
           size="mini"
           type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
@@ -407,11 +413,10 @@
 				<el-button @click="giveupModel = false">取 消</el-button>
 				<el-button type="primary" @click="doGiveupSubmit()" >确 定</el-button>
 			</span>
-
 </el-dialog>
 
 		<el-dialog class="min_box" width= "70vw" :close-on-click-modal="false" 
-    :title="add_model_type == 'add' ?'新增直接开方':`完善手工单（${handleprescriptionType(createForm.prescriptionType).name}）`"
+    :title="add_model_type == 'add' ?'完善':`完善（${handleprescriptionType(createForm.prescriptionType).name}）`"
      :append-to-body="true" :visible.sync="add_model"   >
 
 <div style="min-height:500px;" v-bouncing="add_model_loading">
@@ -568,7 +573,7 @@
 <div style="padding: 15px;">
 
   <div style="margin-bottom:22px;" v-loading="add_upload_loading">
-                <el-upload :action="fileUploadUrl"   list-type="picture-card"  ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
+                <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl"   list-type="picture-card"  ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
 </div>
@@ -709,6 +714,7 @@ payStatus
   resultList = [];
 
 
+  checkPhone = /^1[345789]\d{9}$/;
 
   submitForm() {
 
@@ -720,42 +726,25 @@ payStatus
       this.$message("请选择医生");
       return;
     }
-    
 
-
-
-// 不判断患者Id
-
-
-    // if (
-    //   ((this.createForm.memberid || "") === "" &&
-    //     this.add_model_type == "add") ||
-    //   ((this.createForm.memberId || "") === "" && this.add_model_type == "edit")
-    // ) {
-    //   this.$message("请选择患者");
-    //   return;
-    // }
-
-      if(this.add_model_type == "add"){
-        if((this.createForm.memberName||'')  ===''){
-            this.$message("请输入患者姓名");
-      return;
-        }
-      if((this.createForm.memberPhone||'')  ===''){
-            this.$message("请输入患者手机号");
-      return;
-        }
-      }else{
-        if((this.createForm.memberName||'')  ===''){
-            this.$message("请输入患者姓名");
-      return;
+      if ((this.createForm.memberName || "") === "") {
+        this.$message("请输入患者姓名");
+        return;
+      }
+  let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
+          this.$message("请输入0-130岁的年龄");
+          return;
         }
 
-      if((this.createForm.memberPhone||'')  ===''){
-            this.$message("请输入患者手机号");
-      return;
-        }
-
+      if ((this.createForm.memberPhone || "") === "") {
+        this.$message("请输入患者手机号");
+        return;
+      }
+      if (!this.checkPhone.test(this.createForm.memberPhone)) {
+        this.$message("请输入正确的患者手机号");
+        return;
+      }
 
       if((this.createForm.patientSex||'')  ===''){
             this.$message("请选择患者性别");
@@ -766,19 +755,23 @@ payStatus
             this.$message("请输入患者年龄");
       return;
         }
-   if((this.createForm.memberIdcard||'')  ===''){
-            this.$message("请输入患者身份证");
-      return;
-        }
+      if ((this.createForm.memberIdcard || "") !== "") {
+        this.vaild_memberIdcard(() => {
+          this.after_vaild();
+        });
+        return;
+      } else {
+        this.after_vaild();
+        return;
       }
+  }
+  after_vaild(){
 
-    if (this.fileList.length > 0 && this.add_model_type == "add") {
-      this.createForm.photourl = this.fileList
-        .map(item => {
-          return item.url;
-        })
-        .join(",");
-    } else if (this.fileList.length > 0 && this.add_model_type == "edit") {
+
+
+
+
+ if (this.fileList.length > 0) {
       this.createForm.pictureIds = this.fileList
         .map(item => {
           return item.url;
@@ -800,9 +793,13 @@ let closeLoading = ()=>{
 this.add_footer_loading =  false
 this.cancelLoading = false
 }
-    if (this.add_model_type === "edit") {
-      this.createForm.serviceMoney = this.createForm.servicemoney
-            // this.createForm.feeHide= this.createForm.feeTypeEnum ;
+
+      // this.createForm.serviceMoney = this.createForm.servicemoney
+
+
+
+
+
       if((this.createForm.consigneeName||'')===''){
        this.$message("请输入收件人");
       return;
@@ -834,8 +831,20 @@ this.cancelLoading = false
           console.error("数据查询错误");
         }
       });
-    } 
 
+  }
+   vaild_memberIdcard(callback) {
+    indexApi.checkidcard({ idcard: this.createForm.memberIdcard }).then(res => {
+      if (res["retCode"]) {
+        callback();
+        return;
+      } else {
+        if (!res["islogin"]) {
+          this.$message(res["message"]);
+        }
+        return;
+      }
+    });
   }
 
  handleprescriptionType(prescriptionType) {
@@ -1168,6 +1177,13 @@ sendGoods(row){
           type:"warning",
           title:"货到付款"
           }; 
+     case "PAY_ON_DELIVERY":
+        return {
+          type:"warning",
+          title:"货到付款"
+          }; 
+
+          
       default:
         return "";
     }
@@ -1210,7 +1226,7 @@ sendGoods(row){
       case "ORDER_CANCEL_PAY":
         return {
           type:"info",
-          title:"取消支付"
+          title:"交易关闭"
           };
       case "ORDER_WAIT_SENDGOODS":
         return {

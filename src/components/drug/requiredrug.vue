@@ -308,8 +308,8 @@ handledataType(dataType){
     indexApi
       .requireDrugList({
         keyword: this.keyword,
-        startqueryTime:this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-        endqueryTime:  this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+        startqueryTime:this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+        endqueryTime:  this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
         dataType:this.dataType,
         page: this.page,
         pageSize: this.pageSize

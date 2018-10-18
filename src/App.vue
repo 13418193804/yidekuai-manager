@@ -240,4 +240,8 @@ display:none;
 .bouncing-none{
   display:none!important;
 }
+.diy_collapse .el-collapse-item__header{
+      border-left: 3px red solid;
+    padding-left: 15px;
+}
 </style>

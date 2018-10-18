@@ -304,8 +304,8 @@ loading = false
 
 this.loading=true
     indexApi.queryOnlineList(
- this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
   this.page, this.pageSize ,this.keystr).then(res => {
 this.loading=false
       if (res["retCode"]) {

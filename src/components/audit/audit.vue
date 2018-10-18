@@ -226,8 +226,8 @@ date= []
 
 
   let data= {
-        startCreatTime:this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-    endCreatTime:this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+        startCreatTime:this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+    endCreatTime:this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
         key: this.key,
   }
   

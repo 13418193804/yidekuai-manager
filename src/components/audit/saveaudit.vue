@@ -31,10 +31,10 @@
     {{ handleprescriptionType(prodetail.prescriptionType)  }}
 </div>
 
-<div class="flex flex-warp-justify"  >
+<div class="flex flex-warp-justify"   v-if="pres_type === 'BACK_HANDWORK' || pres_type ==='DOC_HANDWORK'">
   <h4 style="margin:0;padding-left:10px;">支付状态：</h4>
 <div>
-    <el-select v-model="createForm.payModeEnum" size="mini" placeholder="请选择">
+    <el-select v-model="payModeEnum" size="mini" placeholder="请选择">
     <el-option
       label="未支付"
       value="PAY_WAIT">
@@ -125,7 +125,7 @@
 <div v-for="(item,index) in prodeInfo" v-if="index!==1">
 <h4 style="margin: 10px 0;">{{item.title+'信息'}}</h4>
 <div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;height:12px;" >
-  <div style="margin-right:10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item">
+  <div style="margin-right:10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item.list">
 <span>{{items.title}}</span>
 <span>{{prodetail[items.value]}}</span>
 </div>
@@ -134,16 +134,19 @@
 </div>
 
 <div  v-else>
-<div v-for="(item,index) in prodeInfo">
-<div style="margin: 10px 0;" class="flex">
+
+
+  <el-collapse v-model="activeNames"  class="diy_collapse">
+     <el-collapse-item  v-for="(item,index) in prodeInfo" :title="item.title+'信息'" :name="index">
+<div style="margin-left:20px;">
+<!-- <div style="margin: 10px 0;" class="flex">
     <h4 style="margin:0;">{{item.title+'信息'}}</h4>
-   <div class="flex  flex-align-center opactiy" style="cursor: pointer;margin-left:15px;" @click="changefilter_box(index == 0?'menber':'doctor')" v-if="(index  ==0  &&  pres_type ==='DOC_HANDWORK') || pres_type !=='DOC_HANDWORK'">
+  </div> -->
+
+   <div class="flex  flex-align-center opactiy" style="cursor: pointer;margin-left:15px;" @click="changefilter_box(index == 0?'menber':'doctor')" v-if="index  ==0 &&(  pres_type ==='BACK_HANDWORK' || pres_type =='DOC_HANDWORK')">
     <i class="iconfont icon-sousuo1"></i>
       <div>搜{{item.title}}</div>
    </div>
-  </div>
-
-
 
 
 <div v-if="index ===1">
@@ -193,17 +196,17 @@
 </div>
 
 <div style="display:flex;    flex-wrap: wrap;margin-bottom:10px;" >
-  <div style="margin-right:
-  10px;margin-top: 10px;
-  line-height: 12px;" class=" flex  flex-align-center" v-for="items in item.list" v-if="items.value !== 'consigneeAddress'">
+  <div style="margin-right:10px;margin-top: 10px;line-height: 12px;" class=" flex  flex-align-center" v-for="items in item.list" v-if="items.value !== 'consigneeAddress'">
 <span style="width:130px;white-space: nowrap;" :class=" items.value === 'memberName' ||items.value==='memberPhone'  || items.model == 'diagnose'?'vaild_icon':''">{{items.title}}</span>
  <el-input :disabled="index ==2 "  v-model="createForm[items.model]" size="small" :placeholder="'请输入'+items.title.replace('：','')"
  style="margin-right:10px;"/>
 </div>
 </div>
 </div>
-</div>
+  </el-collapse-item>
+</el-collapse>
 
+</div>
 
 
 
@@ -215,7 +218,7 @@
         
     <div style="margin-bottom:22px;" class="pre_update_upload" v-loading="add_upload_loading" v-if=" pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK'">
  <h4>处方图片</h4>
-                <el-upload :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
+                <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
 </div>
@@ -305,16 +308,16 @@
 <div style="padding:10px;font-size:14.8px;">
   
   
-  <div v-if="pres_type =='DOC_HANDWORK' || pres_type == 'BACK_HANDWORK'">
+  <!-- <div v-if="pres_type =='DOC_HANDWORK' || pres_type == 'BACK_HANDWORK'">
     治疗服务费：
           <el-input    v-model="createForm.serviceMoney"  size="small" :rows="4"
   placeholder="请输入治疗服务费"   style="max-width:180px;"
   >      <template slot="append">元</template>
   </el-input>
-  </div>
-  <div v-else>治疗服务费：<span style="color:red" >￥{{prodetail.serviceMoney}}</span></div>
+  </div> -->
+  <div >治疗服务费：<span style="color:red" >￥{{prodetail.serviceMoney}}</span></div>
   <div>药品合计：<span style="color:red" >￥{{prodetail.presscriptionMoney}}</span></div>
-  <div>合计：<span style="color:red" >￥{{prodetail.orderMoney}}</span></div>
+  <div >合计：<span style="color:red" >￥{{prodetail.orderMoney}}</span></div>
 </div>
 
 <div style="text-align:right;">
@@ -408,6 +411,7 @@ import * as indexApi from "../../api/indexApi";
 import corpperlabel from "../transmit/corpperlabel";
 import * as doctorApi from "../../api/doctorApi";
 import * as ApiOrder from "../../api/orderapi";
+import * as Config from "../../api/conf";
 
 @Component({
   props: {},
@@ -415,30 +419,34 @@ import * as ApiOrder from "../../api/orderapi";
 })
 export default class AddGoods extends Vue {
   prodeInfo = [
-  { title:"患者",
-     list:[
-      { title: "患者姓名：", value: "memberName" ,model:"memberName"},
-      { title: "患者手机：", value: "memberPhone",model:"memberPhone" },
-      { title: "患者性别：", value: "patientSex" ,model:"patientSex"},
-      { title: "患者年龄：", value: "memberAge",model:"memberAge" },
-      { title: "患者身份证：", value: "memberIdcard",model:"memberIdcard" },
-      { title: "地址：", value: "consigneeAddress",model:"a" },
-    ]},
-      
-  { title:"地址",
-     list:[
-      
-    ]},
-      { title:"医生",
-     list:[
-      { title: "医生姓名：", value: "docterName",model:"docterName" },
-      { title: "医生电话：", value: "doctorMobile" ,model:"doctorMobile"},
-     { title: "医生医院：", value: "hospitalName",model:"hospitalName" },
-      { title: "科室：", value: "docterDept",model:"docterDept" },
-      { title: "诊断：", value: "diagnose" ,model:"diagnose"}
-    ]}
-  ];
+    {
+      title: "患者",
+      list: [
+        { title: "患者姓名：", value: "memberName", model: "memberName" },
+        { title: "患者手机：", value: "memberPhone", model: "memberPhone" },
+        { title: "患者性别：", value: "patientSex", model: "patientSex" },
+        { title: "患者年龄：", value: "memberAge", model: "memberAge" },
+        { title: "患者身份证：", value: "memberIdcard", model: "memberIdcard" },
+        { title: "地址：", value: "consigneeAddress", model: "a" }
+      ]
+    },
 
+    {
+      title: "地址",
+      list: []
+    },
+    {
+      title: "医生",
+      list: [
+        { title: "医生姓名：", value: "docterName", model: "docterName" },
+        { title: "医生电话：", value: "doctorMobile", model: "doctorMobile" },
+        { title: "医生医院：", value: "hospitalName", model: "hospitalName" },
+        { title: "科室：", value: "docterDept", model: "docterDept" },
+        { title: "诊断：", value: "diagnose", model: "diagnose" }
+      ]
+    }
+  ];
+  activeNames = [0, 1, 2];
   dialogImageUrl = "";
   dialogVisible = false;
   handlePictureCardPreview(file) {
@@ -531,51 +539,107 @@ export default class AddGoods extends Vue {
     }
   }
 
-  doUpdatePre(nextPresId, message) {
+  doUpdatePre(type) {
     this.createForm.presId = this.presId;
     this.createForm.feeHide = this.createForm.feeTypeEnum;
-    // this.createForm.consigneeName = this.createForm.memberName;
-    // this.createForm.consigneePhone = this.createForm.memberPhone;
+    this.createForm.payModeEnum = this.payModeEnum;
     indexApi.updatePre(this.createForm).then(res => {
       if (res["retCode"]) {
-        this.$message(message);
-        this.auditingRemake = "";
-        if ((nextPresId || "") !== "") {
-          this.getCountForList("xia", nextPresId);
+        if (type === "back") {
+          this.doBack();
         } else {
-          this.$router.push("/audit");
+          this.checkPre1();
         }
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
         }
-        console.error("数据查询错误");
       }
     });
   }
+  checkPre1() {
+    this.backLoad = true;
+    indexApi
+      .checkPre({
+        prescriptionId: this.presId,
+        auditingid: sessionStorage.userId,
+        auditingName: sessionStorage.name,
+        auditingRemake: this.auditingRemake
+      })
+      .then(res => {
+        this.backLoad = false;
+        if (res["retCode"]) {
+          this.$message("审方成功");
+          this.auditingRemake = "";
+          if (res.data.nextPresId) {
+            this.getCountForList("xia", res.data.nextPresId);
+          } else {
+            this.$router.push("/audit");
+          }
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+        }
+      });
+  }
 
+  checkPhone = /^1[345789]\d{9}$/;
   checkPre() {
-    if ((this.createForm.payModeEnum || "") === "") {
+    if (
+      (this.payModeEnum || "") === "" &&
+      (this.pres_type === "BACK_HANDWORK" || this.pres_type === "DOC_HANDWORK")
+    ) {
       this.$message("请选择支付状态");
       return;
     }
 
-    if (this.pres_type === "BACK_HANDWORK"  || this.pres_type == 'DOC_HANDWORK') {
-   
-
+    if (
+      this.pres_type === "BACK_HANDWORK" ||
+      this.pres_type == "DOC_HANDWORK"
+    ) {
       if ((this.createForm.memberName || "") === "") {
         this.$message("请输入患者姓名");
         return;
-      }
-
+      } 
+        let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
+          this.$message("请输入0-130岁的年龄");
+          return;
+        }
       if ((this.createForm.memberPhone || "") === "") {
         this.$message("请输入患者手机号");
         return;
       }
-
-
+      if (!this.checkPhone.test(this.createForm.memberPhone)) {
+        this.$message("请输入正确的患者手机号");
+        return;
+      }
+      if ((this.createForm.memberIdcard || "") !== "") {
+        this.vaild_memberIdcard(() => {
+          this.after_vaild_doback();
+        });
+        return;
+      } else {
+        this.after_vaild_doback();
+        return;
+      }
     }
-
+  }
+  vaild_memberIdcard(callback) {
+    indexApi.checkidcard({ idcard: this.createForm.memberIdcard }).then(res => {
+      if (res["retCode"]) {
+        callback();
+        return;
+      } else {
+        if (!res["islogin"]) {
+          this.$message(res["message"]);
+        }
+        return;
+      }
+    });
+  }
+  after_vaild_doback() {
     if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
       if (this.fileList.length > 0) {
         this.createForm.pictureIds = this.fileList
@@ -595,38 +659,14 @@ export default class AddGoods extends Vue {
       type: "warning"
     })
       .then(() => {
-        this.backLoad = true;
-        indexApi
-          .checkPre({
-            prescriptionId: this.presId,
-            auditingid: sessionStorage.userId,
-            auditingName: sessionStorage.name,
-            auditingRemake: this.auditingRemake
-          })
-          .then(res => {
-            this.backLoad = false;
-            if (res["retCode"]) {
-              this.$message("审方成功");
-              if (
-                this.pres_type == "BACK_HANDWORK" ||
-                this.pres_type == "DOC_HANDWORK"
-              ) {
-                this.doUpdatePre(res.data.nextPresId, "审方成功");
-              } else {
-                this.auditingRemake = "";
-                if (res.data.nextPresId) {
-                  this.getCountForList("xia", res.data.nextPresId);
-                } else {
-                  this.$router.push("/audit");
-                }
-              }
-            } else {
-              if (!res["islogin"]) {
-                this.$alert(res["message"]);
-              }
-              console.error("数据查询错误");
-            }
-          });
+        if (
+          this.pres_type == "BACK_HANDWORK" ||
+          this.pres_type == "DOC_HANDWORK"
+        ) {
+          this.doUpdatePre("check");
+        } else {
+          this.checkPre1();
+        }
       })
       .catch(() => {
         this.$message({
@@ -635,6 +675,7 @@ export default class AddGoods extends Vue {
         });
       });
   }
+
   get notCount() {
     return this.countPreByStatuObj["data2"]
       ? this.countPreByStatuObj["data2"].count
@@ -657,44 +698,95 @@ export default class AddGoods extends Vue {
 
   rejectContext = "";
 
+  doBack() {
+    this.backLoad = true;
+    indexApi
+      .doKillPreAudit({
+        prescriptionId: this.presId,
+        auditingName: sessionStorage.name,
+        rejectContext: this.auditingRemake
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          this.backLoad = false;
+          this.$message("退回成功");
+          this.auditingRemake = "";
+          if ((res.data.nextPresId || "") !== "") {
+            this.getCountForList("xia", res.data.nextPresId);
+          } else {
+            this.$router.push("/audit");
+          }
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+          console.error("数据查询错误");
+        }
+      });
+  }
   //审方把处方退回给转方
   doSubmit() {
+    if (
+      this.pres_type === "BACK_HANDWORK" ||
+      this.pres_type == "DOC_HANDWORK"
+    ) {
+      if ((this.createForm.memberName || "") === "") {
+        this.$message("请输入患者姓名");
+        return;
+      }
+        let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
+          this.$message("请输入0-130岁的年龄");
+          return;
+        }
+      if ((this.createForm.memberPhone || "") === "") {
+        this.$message("请输入患者手机号");
+        return;
+      }
+      if (!this.checkPhone.test(this.createForm.memberPhone)) {
+        this.$message("请输入正确的患者手机号");
+        return;
+      }
+
+     if ((this.createForm.memberIdcard || "") !== "") {
+        this.vaild_memberIdcard(() => {
+          this.after_vaild();
+        });
+        return;
+      } else {
+        this.after_vaild();
+        return;
+      }
+    }
+  }
+  after_vaild() {
+    if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
+      if (this.fileList.length > 0) {
+        this.createForm.pictureIds = this.fileList
+          .map(item => {
+            return item.url;
+          })
+          .join(",");
+      } else {
+        this.$message("请上传处方图片");
+        return;
+      }
+    }
+
     this.$confirm("确定要退回审方？", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning"
     })
       .then(() => {
-        this.backLoad = true;
-        indexApi
-          .doKillPreAudit({
-            prescriptionId: this.presId,
-            auditingName: sessionStorage.name,
-            rejectContext: this.auditingRemake
-          })
-          .then(res => {
-            if (res["retCode"]) {
-              this.backLoad = false;
-              if (
-                this.pres_type == "BACK_HANDWORK" ||
-                this.pres_type == "DOC_HANDWORK"
-              ) {
-                this.doUpdatePre(res.data.nextPresId, "退回成功");
-              } else {
-                this.auditingRemake = "";
-                if ((res.data.nextPresId || "") !== "") {
-                  this.getCountForList("xia", res.data.nextPresId);
-                } else {
-                  this.$router.push("/audit");
-                }
-              }
-            } else {
-              if (!res["islogin"]) {
-                this.$alert(res["message"]);
-              }
-              console.error("数据查询错误");
-            }
-          });
+        if (
+          this.pres_type == "BACK_HANDWORK" ||
+          this.pres_type == "DOC_HANDWORK"
+        ) {
+          this.doUpdatePre("back");
+        } else {
+          this.doBack();
+        }
       })
       .catch(() => {
         this.$message({
@@ -747,6 +839,7 @@ export default class AddGoods extends Vue {
   }
   prodetail = {};
   createForm: any = {};
+  payModeEnum = "";
   queryPresDetatil() {
     indexApi.queryPresDetatil({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
@@ -770,8 +863,8 @@ export default class AddGoods extends Vue {
           this.createForm.memberPhone = this.prodetail["memberPhone"]
             ? this.prodetail["memberPhone"]
             : "";
-          this.createForm.patientSex = this.prodetail["memberSex"]
-            ? this.prodetail["memberSex"]
+          this.createForm.patientSex = this.prodetail["patientSex"]
+            ? this.prodetail["patientSex"]
             : "";
           this.createForm.memberIdcard = this.prodetail["memberIdcard"]
             ? this.prodetail["memberIdcard"]
@@ -782,35 +875,39 @@ export default class AddGoods extends Vue {
           //  this.pres_type ='DOC_HANDWORK'
           this.createForm.docterName = this.prodetail["docterName"];
           this.createForm.docterName = this.prodetail["docterName"];
-          this.createForm.serviceMoney = this.prodetail["serviceMoney"]
-            ? this.prodetail["serviceMoney"]
-            : "0";
+          // this.createForm.serviceMoney = this.prodetail["serviceMoney"]
+          //   ? this.prodetail["serviceMoney"]
+          //   : "0";
 
-                   this.createForm.docterId = this.prodetail['docterId']
+          this.createForm.consigneeName = this.prodetail["consigneeName"];
+          this.createForm.consigneePhone = this.prodetail["consigneePhone"];
+          this.createForm.docterId = this.prodetail["docterId"];
           this.createForm.doctorMobile = this.prodetail["doctorMobile"];
           this.createForm.hospitalName = this.prodetail["hospitalName"];
           this.createForm.docterDept = this.prodetail["docterDept"];
           this.createForm.diagnose = this.prodetail["diagnose"];
-          if((this.prodetail['payStatus']||'')!==''){
-            this.createForm.payModeEnum = this.prodetail['payStatus']
+          if ((this.prodetail["payStatus"] || "") !== "") {
+            if (this.prodetail["payStatus"] === "PAY_ON_DELIVERY") {
+              this.payModeEnum = "ORDER_PAY_ONDEV";
+            } else {
+              this.payModeEnum = this.prodetail["payStatus"];
+            }
           }
 
-
-
-      
-      if((this.prodetail['provinceid']||'')!==''){
-   this.createForm.provinceid = this.prodetail['provinceid']
-         this.queryCityList();
-      } 
-      if((this.prodetail['cityid']||'')!==''){
-   this.createForm.cityid = this.prodetail['cityid']
-         this.queryCountryList();
-      }
-      this.createForm.areaid = this.prodetail['areaid']?this.prodetail['areaid']:''
-      this.createForm.consigneeAddress = this.prodetail['consigneeAddress']?this.prodetail['consigneeAddress']:''
-
-    
-
+          if ((this.prodetail["provinceid"] || "") !== "") {
+            this.createForm.provinceid = this.prodetail["provinceid"];
+            this.queryCityList();
+          }
+          if ((this.prodetail["cityid"] || "") !== "") {
+            this.createForm.cityid = this.prodetail["cityid"];
+            this.queryCountryList();
+          }
+          if (this.prodetail["areaid"]) {
+            this.createForm.areaid = this.prodetail["areaid"];
+          }
+          this.createForm.consigneeAddress = this.prodetail["consigneeAddress"]
+            ? this.prodetail["consigneeAddress"]
+            : "";
         }
       } else {
         if (!res["islogin"]) {
@@ -963,22 +1060,20 @@ export default class AddGoods extends Vue {
       }
     }, 5000);
   }
-  
 
   provinceList = [];
   cityList = [];
   countryList = [];
 
-
   queryCountryList() {
-    this.createForm.areaid = "";
+    delete this.createForm.areaid;
     ApiOrder.queryCountryList(this.createForm.cityid).then(res => {
       this.countryList = res.data.region;
     });
   }
   queryCityList() {
-    this.createForm.cityid = "";
-    this.createForm.areaid = "";
+    delete this.createForm.cityid;
+    delete this.createForm.areaid;
     ApiOrder.queryCityList(this.createForm.provinceid).then(res => {
       this.cityList = res.data.region;
     });
@@ -991,8 +1086,10 @@ export default class AddGoods extends Vue {
   }
   pres_type = "";
   mounted() {
+    this.fileUploadUrl = Config.g_upload_url;
+
     this.presId = sessionStorage.presId;
-        this.queryProvinceList();
+    this.queryProvinceList();
 
     this.queryPresDrugback(); //药品列表
     this.queryPresDetatil(); //详情
@@ -1108,15 +1205,14 @@ export default class AddGoods extends Vue {
   position: absolute;
   top: 0;
   height: 750px;
-  min-width:500px;
+  min-width: 500px;
   background-color: #fff;
   width: 100%;
 }
 
-
-.vaild_icon::before{
+.vaild_icon::before {
   content: "*";
-    color: #f56c6c;
-    margin-right: 4px;
+  color: #f56c6c;
+  margin-right: 4px;
 }
 </style>

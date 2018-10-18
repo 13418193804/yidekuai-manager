@@ -1,7 +1,7 @@
 <template>
     <div>
         图片文件上传
-        <el-upload :before-upload="beforeUpload" :action="fileUploadUrl" 
+        <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :before-upload="beforeUpload" :action="fileUploadUrl" 
         list-type="picture-card" :on-preview="onPreview" 
         :on-remove="onRemove" :on-success="onSuccess"
          :file-list="imageList">

@@ -627,16 +627,16 @@ export const doSend = (model) => {
 
 //确认收货
 export const dorecvGood = (model) => {
-    
-        let params = {
-            token: sessionStorage.getItem("token"),
-            userid: sessionStorage.getItem("userId"),
-        }
-    
-        Object.assign(params, model)
-        return Api.requestForm2('/express/updateYdkOrderDetail', params)
-            .then(res => res);
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
     }
+
+    Object.assign(params, model)
+    return Api.requestForm2('/express/updateYdkOrderDetail', params)
+        .then(res => res);
+}
 
 /**
  * 包裹列表
@@ -1428,7 +1428,7 @@ export const getYdkPrescriptionStatusNum = (model) => {
 * 更新订单条数
 */
 export const updateYdkPrescriptionStatusNum = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
@@ -1446,7 +1446,7 @@ export const updateYdkPrescriptionStatusNum = (model) => {
 * 新建处方时查患者列表
 */
 export const findmemberlike = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
@@ -1462,7 +1462,7 @@ export const findmemberlike = (model) => {
 * 新增处方( 直接开方 )
 */
 export const createphotoprescription = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
@@ -1477,7 +1477,7 @@ export const createphotoprescription = (model) => {
 * 选择患者的时候 查询患者默认收货地址
 */
 export const getMenberdefaultaddress = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
     }
@@ -1491,7 +1491,7 @@ export const getMenberdefaultaddress = (model) => {
 * 即  编辑处方
 */
 export const updatePre = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
     }
@@ -1505,7 +1505,7 @@ export const updatePre = (model) => {
 *角色查权限
 */
 export const getRolePermission = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
     }
@@ -1519,7 +1519,7 @@ export const getRolePermission = (model) => {
 *路径查权限
 */
 export const getButtonPermission = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
@@ -1536,7 +1536,7 @@ export const getButtonPermission = (model) => {
 *没有绑过的顾问
 */
 export const getUndistributedAdviser = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
@@ -1551,7 +1551,7 @@ export const getUndistributedAdviser = (model) => {
 *组长绑定顾问 update
 */
 export const directorDistributeAdviser = (model) => {
-    
+
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
@@ -1562,3 +1562,34 @@ export const directorDistributeAdviser = (model) => {
         .then(res => res);
 }
 
+/**
+ * 验证身份证
+ */
+export const checkidcard = (model) => {
+
+    let params = {
+        token: sessionStorage.getItem("token"),
+        userid: sessionStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
+    }
+    Object.assign(params, model)
+    return Api.requestForm2('/api/member/checkidcard', params)
+        .then(res => res);
+}
+
+/**
+ * 删除顾问关系
+ */
+
+export const deleteAdviserDirector = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/api/adviser/deleteAdviserDirector', params)
+            .then(res => res);
+    }
+    

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-upload :before-upload="beforeUpload"  action="http://sr.cncloud.com/qichang/fileupload" list-type="picture-card"
+        <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :before-upload="beforeUpload"  action="http://sr.cncloud.com/qichang/fileupload" list-type="picture-card"
                     :file-list="imageFileList"
                  :on-preview="onPreview" :on-remove="onRemove" :on-success="onUploadSuccess"
                   >

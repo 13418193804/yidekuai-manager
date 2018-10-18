@@ -77,7 +77,7 @@
 </div>
 
   <el-tabs v-model="adviserType" type="card" @tab-click="handleClick">
-    <el-tab-pane v-for=" n in tabPaneList"  :label="n.label" :name="n.name" >
+    <el-tab-pane v-for=" n in tabPaneList"  :label="n.label+'('+n.count+')'" :name="n.name" >
 <el-table border @sort-change="sortChange"
     :data="YdkAdviser"
     stripe height="600"
@@ -468,8 +468,119 @@
     </div>
             </el-dialog>
 
+		<el-dialog width= "70vw" :close-on-click-modal="false" :append-to-body="true" :visible.sync="notBandAdviserObj.model"  title="分配顾问">
+<div  style="min-height:600px; "  v-bouncing="notBandAdviserObj.loading"  >
+
+<el-table border 
+    :data="notBandAdviserObj.list"
+    stripe height="600"
+    style="width: 100%;">
+
+  <el-table-column  fixed="left"
+      prop="adviserName"
+      label="顾问姓名"  width="150">
+   </el-table-column>
+ <el-table-column
+      prop="doctorNum" 
+      label="管理医生数量"  width="150">
+                <template slot-scope="scope">
+           {{scope.row.doctorNum?scope.row.doctorNum:0}}
+      </template>
+   </el-table-column>
+ <el-table-column
+      prop="orderNum" 
+      label="总订单数量"  width="150" >
+                <template slot-scope="scope">
+           {{scope.row.orderNum?scope.row.orderNum:0}}
+      </template>
+   </el-table-column>
+ <el-table-column
+      prop="orderMoney" 
+      label="总订单金额"  width="150">
+             <template slot-scope="scope">
+           {{scope.row.orderMoney?scope.row.orderMoney:0}}
+      </template>
+   </el-table-column>
+ <el-table-column
+      prop="prescriptionNum" 
+      label="总处方数量"  width="150">
+            <template slot-scope="scope">
+           {{scope.row.prescriptionNum?scope.row.prescriptionNum:0}}
+      </template>
+   </el-table-column>
+   
+ <el-table-column
+      prop="drugNum"
+      label="药品种类数量"  width="150">
+              <template slot-scope="scope">
+           {{scope.row.drugNum?scope.row.drugNum:0}}
+      </template>
+   </el-table-column>
+ <el-table-column
+      label="顾问类型">
+      <template slot-scope="scope">
+           {{scope.row.adviser_type=='OUTSIDE'?'外部顾问':''}}
+           {{scope.row.adviser_type=='INSIDE'?'内部顾问':''}}
+      </template> 
+   </el-table-column>
+
+  <el-table-column
+      prop="userName"
+      label="手机号" width="150">
+   </el-table-column>
+
+ <el-table-column
+      prop="adviserAge"
+      label="年龄">
+   </el-table-column>
+
+ <el-table-column
+      prop="adviserSex"
+      label="性别">
+   </el-table-column>
+ 
+
+ <el-table-column
+      label="使用状态">
+      <template slot-scope="scope">
+       <el-tag :type="scope.row.userStatus=='1' ?'success':'info'">
+               {{scope.row.userStatus=='1' ?"启用中":"已停用"}}</el-tag>
+      </template>
+   </el-table-column>
+
+ <el-table-column
+      prop="remark"
+      label="备注"  width="180">
+   </el-table-column>
+
+
+
+
+   <el-table-column label="操作" fixed="right"  >
+      <template slot-scope="scope">
+
+
+       <el-button @click="adviserBindAdviser(scope.row)"
+          size="mini"
+          type="text"
+         >绑定</el-button>
+    
+      </template>
+    </el-table-column>
+</el-table>
+<el-col :span="24" class="toolbar">
+			<el-pagination layout="prev, pager, next"  :current-page="notBandAdviserObj.page+1" :page-size="notBandAdviserObj.pageSize" :total="notBandAdviserObj.total" @current-change="notBandAdviserObj.onPageChange">
+			</el-pagination>
+		</el-col>
+</div>
+            </el-dialog>
+
+
+
 
 		<el-dialog width= "70vw" :close-on-click-modal="false" :append-to-body="true" :visible.sync="adviserLeverObj.model"  title="查看顾问">
+
+    <el-button type="primary" size="mini" @click="getnotBandAdviserChangeModel()" style="margin-bottom: 15px;">分配顾问</el-button>
 
 <div  style="min-height:600px; "  v-bouncing="adviserLeverObj.loading"  >
 <el-table border 
@@ -553,6 +664,23 @@
       prop="remark"
       label="备注"  width="180">
    </el-table-column>
+
+
+
+
+   <el-table-column label="操作" fixed="right"  >
+      <template slot-scope="scope">
+
+
+       <el-button @click="adviserNotBindAdviser(scope.row)"
+          size="mini"
+          type="text"
+         >取消绑定</el-button>
+    
+      </template>
+    </el-table-column>
+
+
 
 </el-table>
 <el-col :span="24" class="toolbar">
@@ -662,10 +790,21 @@
 		</el-col>
             </el-dialog>
 
+
+
+
+
+
+
+
+
+
+
+
+
  <el-dialog  :visible.sync="viewBig" width="400px">
       <img :src="bigIcon" style="width:400px;height:400px;margin:-55px -20px -40px" >
     </el-dialog>
-
     </div>
  </template>
 
@@ -691,23 +830,21 @@ export default class AddGoods extends Vue {
   bigIcon = "";
   viewBig = false;
 
-handleWidth(name){
-if(this.$route.path === '/consultant-manager' ){
-if( name === 'DIRECTOR'){
-  return "430"
-}else{
-return '400'
-}
-}else{
-if( name === 'DIRECTOR'){
-  return "280"
-}else{
-return '200'
-}
-}
-
-}
-
+  handleWidth(name) {
+    if (this.$route.path === "/consultant-manager") {
+      if (name === "DIRECTOR") {
+        return "430";
+      } else {
+        return "400";
+      }
+    } else {
+      if (name === "DIRECTOR") {
+        return "280";
+      } else {
+        return "200";
+      }
+    }
+  }
 
   pickerOptions2 = {
     shortcuts: [
@@ -748,14 +885,14 @@ return '200'
     pageSize: 10,
     total: 0,
     list: [],
-    loading:false,
+    loading: false,
     onPageChange: page => {
       this.shelfObj.page = page - 1;
       this.getAdviserLeverObjList(this.adviserLeverObj.row);
     }
   };
   getAdviserLeverObj(row) {
-    this.adviserLeverObj.model = !this.adviserLeverObj.model 
+    this.adviserLeverObj.model = !this.adviserLeverObj.model;
     this.getAdviserLeverObjList(row, true);
   }
   getAdviserLeverObjList(row, filter = null) {
@@ -771,8 +908,8 @@ return '200'
         pageSize: this.adviserLeverObj.pageSize
       })
       .then(res => {
-    this.adviserLeverObj.loading = false;
-        
+        this.adviserLeverObj.loading = false;
+
         if (res["retCode"]) {
           this.adviserLeverObj.list = res.data.AdviserInfo;
           this.adviserLeverObj.total = res.data.page.total;
@@ -788,15 +925,18 @@ return '200'
   tabPaneList = [
     {
       label: "内部顾问",
-      name: "INSIDE"
+      name: "INSIDE",
+      count:0
     },
     {
       label: "外部顾问",
-      name: "OUTSIDE"
+      name: "OUTSIDE",
+      count:0
     },
     {
       label: "主管顾问",
-      name: "DIRECTOR"
+      name: "DIRECTOR",
+      count:0
     }
   ];
   handleClick(e) {
@@ -819,9 +959,12 @@ return '200'
   YdkAdviser = [];
 
   date = [];
+outsideNum = 0;
+insideNum = 0
+directorNum = 0
+
 
   getConsultantList(filter = null) {
-    this.loading = true;
     if (filter) {
       this.page = 0;
     }
@@ -833,18 +976,26 @@ return '200'
       userStatus: this.userStatus,
       name: this.name,
       drug: this.drug,
-      startcreateDate: this.date[0]
-        ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
-        : "",
-      endcreateDate: this.date[1]
-        ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
-        : "",
+      startcreateDate:
+        this.date && this.date.length > 0
+          ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
+          : "",
+      endcreateDate:
+        this.date && this.date.length > 0
+          ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
+          : "",
       orderByStr: this.orderByStr
     };
+    this.loading = true;
+
     indexApi.getConsultantList1(data).then(res => {
       if (res["retCode"]) {
         this.YdkAdviser = res.data.AdviserInfo;
         this.total = res.data.page.total;
+         this.tabPaneList[1].count = res.data.AdviserTypeTotalInfo.outsideNum? res.data.AdviserTypeTotalInfo.outsideNum:0
+        this.tabPaneList[0].count = res.data.AdviserTypeTotalInfo.insideNum? res.data.AdviserTypeTotalInfo.insideNum:0
+          this.tabPaneList[2].count = res.data.AdviserTypeTotalInfo.directorNum? res.data.AdviserTypeTotalInfo.directorNum:0
+
         this.loading = false;
         if (res.data.TotalInfo.length > 0) {
           this.orderMoney = res.data.TotalInfo[0].orderMoney
@@ -871,7 +1022,7 @@ return '200'
           this.drugQuantityTotal = res.data.TotalInfo[0].drugQuantityTotal
             ? res.data.TotalInfo[0].drugQuantityTotal
             : 0;
-                  this.giveupOrderNum = res.data.AdviserInfo[0].giveupOrderNum
+          this.giveupOrderNum = res.data.AdviserInfo[0].giveupOrderNum
             ? res.data.AdviserInfo[0].giveupOrderNum
             : 0;
         }
@@ -892,7 +1043,7 @@ return '200'
   allAdviserNum = 0;
   drugNum = 0;
   drugQuantityTotal = 0;
-    giveupOrderNum = 0;
+  giveupOrderNum = 0;
 
   adviserObj: any = {};
   type = "add";
@@ -906,6 +1057,10 @@ return '200'
       this.adviserObj = {};
     } else {
       let a = {};
+      if (!row.directorState1) {
+        row.adviserDirectorId = row.upId;
+      }
+
       row.directorState1 = row.director_state == "1" ? true : false;
       Object.assign(a, row);
       this.adviserObj = a;
@@ -953,7 +1108,7 @@ return '200'
       this.$message("请选择顾问类型");
       return;
     }
-    this.loading = true;
+
     this.adviserObj.userStatus = this.userStatus1 ? "1" : "0";
     if (this.adviserObj.directorState1 === false) {
       if ((this.adviserObj.adviserDirectorId || "") === "") {
@@ -966,6 +1121,8 @@ return '200'
     }
 
     this.adviserObj.adviserTypeEnums = this.adviserTypeEnums;
+
+    this.loading = true;
     if (this.type == "add") {
       this.adviserObj["userPassword"] = "123456";
       this.adviserObj["userStatus"] = "";
@@ -1059,20 +1216,6 @@ return '200'
           });
         });
     }
-
-    //   indexApi.updateConsultantItem(this.adviserObj).then(res => {
-    //       this.loading = false;
-    //       if (res["retCode"]) {
-    //           this.adviserModel = false
-    //           this.$message('保存成功');
-    //     this.getConsultantList();
-    //       } else {
-    //         if (!res["islogin"]) {
-    //           this.$alert(res["message"]);
-    //         }
-    //         console.error("数据查询错误");
-    //       }
-    //     });
   }
   updateCenter(obj, callback) {
     indexApi.updateConsultantItem(obj).then(res => {
@@ -1207,6 +1350,129 @@ return '200'
             if (res["retCode"]) {
               this.$message("取消绑定成功");
               this.consultantItemShelf(this.shelfObj.row);
+              this.getConsultantList();
+            } else {
+              if (!res["islogin"]) {
+                this.$alert(res["message"]);
+              }
+              console.error("数据查询错误");
+            }
+          });
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
+  }
+
+  /**
+   * getConsultantList
+   *  未绑定顾问 搜索 与 绑定
+   *
+   */
+  notBandAdviserObj = {
+    model:false,
+    loading: false,
+    list: [],
+    page: 0,
+    pageSize: 10,
+    total: 0,
+    onPageChange: page => {
+      this.notBandAdviserObj.page = page - 1;
+      this.getnotBandAdviserList();
+    },
+    row: {}
+  };
+
+  getnotBandAdviserChangeModel() {
+      this.notBandAdviserObj.model = true
+    this.getnotBandAdviserList(true);
+  }
+
+  getnotBandAdviserList(filter = null) {
+    this.notBandAdviserObj.loading = true;
+
+    if (filter) {
+      this.notBandAdviserObj.page = 0;
+    }
+    indexApi
+      .getConsultantList1({
+        adviserType: "UNDISTRIBUTE",
+        page: this.notBandAdviserObj.page,
+        pageSize: this.notBandAdviserObj.pageSize
+      })
+      .then(res => {
+        this.notBandAdviserObj.loading = false;
+        if (res["retCode"]) {
+          this.notBandAdviserObj.list = res.data.AdviserInfo;
+          this.notBandAdviserObj.total = res.data.page.total;
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+          return;
+        }
+      });
+  }
+
+adviserBindAdviser(row){
+
+    this.$confirm("是否绑定该顾问?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning"
+    })
+      .then(() => {
+        this.notBandAdviserObj.loading = true;
+        indexApi
+          .updateConsultantItem({
+            adviserId: row["adviserId"],
+            adviserDirectorId: this.adviserLeverObj.row["adviserId"],
+          })
+          .then(res => {
+            this.notBandAdviserObj.loading = false;
+            if (res["retCode"]) {
+              this.$message("绑定成功");
+              this.getnotBandAdviserList();
+              this.getAdviserLeverObjList(this.adviserLeverObj.row)
+              this.getConsultantList();
+            } else {
+              if (!res["islogin"]) {
+                this.$alert(res["message"]);
+              }
+              console.error("数据查询错误");
+            }
+          });
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消操作"
+        });
+      });
+
+
+}
+
+  adviserNotBindAdviser(row) {
+    this.$confirm("该操作取消绑定顾问上下级关系, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning"
+    })
+      .then(() => {
+        this.adviserLeverObj.loading = true;
+        indexApi
+          .deleteAdviserDirector({
+            adviserMemberId: row.adviserMemberId
+          })
+          .then(res => {
+            this.adviserLeverObj.loading = false;
+            if (res["retCode"]) {
+              this.$message("取消绑定成功");
+              this.getAdviserLeverObjList(this.adviserLeverObj.row);
               this.getConsultantList();
             } else {
               if (!res["islogin"]) {
@@ -1533,12 +1799,10 @@ return '200'
   }
 
   mounted() {
-    //  if(this.$route.path === '/consultant'){
     this.date = [
       this.getMonth1(),
       moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"
     ];
-    //  }
     window["mmvue"] = this;
     this.getAdviserCount();
     this.getConsultantList();

@@ -71,7 +71,7 @@
   <el-select v-model="rderStatus"  >
       <el-option value="" label="全部"></el-option>
       <el-option value="ORDER_WAIT_PAY" label="等待支付"></el-option>
-      <el-option value="ORDER_CANCEL_PAY" label="取消支付"></el-option>
+      <el-option value="ORDER_CANCEL_PAY" label="交易关闭"></el-option>
       <el-option value="ORDER_WAIT_SENDGOODS" label="待发货"></el-option>
       <el-option value="SENDGOODS_UNFINISHED" label="发货未完成"></el-option>
       <el-option value="ORDER_WAIT_RECVGOODS" label="待收货"></el-option>
@@ -193,7 +193,7 @@ export default class AddGoods extends Vue {
       case "ORDER_PAY_ONDEV":
         return "货到付款";
       case "ORDER_CANCEL_PAY":
-        return "取消支付";
+        return "交易关闭";
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
           case "SENDGOODS_UNFINISHED":
@@ -226,8 +226,8 @@ date=[]
     this.loading = true;   
     
     indexApi.getExcelUrl({
-    startCreateDate: this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-        endCreateDate: this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+    startCreateDate:this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+        endCreateDate:this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
         rderStatus: this.rderStatus,
                 paymentMode:this.paymentMode
     }).then(res => {
@@ -303,8 +303,8 @@ this.rderStatus ="";
         reminderVEnums: this.reminderVEnums,
         key: this.key,
         consigneeAddress: this.consigneeAddress,
-        startCreateDate: this.date[0]? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-        endCreateDate: this.date[1]? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+        startCreateDate: this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
+        endCreateDate: this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
         rderStatus: this.rderStatus,
         page: this.page,
         pageSize: this.pageSize
