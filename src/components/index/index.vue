@@ -140,13 +140,10 @@ preCreatTime=0
  preAuditing = 0
  loading= false
   doQuery() {
-
-
     if (!this.date || this.date.length !== 2) {
       this.$message("请选择时间");
       return;
     }
-
     let starttime = moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00";
     let endtime = moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59";
    this.loading = true
@@ -158,8 +155,7 @@ preCreatTime=0
       })
       .then(res => {
     this.loading= false
-        
-        // console.log('首页测登陆')
+
         if (res["retCode"]) {
           this.model = true
 
@@ -179,6 +175,23 @@ this.preAuditing = res.data.preAuditing
   mounted() {
     this.date = [new Date(),new Date()]
     this.doQuery()
+
+
+
+
+// new Promise(resolve=>{
+
+
+//     for(var i = 0; i < 10000; i++){
+//         i == 99 && resolve();
+//     }
+
+
+// }).then(function(){
+//     console.log('执行then函数啦')
+// });
+
+
 
   }
 }

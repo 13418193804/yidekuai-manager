@@ -603,7 +603,7 @@ export default class AddGoods extends Vue {
         return;
       } 
         let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
-        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
+        if ((this.createForm.memberAge || "") !== ""&& !re.test(this.createForm.memberAge)) {
           this.$message("请输入0-130岁的年龄");
           return;
         }
@@ -620,11 +620,10 @@ export default class AddGoods extends Vue {
           this.after_vaild_doback();
         });
         return;
-      } else {
-        this.after_vaild_doback();
-        return;
-      }
+      } 
     }
+        this.after_vaild_doback();
+    
   }
   vaild_memberIdcard(callback) {
     indexApi.checkidcard({ idcard: this.createForm.memberIdcard }).then(res => {
@@ -726,38 +725,37 @@ export default class AddGoods extends Vue {
   }
   //审方把处方退回给转方
   doSubmit() {
-    if (
-      this.pres_type === "BACK_HANDWORK" ||
-      this.pres_type == "DOC_HANDWORK"
-    ) {
-      if ((this.createForm.memberName || "") === "") {
-        this.$message("请输入患者姓名");
-        return;
-      }
-        let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
-        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
-          this.$message("请输入0-130岁的年龄");
-          return;
-        }
-      if ((this.createForm.memberPhone || "") === "") {
-        this.$message("请输入患者手机号");
-        return;
-      }
-      if (!this.checkPhone.test(this.createForm.memberPhone)) {
-        this.$message("请输入正确的患者手机号");
-        return;
-      }
+    // if (
+    //   this.pres_type === "BACK_HANDWORK" ||
+    //   this.pres_type == "DOC_HANDWORK"
+    // ) {
+    //   if ((this.createForm.memberName || "") === "") {
+    //     this.$message("请输入患者姓名");
+    //     return;
+    //   }
+    //     let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+    //     if ((this.createForm.memberAge || "") !== ""&& !re.test(this.createForm.memberAge)) {
+    //       this.$message("请输入0-130岁的年龄");
+    //       return;
+    //     }
+    //   if ((this.createForm.memberPhone || "") === "") {
+    //     this.$message("请输入患者手机号");
+    //     return;
+    //   }
+    //   if (!this.checkPhone.test(this.createForm.memberPhone)) {
+    //     this.$message("请输入正确的患者手机号");
+    //     return;
+    //   }
 
-     if ((this.createForm.memberIdcard || "") !== "") {
-        this.vaild_memberIdcard(() => {
-          this.after_vaild();
-        });
-        return;
-      } else {
+    //  if ((this.createForm.memberIdcard || "") !== "") {
+    //     this.vaild_memberIdcard(() => {
+    //       this.after_vaild();
+    //     });
+    //     return;
+    //   }
+    // }
         this.after_vaild();
-        return;
-      }
-    }
+    
   }
   after_vaild() {
     if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
@@ -779,14 +777,14 @@ export default class AddGoods extends Vue {
       type: "warning"
     })
       .then(() => {
-        if (
-          this.pres_type == "BACK_HANDWORK" ||
-          this.pres_type == "DOC_HANDWORK"
-        ) {
-          this.doUpdatePre("back");
-        } else {
+        // if (
+        //   this.pres_type == "BACK_HANDWORK" ||
+        //   this.pres_type == "DOC_HANDWORK"
+        // ) {
+        //   this.doUpdatePre("back");
+        // } else {
           this.doBack();
-        }
+        // }
       })
       .catch(() => {
         this.$message({

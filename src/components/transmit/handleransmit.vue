@@ -869,6 +869,53 @@ export default class AddGoods extends Vue {
   model = false;
 
   doSubmit() {
+
+
+
+
+  //   if (
+  //     this.pres_type === "BACK_HANDWORK" ||
+  //     this.pres_type == "DOC_HANDWORK"
+  //   ) {
+  //     if ((this.createForm.docterId || "") === "") {
+  //       this.$message("请选择医生");
+  //       return;
+  //     }
+
+  //     if ((this.createForm.memberName || "") === "") {
+  //       this.$message("请输入患者姓名");
+  //       return;
+  //     }
+  // let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+  //       if ((this.createForm.memberAge || "") !== ""&& !re.test(this.createForm.memberAge)) {
+  //         this.$message("请输入0-130岁的年龄");
+  //         return;
+  //       }
+
+  //     if ((this.createForm.memberPhone || "") === "") {
+  //       this.$message("请输入患者手机号");
+  //       return;
+  //     }
+  //     if (!this.checkPhone.test(this.createForm.memberPhone)) {
+  //       this.$message("请输入正确的患者手机号");
+  //       return;
+  //     }
+
+  //     if ((this.createForm.memberIdcard || "") !== "") {
+  //       this.vaild_memberIdcard(() => {
+  //         this.doback();
+  //       });
+  //       return;
+  //     }
+  //   }
+
+
+          this.doback();
+
+    
+  }
+  doback(){
+    
     this.$confirm("确定退回该处方给开方医生?", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -876,6 +923,9 @@ export default class AddGoods extends Vue {
     })
       .then(() => {
         this.backLoad = true;
+
+
+
         indexApi
           .doKillPreTransmit({
             prescriptionId: this.presId,
@@ -885,19 +935,19 @@ export default class AddGoods extends Vue {
           .then(res => {
             this.backLoad = false;
             if (res["retCode"]) {
-              if (
-                this.pres_type == "BACK_HANDWORK" ||
-                this.pres_type == "DOC_HANDWORK"
-              ) {
-                this.doUpdatePre(res.data.nextPresId, "退回成功");
-              } else {
+              // if (
+              //   this.pres_type == "BACK_HANDWORK" ||
+              //   this.pres_type == "DOC_HANDWORK"
+              // ) {
+              //   this.doUpdatePre(res.data.nextPresId, "退回成功");
+              // } else {
                 this.tranRemake = "";
                 if (res.data.nextPresId) {
                   this.getCountForList("xia", res.data.nextPresId);
                 } else {
                   this.$router.push("/transmit");
                 }
-              }
+              // }
             } else {
               if (!res["islogin"]) {
                 this.$alert(res["message"]);
@@ -1062,7 +1112,7 @@ export default class AddGoods extends Vue {
         return;
       }
   let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
-        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
+        if ((this.createForm.memberAge || "") !== ""&& !re.test(this.createForm.memberAge)) {
           this.$message("请输入0-130岁的年龄");
           return;
         }
@@ -1081,11 +1131,10 @@ export default class AddGoods extends Vue {
           this.after_vaild();
         });
         return;
-      } else {
-        this.after_vaild();
-        return;
       }
     }
+          this.after_vaild();
+    
   }
   vaild_memberIdcard(callback) {
     indexApi.checkidcard({ idcard: this.createForm.memberIdcard }).then(res => {

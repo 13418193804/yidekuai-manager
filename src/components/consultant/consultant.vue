@@ -1284,8 +1284,13 @@ directorNum = 0
     row: {}
   };
   cleanConsultantItemShelf(row) {
+
+
+if(this.date&&this.date.length>0){
     this.shelfObj.startcreateDate = this.date[0];
     this.shelfObj.endcreateDate = this.date[1];
+}
+
     this.shelfObj.name = "";
     this.consultantItemShelf(row, true);
   }
@@ -1632,8 +1637,10 @@ adviserBindAdviser(row){
 
   adviserGetDrugDoRow(row) {
     this.fontType = "";
+if(this.date&&this.date.length>0){
     this.drugObj.startcreateDate = this.date[0];
     this.drugObj.endcreateDate = this.date[1];
+}
     this.fontType = "month";
     this.adviserGetDrug(row);
   }
@@ -1799,10 +1806,15 @@ adviserBindAdviser(row){
   }
 
   mounted() {
+
+if(this.$route.path === '/consultant'){
     this.date = [
       this.getMonth1(),
       moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"
     ];
+}
+
+
     window["mmvue"] = this;
     this.getAdviserCount();
     this.getConsultantList();

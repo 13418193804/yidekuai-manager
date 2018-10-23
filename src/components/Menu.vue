@@ -5,7 +5,7 @@
       default-active="2"
        :style="styleString"
       :collapse="collapsed"
-      router=“true” style="border-right: 1px solid #c30d23;"
+      :router="true" style="border-right: 1px solid #c30d23;"
       >
       <block v-for="menu in menuOption" :key="menu"  v-if="menu.position=='menu'">
       <block v-for="(item,index) in menu.children" :key="index" v-if="menu.menu_grade == 1&& dohavePermission(item.promissId)">
@@ -87,14 +87,6 @@ export default class Menu extends Vue {
   doCollapse() {
     console.log("do close...");
     this.collapsed = !this.collapsed;
-  }
-
-  doMe() {
-    console.log("me");
-    console.log(this.$refs.menuExpand);
-  }
-  onSubmit() {
-    console.log("submit!");
   }
 
   menuOption = [];

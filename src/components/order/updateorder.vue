@@ -117,10 +117,7 @@
 <div>
     
     {{handlePaymentMode(order.paymentMode)}}
-
-
 </div>
-
 <div v-if="order.paymentMode == 'ONLINE_PAYMENT'" style="margin-left:20px;">
 微信支付订单号：
 </div>
@@ -336,8 +333,6 @@
     :data="ExpressDrugDetailSumQuantityList"
     stripe 
     style="width: 100%">
-
-
 
   <el-table-column fixed="left"
       prop="drugName"
