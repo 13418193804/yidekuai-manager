@@ -573,15 +573,13 @@
 <div style="padding: 15px;">
 
   <div style="margin-bottom:22px;" v-loading="add_upload_loading">
-                <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl"   list-type="picture-card"  ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
+                <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl"   list-type="picture-card"  ref="upload" :before-upload="beforeUpload"
+                 :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
 </div>
 
         <el-form-item  label="治疗服务费：">
-            <!-- <el-input v-model="createForm.servicemoney" placeholder="请输入治疗服务费" size="small" style="max-width:400px;min-width:200px;"  >
-                <span slot="suffix" style="margin:10px;cursor: pointer;font-size: 12px;" :style="createForm.feeTypeEnum =='SHOW' ?'color:#000':''" @click="changefeeTypeEnum()">{{createForm.feeTypeEnum =='SHOW' ?'已显示':'已隐藏'}}</span>
-            </el-input> -->
             {{createForm.servicemoney}}
   			</el-form-item>
         <el-form-item >
@@ -597,10 +595,10 @@
 				<el-button type="primary" @click="submitForm('ruleForm')" :disabled="add_footer_loading" >确 定</el-button>
 			</span>
         </el-dialog>
-	
-         <el-dialog  :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt="">
+  <el-dialog  :visible.sync="dialogVisible" @opened="opened">
+      <corpperlabel ref="dialogImage" :preImageList="dialogImageUrlList" :preImageUrlFlag="true"></corpperlabel>
             </el-dialog>
+
 
 		<el-dialog class="filter_box" width= "70vw" :close-on-click-modal="false" title="搜索" :append-to-body="true" :visible.sync="filter_model"   >
 
@@ -674,12 +672,13 @@ import prescriptioninfo from "../transmit/prescriptioninfo";
 import updateorder from "./updateorder";
 import * as ApiOrder from "../../api/orderapi";
 import * as Config from "../../api/conf";
+import corpperlabel from "../transmit/corpperlabel";
 
 @Component({
   props: {},
   components: {
     prescriptioninfo,
-    updateorder
+    updateorder,corpperlabel
   }
 })
 export default class AddGoods extends Vue {
@@ -1267,6 +1266,23 @@ sendGoods(row){
     });
   }
   fileUploadUrl = "";
+    dialogImageUrl = "";
+  dialogVisible = false;
+dialogImageUrlList=[]
+dialogImageIndex = 0
+  opened(){
+
+(<any>this.$refs.dialogImage).changePreImageUrl(this.dialogImageIndex)
+  }
+  handlePictureCardPreview(file) {
+    this.dialogImageUrlList = this.fileList.map((item,index)=> {
+      if(file.url === item.url){
+       this.dialogImageIndex =  index
+      }
+      return {presImageUrl:item.url}})
+    this.dialogVisible = true;
+  }
+
   mounted() {
     this.queryProvinceList();
     this.queryShipList();

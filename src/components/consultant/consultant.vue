@@ -173,7 +173,15 @@
  <el-table-column
       prop="remark"
       label="备注"  width="180">
+   </el-table-column> 
+   
+   <el-table-column
+      prop="createDate"
+      label="创建时间"  width="180">
    </el-table-column>
+
+
+
 
  <el-table-column label="操作" fixed="right"  :width="handleWidth(n.name)">
       <template slot-scope="scope">

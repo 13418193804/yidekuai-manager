@@ -71,12 +71,11 @@ export default class AddGoods extends Vue {
   @Prop({ required: false })
   preImageList: any;
  
-
+  @Prop({ required: false })
+  preImageUrlFlag: any;
 
 changePreImageUrl(index){
     setTimeout(() => {
-
-      
            this.preIndex =  index;
       this.option.img = this.preImageList[this.preIndex].presImageUrl
     }, 100);
@@ -95,7 +94,7 @@ changePreImageUrl(index){
 				canMoveBox: false
 			}
       downImg= '#'
-      changeScale(value){
+      changeScale(value){ 
         let a:any = this.$refs.cropper
 a.changeScale(value)
       }
@@ -110,7 +109,7 @@ a.rotateLeft()
 }
   preIndex = 0;
   mounted() {
-      
+      console.log('初始化',this.preImageUrlFlag)
   }
 }
 </script>

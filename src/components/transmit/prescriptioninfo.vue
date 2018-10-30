@@ -1,57 +1,27 @@
 <template>
     <div >
   
- 
-		<el-dialog width= "70vw" class="min_box" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="model"  title="处方详情">
-
+  <!-- class="min_box" -->
+		<el-dialog width= "70vw" class="small_box" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="model"  title="处方详情">
+<!-- 
 <div class="min_title">
 医患信息
-</div>
+</div> -->
+<!-- v-model="activeNames" @change="handleChange" -->
 
 
-
-<el-row :gutter="24"  >
-  <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
- 
-
-<corpperlabel ref="cropper" :preImageList="preImageList"></corpperlabel>
-
-  </el-col>
-
-  <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" style="height:550px;min-width:560px">
-<div style="height:550px;">
-<div v-for="center in detailInfo">
-  <h4 style="margin:0;line-height:30px;">
-    {{center.title}}
-  </h4>
-<div class="flex flex-warp-justify" style="marign-left:20px;">
-    <div v-for="(item,index) in center.children" class="flex" style="width:50%">
-        <div style="line-height:30px;min-width:100px;">
-            {{item.name}}：
-        </div>
-        <div style="line-height:30px;min-width:180px;">
-            {{row[item.key]}}
-        </div>
-    </div>
-    </div>
-</div>
-<div style="margin-top:20px;"></div>
+<div style="font-size:15px;">
 
 <div class="flex flex-warp-justify">
   <h4 style="margin:0">处方状态：</h4>
 <div>
     {{ handleStatus(row.presState)  }}
 </div>
-
   <h4 style="margin:0">处方类型：</h4>
 <div>
     {{ handleprescriptionType(row.prescriptionType)  }}
 </div>
-
-
-
 </div>
-
 <div  class="textLine">
     <div style=" margin-right:10px;" >
     开方时间：{{row.createDate}}
@@ -112,11 +82,32 @@
     </div>
 
 
-  </el-col>
 
+
+<el-collapse class="diy_collapse" v-model="activeNames">
+
+  
+  <el-collapse-item title="处方图片" name="picture">
+    <div style="width:100%;text-align:center">
+<corpperlabel ref="cropper" :preImageList="preImageList"></corpperlabel>
+</div>
+  </el-collapse-item>
  
+  <el-collapse-item   v-for="(center,index) in  detailInfo" :title="center.title" :name="center.title">
 
-</el-row>
+          <div v-for="(item,index) in center.children" class="flex" style="width:50%;margin-left:20px;">
+        <div style="line-height:30px;min-width:100px;">
+            {{item.name}}：
+        </div>
+        <div style="line-height:30px;min-width:180px;">
+            {{row[item.key]}}
+        </div>
+    </div>
+
+  </el-collapse-item>
+</el-collapse>
+
+
 
 <h4 v-if="row.presState != 'NOT_TRANSLATED_PRESCRIPTION'">药品信息</h4>
 <el-table border v-if="row.presState != 'NOT_TRANSLATED_PRESCRIPTION'"
@@ -303,13 +294,12 @@ switch(prescriptionType){
         return "";
     }
   }
-  
+  activeNames = ["picture","患者信息","医生信息"]
   preImageList = [];
 
 getPrePic(presId) {
     indexApi.getPrePic({ preId: presId }).then(res => {
       if (res["retCode"]) {
-        console.log('图片列表',res.data)
         this.preImageList = res.data;
          if(res.data.length>0){
           let a:any =    this.$refs.cropper

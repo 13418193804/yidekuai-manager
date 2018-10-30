@@ -146,7 +146,11 @@
               					<el-input v-model="addDrug.commonName"  placeholder="请输入通用名称" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
       	<el-form-item label="供应商：" prop="partnerId">
-           <el-select v-model="addDrug.partnerId"   @change="changePartner" filterable placeholder="请选择供应商" style="max-width:400px;min-width:200px">
+         
+         
+         
+         
+  <el-select v-model="addDrug.partnerId"   @change="changePartner" filterable placeholder="请选择供应商" style="max-width:400px;min-width:200px">
     <el-option
       v-for="item in partnerList"
       :key="item.partnerId"
@@ -155,6 +159,10 @@
       >
     </el-option>
   </el-select>
+
+  <el-button type="text" @click="openpartnerModel()" style="margin-left:20px;">新增供应商</el-button>
+
+
               					<!-- <el-input v-model="addDrug.partnerName"  placeholder="请输入供应商" style="max-width:400px;min-width:200px" ></el-input> -->
 				</el-form-item>	
    <el-form-item label="科室" prop="department">
@@ -201,10 +209,10 @@
 
 
 
+
             	<el-form-item label="使用方法：" prop="instructions" >
               					<el-input v-model="addDrug.instructions"  placeholder="请输入使用方法" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
-
 
 
             	<el-form-item label="适应症：" prop="adaptability" >
@@ -221,6 +229,50 @@
 			</span>
 
 </el-dialog>
+
+		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="partnerObjModel.model "  title="新增供应商">
+<div v-bouncing="partner_loading" >
+	 <el-form label-width="120px" >
+
+            	<el-form-item label="供应商：" >
+              					<el-input v-model="partnerObj.partnerName"  placeholder="请输入供应商" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+      
+            	<el-form-item label="供应商地址：" >
+              					<el-input v-model="partnerObj.partnerAddress"  placeholder="请输入供应商地址" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+            	<el-form-item label="联系人：" >
+              					<el-input v-model="partnerObj.contactsName"  placeholder="请输入联系人" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+        
+            	<el-form-item label="联系电话：" >
+              					<el-input v-model="partnerObj.contactsPhone"  placeholder="请输入联系电话" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+ 	<el-form-item label="备注：" >
+              					<el-input v-model="partnerObj.remake" type="textarea"  placeholder="请输入备注" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+                    </el-form >
+
+</div>
+			<span slot="footer" class="dialog-footer" >
+				<el-button @click="partnerObjModel.model = false">取 消</el-button>
+				<el-button type="primary" @click="doaddpartner" :disabled="loading">确 定</el-button>
+			</span>
+
+
+</el-dialog>
+
+
+
+
+
+
+
+
+
+
 
     </div>
  </template>
@@ -276,6 +328,47 @@ addDrug:any={}
 
 
 drugModel = false
+partnerObj:any= {}
+partnerObjModel ={
+  model:false,
+list:[],
+}
+
+// getDrugPartner(filter = null){
+//  indexApi.getDrugPartner({}).then(res => {
+//       if (res["retCode"]) {
+
+//         this.partnerObjModel.list = res.data.DrugPartner
+
+//       } else {
+//         if(!res['islogin']){this.$alert(res["message"]);}
+//         console.error("数据查询错误");
+//       }
+//     });
+
+// }
+partner_loading = false
+doaddpartner(){
+ this.partner_loading = true
+
+      indexApi.addDrugPartner(this.partnerObj).then(res => {
+ this.partner_loading = false
+        
+      if (res["retCode"]) {
+this.queryAllPartner();
+this.$message('新增成功');
+this.partnerObjModel.model = false
+      } else {
+        if(!res['islogin']){this.$alert(res["message"]);}
+      }
+    });
+    
+}
+openpartnerModel(){
+this.partnerObjModel.model = !this.partnerObjModel.model
+this.partnerObj = {}
+}
+
 
  changePartner(id){
   let a = this.partnerList.filter((item,index)=>{

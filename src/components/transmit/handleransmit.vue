@@ -502,8 +502,12 @@
                  <el-button type="primary" @click="dotransmit()" >转方</el-button>
 </div>
 </div>
-    <el-dialog  :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt="">
+    <el-dialog  :visible.sync="dialogVisible" @opened="opened">
+
+      <corpperlabel ref="dialogImage" :preImageList="dialogImageUrlList" :preImageUrlFlag="true"></corpperlabel>
+
+
+                <!-- <img width="100%" :src="dialogImageUrl" alt=""> -->
             </el-dialog>
 
 
@@ -1554,12 +1558,22 @@ export default class AddGoods extends Vue {
 
   dialogImageUrl = "";
   dialogVisible = false;
+dialogImageUrlList=[]
+dialogImageIndex = 0
+  opened(){
+
+(<any>this.$refs.dialogImage).changePreImageUrl(this.dialogImageIndex)
+  }
   handlePictureCardPreview(file) {
-    this.dialogImageUrl = file.url;
+    this.dialogImageUrlList = this.fileList.map((item,index)=> {
+      if(file.url === item.url){
+       this.dialogImageIndex =  index
+      }
+      return {presImageUrl:item.url}})
     this.dialogVisible = true;
   }
-  add_upload_loading = false;
 
+  add_upload_loading = false;
   fileUploadUrl = "";
   beforeUpload(file) {
     this.add_upload_loading = true;

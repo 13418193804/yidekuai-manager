@@ -927,17 +927,17 @@ export const insertDrugById = (model) => {
 
 //查询所有供应商
 export const queryAllPartner = (model) => {
-
     let params = {
         token: sessionStorage.getItem("token"),
         userid: sessionStorage.getItem("userId"),
         userId: sessionStorage.getItem("userId"),
     }
-
     Object.assign(params, model)
     return Api.requestForm2('/partner/findPartnerAll', params)
         .then(res => res);
 }
+
+
 
 //通过某部门id查询到他所有父级id
 export const queryDepartmentAtMySelf = (model) => {
@@ -1590,6 +1590,39 @@ export const deleteAdviserDirector = (model) => {
         }
         Object.assign(params, model)
         return Api.requestForm2('/api/adviser/deleteAdviserDirector', params)
+            .then(res => res);
+    }
+    
+/**
+ * 查供应商
+ */
+
+export const getDrugPartner = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/PYgenerate/getDrugPartner', params)
+            .then(res => res);
+    }
+    
+    
+/**
+ * 添加供应商
+ */
+
+export const addDrugPartner = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/PYgenerate/addDrugPartner', params)
             .then(res => res);
     }
     

@@ -188,6 +188,12 @@ export default class App extends Vue {
 .send_box .el-dialog__header{
 display:none;
 }
+
+.small_box .el-dialog__body{
+  padding:10px 20px!important;
+  position:relative;
+    min-height: 500px!important;
+}
 .min_box .el-dialog__body{
   padding:0!important;
   position:relative;
