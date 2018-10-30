@@ -58,7 +58,6 @@
             <el-tab-pane :label="'医生列表（'+doctotcount+'）'" name="second">
                 <div class="flex flex-pack-justify" style="margin-top:20px;">
                     <el-button type="primary" @click="dialogFormVisible = true">新增医生</el-button>
-        
                 </div>
                 <div style="padding-bottom:20px;">
                     <el-row :gutter="10">
@@ -76,7 +75,10 @@
                             </el-select>
                     </el-col>
                     <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
-                        <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="clearcurrentPage()">查询</el-button>
+                        <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="clearcurrentPage()">查询</el-button>                        
+                    </el-col>
+                    <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
+                        <el-button type="primary" style="margin-top:20px;margin-left:15px;" @click="exportDoctorExcel()" >导出医生文件</el-button>                        
                     </el-col>
 
                     </el-row>
@@ -1491,6 +1493,19 @@ handlegenerate(index, row){
             }
         }
     
+
+    exportDoctorExcel(){
+        let urlkey = ''
+        if(this.keyname&&this.state){
+            urlkey='?keyWord='+this.keyname+'&status='+this.state
+        }else if(this.keyname){
+            urlkey='?keyWord='+this.keyname
+        }else if(this.state){
+            urlkey='?status='+this.state
+        }
+        let url = confUrl.g_base_url+'/api/doctor/exportDoctorExcel'+urlkey
+        window.open(url);
+    }
     
 mounted(){
     this.g_news_url=confUrl.g_news_url
