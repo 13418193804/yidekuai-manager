@@ -143,6 +143,15 @@ export const queryHospitalList = () => {
         .then(res => res);
 }
 
+export const findHospitalByArea = (areaid) => {
+
+    let params = {
+        areaid: areaid,
+    }
+    return Api.requestForm2('/hospital/findHospitalByArea', params)
+        .then(res => res);
+}
+
 export const querytree = () => {
 
     let params = {
