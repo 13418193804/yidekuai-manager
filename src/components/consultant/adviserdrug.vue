@@ -18,7 +18,7 @@
         </div>
      
        
-<div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
+<div style="padding-bottom:20px;">
 <el-row :gutter="10">
   <el-col :xs="12" :sm="8" :md="5" :lg="6" :xl="5">
    <el-input v-model="drug"

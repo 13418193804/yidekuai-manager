@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <title>授权登录</title>
+    <!-- 引入样式 -->
+    <!-- 引入组件库 -->
+
+</head>
+
+<body onload="pay()">
+    <div id="concation">
+    </div>
+    <script>
+        function pay() {
+            $(document).ready(function () {
+                if (window.location.search.split('sso_token=').length > 0) {
+                    let ssoToken = window.location.search.split('sso_token=')[1];
+                    $.ajax({
+                        type: "POST",
+                        url: "https://m.yourhr.com.cn/zhongyi/auth/ssologin?ssoToken=" + ssoToken,
+                        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                        success: function (res, status) {
+                            if (res.status === 200) {
+                                localStorage.set_token_info = JSON.stringify(res.data);
+                                window.location.href = "https://m.yourhr.com.cn/custom/#/"
+                            } else {
+                                alert(res.message)
+                                return
+                            }
+                        },
+                        error: function (e) {
+                            console.log(e)
+                            return
+                        }
+                    });
+                } else {
+                    alert('未检测到登录凭证')
+                    return
+                    
+                }
+
+            });
+        }
+    </script>
+
+</body>
+<style>
+    #concation {
+        overflow: hidden;
+    }
+
+    .text {
+        font-size: 14px;
+    }
+
+    .item {
+        padding: 18px 0;
+    }
+
+    .el-card__body {
+        max-height: 40vh;
+        overflow: auto
+    }
+
+    .box-card {
+        height: 300px;
+        width: 100%;
+        margin: 20px;
+    }
+
+    .time {
+        font-size: 13px;
+        color: #999;
+    }
+
+    .bottom {
+        margin-top: 13px;
+        line-height: 12px;
+    }
+
+    .button {
+        padding: 0;
+        float: right;
+    }
+
+    .image {
+        width: 100%;
+        display: block;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+
+    .clearfix:after {
+        clear: both
+    }
+
+    #container-fluid {
+        overflow: auto;
+    }
+
+    .navbar {
+        margin: 0;
+    }
+
+    th {
+        text-align: center;
+        min-width: 100px;
+        max-width: 500px;
+    }
+
+    tr td {
+        text-align: center;
+        min-width: 100px;
+        max-width: 500px;
+    }
+
+
+
+    .flex {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .flex-v {
+        -webkit-box-orient: vertical;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .flex-1 {
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+    }
+
+    .flex-align-center {
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .flex-align-flex-end {
+        -webkit-box-align: flex-end;
+        -webkit-align-items: flex-end;
+        -ms-flex-align: flex-end;
+        align-items: flex-end;
+    }
+
+    .flex-pack-center {
+        -webkit-box-pack: center;
+        -webkit-justify-content: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+    }
+
+    .flex-flex-start-center {
+        -webkit-box-pack: flex-start;
+        -webkit-justify-content: flex-start;
+        -ms-flex-pack: flex-start;
+        justify-content: flex-start;
+    }
+
+    .flex-pack-justify {
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-between;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+    }
+
+    .flex-around-justify {
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-around;
+        -ms-flex-pack: justify;
+        justify-content: space-around;
+    }
+
+    .flex-warp-justify {
+        -webkit-flex-wrap: wrap;
+        -moz-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        -o-flex-wrap: wrap;
+    }
+
+    .flex-nowrap-justify {
+        -webkit-flex-wrap: nowrap;
+        -moz-flex-wrap: nowrap;
+        -ms-flex-wrap: nowrap;
+        -o-flex-wrap: nowrap;
+    }
+</style>
+
+</html>

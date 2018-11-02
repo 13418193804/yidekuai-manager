@@ -421,7 +421,6 @@ this.rderStatus ="";
       .then(res => {
         this.loading = false;
               // this.$emit('updateYdkPrescriptionStatusNum','NEW_ORDER');
-
             this.queryOrderCount();
         if (res["retCode"]) {
  

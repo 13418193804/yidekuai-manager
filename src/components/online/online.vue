@@ -1,7 +1,7 @@
 <template>
     <div v-bouncing="loading">
 
-        <div style="border-bottom:1px #e5e5e5 solid;">
+        <div style="">
           <h3>在线咨询管理
           </h3>
 <!--           

@@ -2,7 +2,7 @@
     <div >
 <!-- v-bouncing="loading" -->
         
-<div style="padding-bottom:20px;border-bottom:1px #e5e5e5 solid;">
+<div style="padding-bottom:20px;">
 <el-row :gutter="10">
   <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
    <el-input

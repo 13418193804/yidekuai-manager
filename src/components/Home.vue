@@ -88,7 +88,10 @@ export default class Home extends Vue {
       //type: 'warning'
     })
       .then(() => {
-        sessionStorage.removeItem("user");
+
+        sessionStorage.clear();
+        clearInterval(  (<any>this.$refs.menuCom).PrescriptionStatusNumtimer)
+        // sessionStorage.removeItem("user");
         this.$router.replace("/login");
       })
       .catch(() => {});

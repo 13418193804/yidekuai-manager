@@ -325,6 +325,7 @@ DOC_HANDWORK = 0
       }
     });
   }
+ 
   mounted() {
  
     this.allPrescription();

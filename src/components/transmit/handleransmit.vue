@@ -201,23 +201,14 @@
 </div>
 </div>
 </div>
-
   </el-collapse-item>
 </el-collapse>
-
 </div>
-
-
-
-
-
 
 
 <div style="height:20px;"></div>
 <el-row :gutter="24"  style="padding:0 0 20px;">
-
   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-
     <div style="position: relative;">
 <corpperlabel  ref="cropper" :preImageList="preImageList" :style="pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK' ? 'visibility: hidden;' : ''"></corpperlabel>
   <div style="margin-bottom:22px;" class="pre_update_upload" v-loading="add_upload_loading" v-if=" pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK'">
@@ -256,14 +247,28 @@
                   <el-form-item label="供应商：" >
 
 
-<el-autocomplete style="width:100%;"
+<!-- <el-autocomplete style="width:100%;"
       class="inline-input"
        v-model="drug.partnerObj"
       value-key="partnerName"
-
       :fetch-suggestions="querySearch4"
       placeholder="请输入供应商"
-    ></el-autocomplete>
+    ></el-autocomplete> -->
+
+
+
+ <el-select style="width:100%;"
+    v-model="drug.partnerObj"
+    clearable
+    placeholder="请选择供应商"
+    :loading="loading">
+    <el-option
+      v-for="item in partnerNameList"
+      :key="item.partnerId"
+      :label="item.partnerName"
+      :value="item.partnerId">
+    </el-option>
+  </el-select>
 
 				</el-form-item>		
 
@@ -570,6 +575,7 @@
  </template>
 
 <script lang="ts">
+
 import Vue from "vue";
 import Component from "vue-class-component";
 import axios from "axios";

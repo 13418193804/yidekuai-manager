@@ -81,10 +81,10 @@
     </div>
     </div>
 
+ <!-- class="diy_collapse" -->
 
 
-
-<el-collapse class="diy_collapse" v-model="activeNames">
+<el-collapse v-model="activeNames">
 
   
   <el-collapse-item title="处方图片" name="picture">
@@ -195,7 +195,7 @@
 
    
     </el-table>
-<div style="text-align:right; margin-top:20px;    padding-top: 10px;border-top: 1px #e5e5e5 solid;">
+<div style="text-align:right; margin-top:20px;    padding-top: 10px;">
 <div>治疗服务费：<span style="color:red">￥{{row.serviceMoney}}</span></div>
 <div >药品总价：<span style="color:red">￥{{row.presscriptionMoney?row.presscriptionMoney:0}}</span></div>
 <div >合计：<span style="color:red">￥{{row.orderMoney?row.orderMoney:row.serviceMoney}}</span></div>
@@ -400,7 +400,7 @@ getInfo(){
 .el-dialog__body{
   padding:10px 20px;
 }
-.textLine{
+.textLine{margin-bottom:5px;
   font-size: 14.8px;display:flex;    flex-wrap: wrap;
 }
 </style>

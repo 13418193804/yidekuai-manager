@@ -1141,6 +1141,12 @@ sendGoods(row){
               res.data.invoiceRecords[0].logistics;
             res.data.invoiceObj_waybillNumber =
               res.data.invoiceRecords[0].waybillNumber;
+
+              console.log('------')
+          this.order = res.data;
+               (<any>this.$refs.updateorder).loading = false
+
+              return
           }
           this.order = res.data;
           (<any>this.$refs.updateorder).getExpressPackage(presId);

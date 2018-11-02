@@ -7,15 +7,15 @@
       :collapse="collapsed"
       :router="true" style="border-right: 1px solid #c30d23;"
       >
-      <block v-for="menu in menuOption" :key="menu"  v-if="menu.position=='menu'">
-      <block v-for="(item,index) in menu.children" :key="index" v-if="menu.menu_grade == 1&& dohavePermission(item.promissId)">
+      <div v-for="menu in menuOption" :key="menu.name"  v-if="menu.position=='menu'">
+      <div v-for="(item,index) in menu.children" :key="item.name" v-if="menu.menu_grade == 1&& dohavePermission(item.promissId)">
           <el-menu-item  :index="item.path" >
           <img :src="$route.path == item.path ?item.select_icon :item.icon " style="height:24px;width:24px;margin-right:5px;"/>
            <span :style="$route.path == item.path?handleSelectColor():'color:#fff'" v-if="!collapsed" style="position: relative;">{{item.name}}
              <div class="bluedot"  v-if="handlebluedot(item.path)" ></div>
            </span>
             </el-menu-item>
-      </block>
+      </div>
 <el-submenu :index="menu.path" v-if="menu.menu_grade ==2 && handlePromiss(menu)" :class="!collapsed?'':'iscollapsed'">
         <template slot="title">
           <img :src="handleSelectImage(menu)?menu.select_icon :menu.icon " style="height:24px;width:24px;margin-right:5px;"/>
@@ -25,14 +25,14 @@
 
              </span>
         </template>
-          <el-menu-item v-for="(items,indexs) in menu.children" :key="indexs" :index="items.path" v-if="dohavePermission(items.promissId)" >
+          <el-menu-item v-for="(items,indexs) in menu.children" :key="items.name"  :index="items.path" v-if="dohavePermission(items.promissId)" >
             <span :style="$route.path == items.path?handleSelectColor():'color:#fff'" style="position: relative;">{{items.name}}
              <div class="bluedot" v-if="handlebluedot(items.path)"   ></div>
             </span>
             
             </el-menu-item>
      </el-submenu>
-      </block>
+      </div>
        </el-menu>
 				<!--导航菜单-折叠后-->
     </div>
@@ -125,11 +125,13 @@ export default class Menu extends Vue {
 
     this.getYdkPrescriptionStatusNum();
 
-    setInterval(() => {
+  this.PrescriptionStatusNumtimer = setInterval(() => {
       this.getYdkPrescriptionStatusNum();
     }, 5000);
   }
 
+  
+PrescriptionStatusNumtimer:any={}
   handlebluedot(path) {
 
 

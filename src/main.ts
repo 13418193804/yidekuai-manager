@@ -31,7 +31,7 @@ Component.registerHooks([
 //日志
 router.beforeEach((to, from, next) => {
 
-  console.log(`跳转页面提示:${to.name};当前地址:${window.location.origin}#${to.path}`)
+  // console.log(`跳转页面提示:${to.name};当前地址:${window.location.origin}#${to.path}`)
   if (sessionStorage.roleAdmin == 'centerroleAdminFormIdTextYIDEKUAI') {
     next()
   } else {

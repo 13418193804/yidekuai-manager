@@ -250,4 +250,11 @@ display:none;
       border-left: 3px red solid;
     padding-left: 15px;
 }
+.el-table__body-wrapper{
+  min-height: 500px!important;
+}
+.el-table{
+  min-height: 550px!important;
+  
+}
 </style>

@@ -418,7 +418,7 @@ import * as ApiOrder from "../../api/orderapi";
   }
 })
 export default class AddGoods extends Vue {
-  @Prop({ required: false })
+  @Prop({ required: true })
   table: any;
   @Prop({ required: false })
   prescriptionEnums: any;
@@ -438,7 +438,7 @@ export default class AddGoods extends Vue {
 
   add_model = false;
   add_model_loading = false;
-  cancelLoading = false
+  cancelLoading = false;
   add_footer_loading = false;
   add_upload_loading = false;
   noMessage_model = false;
@@ -450,7 +450,6 @@ export default class AddGoods extends Vue {
   };
 
   submitForm() {
-
     if (
       ((this.createForm.doctorid || "") === "" &&
         this.add_model_type == "add") ||
@@ -459,12 +458,8 @@ export default class AddGoods extends Vue {
       this.$message("请选择医生");
       return;
     }
-    
 
-
-
-// 不判断患者Id
-
+    // 不判断患者Id
 
     // if (
     //   ((this.createForm.memberid || "") === "" &&
@@ -475,41 +470,40 @@ export default class AddGoods extends Vue {
     //   return;
     // }
 
-      if(this.add_model_type == "add"){
-        if((this.createForm.memberName||'')  ===''){
-            this.$message("请输入患者姓名");
-      return;
-        }
-      if((this.createForm.patientMobile||'')  ===''){
-            this.$message("请输入患者手机号");
-      return;
-        }
-      }else{
-        if((this.createForm.memberName||'')  ===''){
-            this.$message("请输入患者姓名");
-      return;
-        }
-
-      if((this.createForm.patientMobile||'')  ===''){
-            this.$message("请输入患者手机号");
-      return;
-        }
-
-
-      if((this.createForm.memberSex||'')  ===''){
-            this.$message("请选择患者性别");
-      return;
-        }
-
-      if((this.createForm.memberAge||'')  ===''){
-            this.$message("请输入患者年龄");
-      return;
-        }
-   if((this.createForm.memberIdcard||'')  ===''){
-            this.$message("请输入患者身份证");
-      return;
-        }
+    if (this.add_model_type == "add") {
+      if ((this.createForm.memberName || "") === "") {
+        this.$message("请输入患者姓名");
+        return;
       }
+      if ((this.createForm.patientMobile || "") === "") {
+        this.$message("请输入患者手机号");
+        return;
+      }
+    } else {
+      if ((this.createForm.memberName || "") === "") {
+        this.$message("请输入患者姓名");
+        return;
+      }
+
+      if ((this.createForm.patientMobile || "") === "") {
+        this.$message("请输入患者手机号");
+        return;
+      }
+
+      if ((this.createForm.memberSex || "") === "") {
+        this.$message("请选择患者性别");
+        return;
+      }
+
+      if ((this.createForm.memberAge || "") === "") {
+        this.$message("请输入患者年龄");
+        return;
+      }
+      if ((this.createForm.memberIdcard || "") === "") {
+        this.$message("请输入患者身份证");
+        return;
+      }
+    }
     if (
       ((this.createForm.servicemoney || "") === "" &&
         this.add_model_type == "add") ||
@@ -536,39 +530,42 @@ export default class AddGoods extends Vue {
       this.$message("请上传处方图片");
       return;
     }
- 
- 
-let showLoading = ()=>{
- this.add_model_loading = true
-this.add_footer_loading =  true
-this.cancelLoading = true
-}
-let closeLoading = ()=>{
-   this.add_model_loading = false
-this.add_footer_loading =  false
-this.cancelLoading = false
-}
+
+    let showLoading = () => {
+      this.add_model_loading = true;
+      this.add_footer_loading = true;
+      this.cancelLoading = true;
+    };
+    let closeLoading = () => {
+      this.add_model_loading = false;
+      this.add_footer_loading = false;
+      this.cancelLoading = false;
+    };
     if (this.add_model_type === "edit") {
-      this.createForm.serviceMoney = this.createForm.servicemoney
-            this.createForm.feeHide= this.createForm.feeTypeEnum ;
-      if((this.createForm.consigneeName||'')===''){
-       this.$message("请输入收件人");
-      return;
+      this.createForm.serviceMoney = this.createForm.servicemoney;
+      this.createForm.feeHide = this.createForm.feeTypeEnum;
+      if ((this.createForm.consigneeName || "") === "") {
+        this.$message("请输入收件人");
+        return;
       }
-    if((this.createForm.consigneePhone||'')===''){
-       this.$message("请输入收件号码");
-      return;
+      if ((this.createForm.consigneePhone || "") === "") {
+        this.$message("请输入收件号码");
+        return;
       }
-      if((this.createForm.provinceid||'')==='' || (this.createForm.cityid||'')==='' || (this.createForm.areaid||'')==='' ){
-             this.$message("请选择收货地区");
-      return;
+      if (
+        (this.createForm.provinceid || "") === "" ||
+        (this.createForm.cityid || "") === "" ||
+        (this.createForm.areaid || "") === ""
+      ) {
+        this.$message("请选择收货地区");
+        return;
       }
-          if((this.createForm.consigneeAddress||'')===''){
-       this.$message("请输入收件地址");
-      return;
+      if ((this.createForm.consigneeAddress || "") === "") {
+        this.$message("请输入收件地址");
+        return;
       }
 
-      showLoading()
+      showLoading();
       indexApi.updatePre(this.createForm).then(res => {
         closeLoading();
         if (res["retCode"]) {
@@ -583,9 +580,7 @@ this.cancelLoading = false
         }
       });
     } else {
-
-
-      showLoading()
+      showLoading();
       indexApi.createphotoprescription(this.createForm).then(res => {
         closeLoading();
         if (res["retCode"]) {
@@ -600,7 +595,6 @@ this.cancelLoading = false
         }
       });
     }
-
   }
 
   changefeeTypeEnum() {
@@ -669,8 +663,8 @@ this.cancelLoading = false
     this.add_model_type = type;
 
     if (row) {
-          this.add_model_loading = true;
-    this.add_footer_loading = true;
+      this.add_model_loading = true;
+      this.add_footer_loading = true;
       row.servicemoney = row.serviceMoney;
 
       row.feeTypeEnum = row.feeHide;
@@ -689,17 +683,17 @@ this.cancelLoading = false
         this.add_model_loading = false;
         this.add_footer_loading = false;
       });
-    this.add_model = !this.add_model;
-      
+      this.add_model = !this.add_model;
     } else {
-
-
       // 清除缓存
- sessionStorage.presId = ""
-        //跳去转方
- this.$router.push({name:'handleransmit',params:{
-  pres_type: 'BACK_HANDWORK'
- }})
+      sessionStorage.presId = "";
+      //跳去转方
+      this.$router.push({
+        name: "handleransmit",
+        params: {
+          pres_type: "BACK_HANDWORK"
+        }
+      });
     }
   }
   getPrePic(presId, callback) {
@@ -825,11 +819,15 @@ this.cancelLoading = false
   }
 
   handleransmit(index, row) {
-
     sessionStorage.presId = row.presId;
-        //跳去转方
- this.$router.push({name:'handleransmit',
- params:row.prescriptionType ==="DOC_HANDWORK" ?{pres_type: 'DOC_HANDWORK'} :null})
+    //跳去转方
+    this.$router.push({
+      name: "handleransmit",
+      params:
+        row.prescriptionType === "DOC_HANDWORK"
+          ? { pres_type: "DOC_HANDWORK" }
+          : null
+    });
   }
   preIndex = 0;
   handleStatus(status) {
@@ -918,7 +916,9 @@ this.cancelLoading = false
   provinceList = [];
   cityList = [];
   countryList = [];
+ updated(){
 
+  }
   mounted() {
     this.queryProvinceList();
     this.fileUploadUrl = Config.g_upload_url;

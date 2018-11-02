@@ -199,7 +199,7 @@
           size="mini"
           type="text"
           @click="changeModel('edit',scope.row)" v-if="$route.path === '/consultant-manager'">编辑</el-button>
-        <el-button type="text"  style="margin-top:20px;" @click="viewBigIcon(scope.row.qrcode)">二维码</el-button>
+        <el-button type="text"  style="margin-top:20px;" @click="viewBigIcon(scope.row.qrcode,scope.row.adviserName ,scope.row.userName)">二维码</el-button>
          <el-button @click="doDelete(scope.row)"
           size="mini"
           type="text" v-if="$route.path === '/consultant-manager'"
@@ -810,8 +810,15 @@
 
 
 
- <el-dialog  :visible.sync="viewBig" width="400px">
-      <img :src="bigIcon" style="width:400px;height:400px;margin:-55px -20px -40px" >
+ <el-dialog  :visible.sync="viewBig"  title="顾问二维码">
+   <div style="text-align:center;">
+   <img :src="bigIcon" style="width:300px;height:300px;" >
+      <div style="    margin: 20px;font-size: 16px;">{{adviserObj1.adviserName}} {{adviserObj1.userName}}</div>
+
+   </div>
+
+
+
     </el-dialog>
     </div>
  </template>
@@ -831,9 +838,15 @@ import * as indexApi from "../../api/indexApi";
 })
 export default class AddGoods extends Vue {
   loading = false;
-  viewBigIcon(qrcode) {
+  adviserObj1 :any={
+
+  }
+  viewBigIcon(qrcode,adviserName,userName) {
     this.bigIcon = qrcode;
     this.viewBig = true;
+this.adviserObj1 = {
+  adviserName:adviserName,userName:userName
+}
   }
   bigIcon = "";
   viewBig = false;
