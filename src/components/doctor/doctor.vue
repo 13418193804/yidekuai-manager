@@ -57,7 +57,7 @@
             </el-tab-pane>
             <el-tab-pane :label="'医生列表（'+doctotcount+'）'" name="second">
                 <div class="flex flex-pack-justify" style="margin-top:20px;">
-                    <el-button type="primary" @click="dialogFormVisible = true">新增医生</el-button>
+                    <el-button type="primary" @click="adddoctorshow()">新增医生</el-button>
                 </div>
                 <div style="padding-bottom:20px;">
                     <el-row :gutter="10">
@@ -145,146 +145,9 @@
             </el-tab-pane>
             
         </el-tabs>
-        
-        
 
         </div>
 
-        
-
-        
-
-        <el-dialog title="增加医生" :visible.sync="dialogFormVisible" @close="addcancel('formLabelAlign')" :close-on-click-modal="false">
-        <el-form  label-width="140px" :model="formLabelAlign" :rules="rules" ref="formLabelAlign">
-        <el-form-item label="登录帐号" prop="phone">
-            <el-input v-model="formLabelAlign.phone"></el-input>
-        </el-form-item>
-        <el-form-item label="医生姓名" prop="name">
-            <el-input v-model="formLabelAlign.name"></el-input>
-        </el-form-item>
-        <el-form-item label="所属医院" prop="hospitalId">
-            <el-select v-model="formLabelAlign.hospitalId" placeholder="请选择医院" clearable>
-                    <el-option
-                    v-for="item in hospitallist"
-                    :key="item.hospitalCode"
-                    :label="item.hospitalName"
-                    :value="item.hospitalCode"
-                    >
-                    </el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="所在科室" prop="departmentId">
-            <el-cascader
-            v-model="formLabelAlign.departmentId"
-            :options="tableTree"
-            @change="changedepartmentId()"
-            change-on-select
-            clearable
-            ></el-cascader>
-        </el-form-item>
-        <el-form-item label="职称" prop="doctorTitle">  
-            <el-select v-model="formLabelAlign.doctorTitle" placeholder="请选择职称" clearable>
-                    <el-option
-                    v-for="item in doctortitlelist"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                    >
-                    </el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="医生擅长">
-            <el-input type="textarea" autosize v-model="formLabelAlign.doctorGood"></el-input>
-        </el-form-item>
-        <el-form-item label="医生简介" prop="doctorBrief">
-            <el-input type="textarea" autosize v-model="formLabelAlign.doctorBrief"></el-input>
-        </el-form-item>
-        <el-form-item label="咨询价格" prop="consultingFee">
-            <el-input v-model="formLabelAlign.consultingFee"></el-input>
-        </el-form-item>
-        <el-form-item label="医生备注">
-            <el-input v-model="formLabelAlign.remark"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证">
-            <el-input v-model="formLabelAlign.idCard"></el-input>
-        </el-form-item>
-        <div class="flex">
-            <div class="flex flex-1">
-                <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">身份证正面</div>
-                <el-upload
-                    class="avatar-uploader"
-                    :action="g_news_url"
-                    :show-file-list="false"
-                    list-type="picture"
-                    :on-success="idCardFrontSuccess">
-                    <img v-if="idCardFrontUrl" :src="idCardFrontUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-                <div v-if="idCardFrontUrl" @click="delUrl('idCardFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
-            </div>
-            <div class="flex flex-1">
-                <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">身份证背面</div>
-            <el-upload
-                class="avatar-uploader"
-                :action="g_news_url"
-                :show-file-list="false"
-                :on-success="idCardBackSuccess">
-                <img v-if="idCardBackUrl" :src="idCardBackUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-            <div v-if="idCardBackUrl" @click="delUrl('idCardBackUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
-            </div>
-        </div>
-        <el-form-item label="医师资格证号">
-            <el-input v-model="formLabelAlign.pharmacistCertificateNum"></el-input>
-        </el-form-item>
-        <div class="flex">
-            <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医师资格证</div>
-        <el-upload
-            class="avatar-uploader"
-            :action="g_news_url"
-            :show-file-list="false"
-            :on-success="pharmacistCertificateFrontSuccess">
-            <img v-if="pharmacistCertificateFrontUrl" :src="pharmacistCertificateFrontUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-        <div v-if="pharmacistCertificateFrontUrl" @click="delUrl('pharmacistCertificateFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
-        </div>
-        <el-form-item label="医师执业证号">
-            <el-input v-model="formLabelAlign.qualificationCertificateNum"></el-input>
-        </el-form-item>
-        <div class="flex">
-            <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医师执业证</div>
-        <el-upload
-            class="avatar-uploader"
-            :action="g_news_url"
-            :show-file-list="false"
-            :on-success="qualificationCertificateFrontSuccess">
-            <img v-if="qualificationCertificateFrontUrl" :src="qualificationCertificateFrontUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-        <div v-if="qualificationCertificateFrontUrl" @click="delUrl('qualificationCertificateFrontUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
-        </div>
-        <div class="flex">
-            <div class="flex flex-1">
-                <div style="width:140px;text-align:right;font-size:14px;color:#606266;line-height:100px;padding-right:12px;box-sizing:border-box;">医生头像：</div>
-                <el-upload
-                    class="avatar-uploader"
-                    :action="g_news_url"
-                    :show-file-list="false"
-                    :on-success="pictureSuccess">
-                    <img v-if="pictureUrl" :src="pictureUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-                <div v-if="pictureUrl" @click="delUrl('pictureUrl')" style="font-size:14px;color:#ff0000;line-height:100px;padding-left:15px;">删除图片</div>
-            </div>
-        </div>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="addcancel('formLabelAlign')">取 消</el-button>
-            <el-button type="primary" @click="adddoctorrules('formLabelAlign')" :disabled="loading">确 定</el-button>
-        </div>
-        </el-dialog>
         
         <el-dialog title="医生二维码" :visible.sync="dialogFormVisible5" :close-on-click-modal="false">
         <div style="display:flex;justify-content: center;flex-direction: column;align-items: center;">
@@ -295,52 +158,6 @@
 
         </el-dialog>
 
-        <el-dialog title="医生编辑" :visible.sync="dialogFormVisible1" @close="updatecancel('formLabelAlign1')" :close-on-click-modal="false">
-        <el-form  label-width="120px" :model="formLabelAlign1" :rules="rules" ref="formLabelAlign1">
-        <el-form-item label="医生姓名" prop="name">
-            <el-input v-model="formLabelAlign1.name"></el-input>
-        </el-form-item>
-        <el-form-item label="所属医院" prop="hospitalId">
-            <el-select v-model="formLabelAlign1.hospitalId" placeholder="请选择医院" clearable>
-                    <el-option
-                    v-for="item in hospitallist"
-                    :key="item.hospitalId"
-                    :label="item.hospitalName"
-                    :value="item.hospitalId"
-                    >
-                    </el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="所在科室" prop="departmentId">
-            <el-cascader
-            v-model="formLabelAlign1.departmentId"
-            :options="tableTree"
-            @change="changeupdatedepartmentId()"
-            change-on-select
-            clearable
-            ></el-cascader>
-        </el-form-item>
-        <el-form-item label="医生主治" prop="doctorGood">
-            <el-input type="textarea" autosize v-model="formLabelAlign1.doctorGood"></el-input>
-        </el-form-item>
-        <el-form-item label="医生简介">
-            <el-input type="textarea" autosize v-model="formLabelAlign1.doctorBrief"></el-input>
-        </el-form-item>
-        <el-form-item label="咨询价格" prop="consultingFee">
-            <el-input v-model="formLabelAlign1.consultingFee"></el-input>
-        </el-form-item>
-        <el-form-item label="医生备注">
-            <el-input v-model="formLabelAlign1.remark"></el-input>
-        </el-form-item>
-        <!-- <el-form-item label="状态">
-            <el-input v-model="formLabelAlign1.h"></el-input>
-        </el-form-item> -->
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="updatecancel('formLabelAlign1')">取 消</el-button>
-            <el-button type="primary" @click="updatedoctorrules('formLabelAlign1')" :disabled="loading">确 定</el-button>
-        </div>
-        </el-dialog>
 
 
         <el-dialog :visible.sync="relationshipshow" width="1050px" center size="tiny"  :title="relationshipdoctor" :close-on-click-modal="false" top="40px">
@@ -670,7 +487,7 @@
 
 
       </el-dialog>
-<updatedoctor ref="updatedoctor" @getdoctorList="getdoctorList" @getDoctorExamineList="getDoctorExamineList" :tableTree="tableTree" :hospitallist="hospitallist"></updatedoctor>
+<updatedoctor ref="updatedoctor" @getdoctorList="getdoctorList" @getDoctorExamineList="getDoctorExamineList" @getdoctorcount="getdoctorcount" :tableTree="tableTree" :hospitallist="hospitallist"></updatedoctor>
 
 
     </div>
@@ -683,6 +500,7 @@ import Component from "vue-class-component";
 import axios from "axios";
 import * as doctorApi from "../../api/doctorApi";
 import * as departmentApi from "../../api/departmentApi";
+import * as hospitalApi from "../../api/hospitalApi";
 import * as indexApi from "../../api/indexApi";
 import  prescriptioninfo from "../transmit/prescriptioninfo";
 import  remindertable from "../order/remindertable";
@@ -709,49 +527,6 @@ applyVisible=false;
 doctorlist=[];
 state='';
 statelist=[{name:'可用',id:'USE'},{name:'停用',id:'STOP'},]
-formLabelAlign:any={
-          name: '',
-          phone: '',
-          hospitalId:'',
-          hospitalName: '',
-          hospitalDepartment: '',
-          departmentId:[],
-          departmentName:'',
-          doctorBrief: '',
-          doctorGood: '',
-          consultingFee: '',
-          prescriptionNum:'',
-          orderNum:'',
-          orderMoney:'',
-          doctorPatientNum:'',
-          remark:'',
-          resource:'',
-          adviserPhone:'',
-          adviserName:'',
-          doctorTitle:'',
-          idCard:'',
-          pharmacistCertificateNum:'',
-          qualificationCertificateNum:'',
-                                  sex:'',
-                        age:'',
-        };
-        formLabelAlign1:any ={
-          name: '',
-          phone: '',
-          hospitalId:'',
-          hospitalName: '',
-          hospitalDepartment: '',
-          departmentId:[],
-          departmentName:'',
-          doctorBrief: '',
-          doctorGood: '',
-          consultingFee: '',
-          prescriptionNum:'',
-          orderNum:'',
-          orderMoney:'',
-          doctorPatientNum:'',
-          remark:'',
-}
 handleClick(tab, event) {
         if(tab.index==0){
             this.getDoctorExamineList();
@@ -790,46 +565,12 @@ checkidcard = (rule, value, callback)=>{
         });
     }
 };
-rules={
-    phone: [
-        { required: true, message: '请填写登录帐号', trigger: 'blur' }
-    ],
-    name: [
-        { required: true, message: '请填写医生姓名', trigger: 'blur' }
-    ],
-    hospitalId:[
-        { required: true, message: '请选择医院', trigger: 'change' }
-    ],
-    departmentId:[
-        { required: true, message: '请选择科室', trigger: 'change' }
-    ],
-    // doctorGood:[
-    //     { required: true, message: '请填写擅长', trigger: 'blur' }
-    // ],
-    doctorBrief:[
-        { required: true, message: '请填写简介', trigger: 'blur' }
-    ],
-    doctorTitle:[
-        { required: true, message: '请选择职称', trigger: 'blur' }
-    ],
-    consultingFee:[
-        { required: true,validator: this.checkconsultingFee, trigger: 'blur' }
-    ],
-    // idCard:[
-    //     {required: false,validator: this.checkidcard,trigger: 'blur'}
-    // ]
-}
 formLabelAlign5={
     qrcode:'',
     hospitalName:'',
     name:'',
 };
-doctortitlelist:any=[
-    {id:'ASSISTANT_PHYSICIAN',name:'住院医师'},
-    {id:'ATTENDING_DOCTOR',name:'主治医师'},
-    {id:'DEPUTY_CHIEF_PHYSICIAN',name:'副主任医师'},
-    {id:'CHIEF_PHYSICIAN',name:'主任医师'}
-]    
+   
 doSubmitStatus(index,row){
     if(row.doctorStatus =='USE'){
 this.handleSTOP(index,row)
@@ -843,27 +584,6 @@ this.handleUSE(index,row)
             (<any>this.$refs.updatedoctor).handleEdit(index, row,state)
         }
 
-        finddeptree(departmentId){
-     departmentApi.finddeptree(departmentId).then(res => {
-            if (res["retCode"]) {
-              
-       let a = []
-
-           res.data.forEach((item,index)=>{
-             if(item[0]){
-               a.push(item[0].departmentId)
-             }
-           })
-  a.push(departmentId)
-  this.formLabelAlign1['departmentId'] = a
-  console.log('departmentId',this.formLabelAlign1.departmentId)
-  this.changeupdatedepartmentId();
-            } else {
-              this.$alert(res["message"]);
-              console.error("数据查询错误");
-            }
-          });
-}
 
 handlegenerate(index, row){
     this.dialogFormVisible5=true
@@ -882,23 +602,7 @@ handlegenerate(index, row){
         this.currentPage = 0;        
         this.getdoctorList();
     }
-    addcancel(formName){
-        let a:any=this.$refs[formName];
-        a.resetFields();
-        this.dialogFormVisible = false;
-        this.formLabelAlign={name: '',phone: '',hospitalId:'',hospitalName: '',hospitalDepartment: '',departmentId:[],departmentName:'',doctorBrief: '',doctorGood: '',consultingFee: '',prescriptionNum:'',orderNum:'',orderMoney:'',doctorPatientNum:'',remark:'',resource:'',adviserPhone:'',adviserName:'',doctorTitle:'',idCard:'',pharmacistCertificateNum:'',qualificationCertificateNum:'',sex:'',age:'',};
-        this.idCardFrontUrl='';
-        this.idCardBackUrl='';
-        this.pharmacistCertificateFrontUrl='';
-        this.qualificationCertificateFrontUrl='';
-        this.pictureUrl='';
-    }
-    updatecancel(formName){
-        let a:any=this.$refs[formName];
-        a.resetFields();
-        this.dialogFormVisible1 = false;
-        this.formLabelAlign1={name: '',phone: '',hospitalId:'',hospitalName: '',hospitalDepartment: '',departmentId:[],departmentName:'',doctorBrief: '',doctorGood: '',consultingFee: '',prescriptionNum:'',orderNum:'',orderMoney:'',doctorPatientNum:'',remark:'',}
-    }
+    
     loading =false
 
   getdoctorList() {
@@ -999,135 +703,7 @@ handlegenerate(index, row){
           });          
         });
       }
-      adddoctorrules(formLabelAlign){
-          let a:any = this.$refs.formLabelAlign
-      a.validate((valid) => {
-      if (valid) {    
-        this.adddoctor();
-        return true;
-      } else {
-        console.log('error submit!!');
-        return false;
-      }
-    });
-      }
-      adddoctor(){
-          let a = this.hospitallist.filter(item => {return (item.hospitalCode == this.formLabelAlign.hospitalId);});
-          if(a.length==0){
-            this.$alert('请选择所属医院')
-            return
-          }
-          this.loading = true
-          let hospital = [];
-          console.log('1111',a)
-          hospital['hospitalCode']=a[0].hospitalCode;
-          hospital['hospitalName']=a[0].hospitalName;
-          let department = [];
-          let departmentindex = this.formLabelAlign.departmentId.length - 1
-          department['departmentName']=this.formLabelAlign.departmentName;
-          department['departmentId']=this.formLabelAlign.departmentId[departmentindex];
-          if(this.formLabelAlign.idCard){
-              doctorApi.checkidcard(this.formLabelAlign.idCard).then(res => {
-                if (res["retCode"]) {
-                    console.log(res.data)
-                    this.formLabelAlign.sex=res.data.sex
-                    this.formLabelAlign.age=res.data.age
-                    doctorApi.adddoctor(this.formLabelAlign,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl,this.pictureUrl).then(res => {
-                    this.loading=false
-                    if (res["retCode"]) {
-                        this.dialogFormVisible = false;
-                        this.formLabelAlign={
-                        name: '',
-                        phone: '',
-                        hospitalName: '',
-                        hospitalId:'',
-                        hospitalDepartment: '',
-                        departmentId:[],
-                        departmentName:'',
-                        doctorBrief: '',
-                        doctorGood: '',
-                        consultingFee: '',
-                        prescriptionNum:'',
-                        orderNum:'',
-                        orderMoney:'',
-                        doctorPatientNum:'',
-                        remark:'',
-                        resource:'',
-                        adviserPhone:'',
-                        adviserName:'',
-                        doctorTitle:'',
-                                    idCard:'',
-                        pharmacistCertificateNum:'',
-                        qualificationCertificateNum:'',
-                        sex:'',
-                        age:'',
-                        };
-                        this.idCardFrontUrl='';
-                        this.idCardBackUrl='';
-                        this.pharmacistCertificateFrontUrl='';
-                        this.qualificationCertificateFrontUrl='';
-                        this.pictureUrl='';
-                        this.getdoctorList();
-                        this.getdoctorcount()
-                                this.$message('添加成功')
-                    } else {
-                        if(!res['islogin']){this.$alert(res["message"]);}
-                        console.error("数据查询错误");
-                    }
-                    });
-                } else {
-                    this.loading=false
-                    if(!res['islogin']){this.$alert(res["message"]);}
-                    console.error("数据查询错误");
-                }
-                });
-          }else{
-              doctorApi.adddoctor(this.formLabelAlign,hospital,department,this.idCardFrontUrl,this.idCardBackUrl,this.pharmacistCertificateFrontUrl,this.qualificationCertificateFrontUrl,this.pictureUrl).then(res => {
-              this.loading=false
-            if (res["retCode"]) {
-                this.dialogFormVisible = false;
-                this.formLabelAlign={
-                name: '',
-                phone: '',
-                hospitalName: '',
-                hospitalId:'',
-                hospitalDepartment: '',
-                departmentId:[],
-                departmentName:'',
-                doctorBrief: '',
-                doctorGood: '',
-                consultingFee: '',
-                prescriptionNum:'',
-                orderNum:'',
-                orderMoney:'',
-                doctorPatientNum:'',
-                remark:'',
-                resource:'',
-                adviserPhone:'',
-                adviserName:'',
-                doctorTitle:'',
-                            idCard:'',
-                pharmacistCertificateNum:'',
-                qualificationCertificateNum:'',
-                                        sex:'',
-                        age:'',
-                };
-                this.idCardFrontUrl='';
-                this.idCardBackUrl='';
-                this.pharmacistCertificateFrontUrl='';
-                this.qualificationCertificateFrontUrl='';
-                this.pictureUrl='';
-                this.getdoctorList();
-                this.getdoctorcount()
-                        this.$message('添加成功')
-            } else {
-                if(!res['islogin']){this.$alert(res["message"]);}
-                console.error("数据查询错误");
-            }
-            });
-          }
-          
-      }
+      
       doctotcount = 0;
       getdoctorcount(){
           doctorApi.getdoctorcount().then(res => {
@@ -1140,16 +716,6 @@ handlegenerate(index, row){
     });
       }
       hospitallist=[];
-    gethospitalList(){
-        doctorApi.queryHospitalList().then(res => {
-      if (res["retCode"]) {
-        this.hospitallist = res.data;
-      } else {
-        this.$alert(res["message"]);
-        console.error("数据查询错误");
-      }
-    });
-    }
 
     tableTree=[];
     getdepartmenttree(){
@@ -1164,36 +730,8 @@ handlegenerate(index, row){
       }
     });
         }
-        changedepartmentId(){
-            if(this.formLabelAlign.departmentId.length>0){
-                let anum = this.formLabelAlign.departmentId.length - 1;
-                doctorApi.getdepartmentlist(this.formLabelAlign.departmentId[anum]).then(res => {
-                console.log(res);
-                if (res["retCode"]) {
-                    this.formLabelAlign.departmentName = res.data[0].departmentName;
-                } else {
-                    this.$alert(res["message"]);
-                    console.error("数据查询错误");
-                }
-                });
-            }
-        }
-        changeupdatedepartmentId(){
-            console.log('22222222',this.formLabelAlign1.departmentId)
-            if(this.formLabelAlign1.departmentId.length>0){
-                let anum = this.formLabelAlign1.departmentId.length - 1;
-                doctorApi.getdepartmentlist(this.formLabelAlign1.departmentId[anum]).then(res => {
-                console.log(res);
-                if (res["retCode"]) {
-                    this.formLabelAlign1.departmentName = res.data[0].departmentName;
-            console.log('departmentName',this.formLabelAlign1.departmentName)                    
-                } else {
-                    this.$alert(res["message"]);
-                    console.error("数据查询错误");
-                }
-                });
-            }
-        }
+        
+        
         relationshipshow=false;
         relationshipdoctorId='';
         relationshiplist=[];
@@ -1474,24 +1012,6 @@ handlegenerate(index, row){
         pictureSuccess(res, file) {
             this.pictureUrl = res.data.filename;        
         }
-
-        delUrl(del){
-            if(del=='idCardFrontUrl'){
-                this.idCardFrontUrl=''
-            }
-            if(del=='idCardBackUrl'){
-                this.idCardBackUrl=''
-            }
-            if(del=='pharmacistCertificateFrontUrl'){
-                this.pharmacistCertificateFrontUrl=''
-            }
-            if(del=='qualificationCertificateFrontUrl'){
-                this.qualificationCertificateFrontUrl=''
-            }
-            if(del=='pictureUrl'){
-                this.pictureUrl=''
-            }
-        }
     
 
     exportDoctorExcel(){
@@ -1506,12 +1026,19 @@ handlegenerate(index, row){
         let url = confUrl.g_base_url+'/api/doctor/exportDoctorExcel'+urlkey
         window.open(url);
     }
-    
+
+    provincelist=[];
+
+    adddoctorshow(){
+        (<any>this.$refs.updatedoctor).addshow()
+    }
+
+
+
 mounted(){
     this.g_news_url=confUrl.g_news_url
   this.getdoctorList()
   this.getdoctorcount()
-  this.gethospitalList();
   this.getdepartmenttree();
   this.getDoctorExamineList();
   this.countExaminedoctor();
