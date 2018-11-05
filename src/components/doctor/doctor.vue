@@ -78,7 +78,7 @@
                         <el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="clearcurrentPage()">查询</el-button>                        
                     </el-col>
                     <el-col :xs="5" :sm="5" :md="2" :lg="2" :xl="2">
-                        <el-button type="primary" style="margin-top:20px;margin-left:15px;" @click="exportDoctorExcel()" >导出医生文件</el-button>                        
+                        <el-button type="primary" style="margin-top:20px;margin-left:15px;" @click="exportDoctorExcel()" v-promiss.export>导出医生文件</el-button>                        
                     </el-col>
 
                     </el-row>

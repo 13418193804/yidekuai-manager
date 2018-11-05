@@ -4,7 +4,6 @@
 		<el-dialog width= "70vw" :close-on-click-modal="false" :append-to-body="true" :visible.sync="model"  :title="handleTitle()" >
 <div v-bouncing="loading">
 
-
 <el-steps :active="handleOrderStatusActive(order.orderStatue)" finish-status="success" simple style="margin-bottom:20px;">
   <el-step title="等待支付"  ></el-step>
   <el-step title="等待发货" ></el-step>
@@ -12,9 +11,7 @@
   <el-step title="订单完成" ></el-step>
 </el-steps>
 
-
 <!-- 
-
 <div class="flex flex-warp-justify">
   <h4 style="margin:0">订单状态：</h4>
 <div>
@@ -413,7 +410,6 @@
 <div>药品总价：<span style="color:red">￥{{order.presscriptionMoney}}</span></div>
 <div>合计：<span style="color:red">￥{{order.orderMoney}}</span></div>
 </div>
-
 </div>
 
 <express ref="express" v-show="OrderSplitFlag == '1' " @getExpressPackage="getExpressPackage"
@@ -536,7 +532,7 @@ import * as indexApi from "../../api/indexApi";
 import moment from "moment";
 import { Prop } from "vue-property-decorator";
 import * as ApiOrder from "../../api/orderapi";
-import   express from "./express";
+import express from "./express";
 
 @Component({
   props: {},
@@ -564,119 +560,112 @@ export default class AddGoods extends Vue {
 
   loading = false;
 
-
-handleTitle(){
-if(this.expressPackageList.length>0){
-  if(this.OrderSplitFlag =='1'){
-    return "订单详情（拆分订单）"
-  }else{
-    return "订单详情（普通订单）"
+  handleTitle() {
+    if (this.expressPackageList.length > 0) {
+      if (this.OrderSplitFlag == "1") {
+        return "订单详情（拆分订单）";
+      } else {
+        return "订单详情（普通订单）";
+      }
+    } else {
+      return "订单详情";
+    }
   }
-}else{
-  return "订单详情"
-}
-}
-reworkModel=false
-send_model = false
-send_active = "send_goods"
-send_close(){
-  this.send_model = false
-}
+  reworkModel = false;
+  send_model = false;
+  send_active = "send_goods";
+  send_close() {
+    this.send_model = false;
+  }
 
-ExpressDetailModel:any ={}
-ExpressDrugDetailList = []
-selectionList = []
+  ExpressDetailModel: any = {};
+  ExpressDrugDetailList = [];
+  selectionList = [];
 
-OrderSplitFlag = '0'
-expressPackageList = []
-//未发药品
-ExpressDrugDetailSumQuantityList = []
+  OrderSplitFlag = "0";
+  expressPackageList = [];
+  //未发药品
+  ExpressDrugDetailSumQuantityList = [];
 
+  floatPackAge(presId, send = null) {
+    (<any>this.$refs.express).send_active = "send_goods";
 
-floatPackAge(presId){
-     
-      (<any>this.$refs.express).send_active = 'send_goods'
-  this.ExpressDrugDetailSumQuantityList = [];
-   (<any>this.$refs.express).ExpressDrugDetailSumQuantityList  = []
-  indexApi
-          .getExpressPackage({
-            presId: presId
-          })
-          .then(res => {
-            if (res["retCode"]) {
-
-           this.OrderSplitFlag = res.data.OrderSplitFlag;
-           this.expressPackageList = res.data.ExpressDetailList;
-           (<any>this.$refs.express).expressPackageList= res.data.ExpressDetailList;
-
-if((<any>this.$refs.express).SendActive_type() =='detail'){
-
-
-        //默认选中
-   if(   this.OrderSplitFlag == '1'){
-    //  this.expressPackageList.length>0 &&
-      // (<any>this.$refs.express).send_active = this.expressPackageList[0].expressDetailId;
-      // (<any>this.$refs.express).getExpressPackageDrug({name:this.expressPackageList[0].expressDetailId})
-      (<any>this.$refs.express).send_active ='goods_detail'
-      
-      }
-
-      //普通订单显示
-      if(this.expressPackageList.length>0 &&  this.OrderSplitFlag == '0'){
-         indexApi
-          .getExpressPackageDrug({
-            expressDetailId: this.expressPackageList[0].expressDetailId
-          })
-          .then(res1 => {
-            if (res1["retCode"]) {
-              this.ExpressDrugDetailSumQuantityList =  res1.data.ExpressDrugDetailList
-              } else {
-              if (!res1["islogin"]) {
-                this.$alert(res1["message"]);
-              }
+    this.ExpressDrugDetailSumQuantityList = [];
+    (<any>this.$refs.express).ExpressDrugDetailSumQuantityList = [];
+    indexApi
+      .getExpressPackage({
+        presId: presId
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          this.OrderSplitFlag = res.data.OrderSplitFlag;
+          this.expressPackageList = res.data.ExpressDetailList;
+          (<any>this.$refs.express).expressPackageList =
+            res.data.ExpressDetailList;
+          if (!send) {
+            //默认选中
+            if (this.OrderSplitFlag == "1") {
+              //  this.expressPackageList.length>0 &&
+              // (<any>this.$refs.express).send_active = this.expressPackageList[0].expressDetailId;
+              // (<any>this.$refs.express).getExpressPackageDrug({name:this.expressPackageList[0].expressDetailId})
+              (<any>this.$refs.express).send_active = "goods_detail";
             }
-          });
-      }else{
-        this.ExpressDrugDetailSumQuantityList  = res.data.ExpressDrugDetailSumQuantityList;
 
-      }
-      
-}
-      (<any>this.$refs.express).ExpressDrugDetailSumQuantityList  = res.data.ExpressDrugDetailSumQuantityList;
-
-(<any>this.$refs.express).send_obj = {
-  splitFlag:this.OrderSplitFlag,
-  logistics:"",
-  waybillNumber:""
-};
-(<any>this.$refs.express).setaddress()
-
-
-this.loading = false
+            //普通订单显示
+            if (
+              this.expressPackageList.length > 0 &&
+              this.OrderSplitFlag == "0"
+            ) {
+              indexApi
+                .getExpressPackageDrug({
+                  expressDetailId: this.expressPackageList[0].expressDetailId
+                })
+                .then(res1 => {
+                  if (res1["retCode"]) {
+                    this.ExpressDrugDetailSumQuantityList =
+                      res1.data.ExpressDrugDetailList;
+                  } else {
+                    if (!res1["islogin"]) {
+                      this.$alert(res1["message"]);
+                    }
+                  }
+                });
             } else {
-this.loading = false
-              
-              if (!res["islogin"]) {
-                this.$alert(res["message"]);
-              }
+              this.ExpressDrugDetailSumQuantityList =
+                res.data.ExpressDrugDetailSumQuantityList;
             }
-          });
-          
-}
+          } else {
+            (<any>this.$refs.express).send_active = "send_goods";
+          }
+          (<any>this.$refs.express).ExpressDrugDetailSumQuantityList =
+            res.data.ExpressDrugDetailSumQuantityList;
 
-getExpressPackage(presId){
-  if((<any>this.$refs.express)){
-this.floatPackAge(presId)
-}else{
-    setTimeout(()=>{
-this.floatPackAge(presId)
-  },1500)
-}
+          (<any>this.$refs.express).send_obj = {
+            splitFlag: this.OrderSplitFlag,
+            logistics: "",
+            waybillNumber: ""
+          };
+          (<any>this.$refs.express).setaddress();
+          this.loading = false;
+        } else {
+          this.loading = false;
 
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+        }
+      });
+  }
 
-
-}
-
+  getExpressPackage(presId, send) {
+    if (<any>this.$refs.express) {
+      this.floatPackAge(presId, send);
+    } else {
+      setTimeout(() => {
+        this.floatPackAge(presId, send);
+      }, 1500);
+    }
+  }
 
   /**
    *
@@ -769,7 +758,6 @@ this.floatPackAge(presId)
   countryList = [];
   cityList = [];
 
-
   // handleUpdateOrder(updateOrder) {
   //   this.updateOrder = updateOrder;
   // }
@@ -829,33 +817,31 @@ this.floatPackAge(presId)
     }
   }
 
-
-
-send_obj = {
-  splitFlag:'0',
-}
-doUpdate(){
-            this.$emit("getOrderList");
-              this.$emit("getOrderDetail", this.order.presId);
-}
+  send_obj = {
+    splitFlag: "0"
+  };
+  doUpdate() {
+    this.$emit("getOrderList");
+    this.$emit("getOrderDetail", this.order.presId);
+  }
 
   handlePayStatus(status) {
     switch (status) {
       case "PAY_WAIT":
         return {
-          type:"danger",
-          title:"未支付"
-          };  
-        case "PAY_SUCCESS":
-        return  {
-          type:"success",
-          title:"已支付"
-          };  
+          type: "danger",
+          title: "未支付"
+        };
+      case "PAY_SUCCESS":
+        return {
+          type: "success",
+          title: "已支付"
+        };
       case "ORDER_PAY_ONDEV":
         return {
-          type:"warning",
-          title:"货到付款"
-          }; 
+          type: "warning",
+          title: "货到付款"
+        };
       default:
         return "";
     }
@@ -863,18 +849,15 @@ doUpdate(){
 
   sendModel = false;
   doSend() {
-      
-         
     //验证
-    if ((this.send_obj['logistics']|| "") == "") {
+    if ((this.send_obj["logistics"] || "") == "") {
       this.$alert("请填写物流公司");
       return;
     }
-    if ((this.send_obj['waybillNumber']|| "") == "") {
+    if ((this.send_obj["waybillNumber"] || "") == "") {
       this.$alert("请填写物流单号");
       return;
     }
-  
 
     this.$confirm("确认保存该发货信息?", "提示", {
       confirmButtonText: "确定",
@@ -882,36 +865,35 @@ doUpdate(){
       type: "warning"
     })
       .then(() => {
-  
-     let data = {
-             presId:this.order.presId,
-waybillNumber:this.send_obj['waybillNumber'],
-logistics:this.send_obj['logistics'],
-splitFlag:this.send_obj.splitFlag,
-          }
-    // if(this.send_obj.splitFlag == '1'){
-    //       Object.assign(data,
-    //       selectionList
-    //       {
-    //           PDrugIdListStr:this.,
-    //           PDrugQuantityListStr:this.ExpressDrugDetailSumQuantityList.map(item=>{return item.number}).join(',')
-    //       })
-    //     }
-          console.log(data)
-      //   indexApi
-      //     .doSend(data)
-      //     .then(res => {
-      //       if (res["retCode"]) {
-      //         this.$message("发货成功");
-      //         this.$emit("getOrderList");
-      //         this.$emit("getOrderDetail", this.order.presId);
-      //         this.$emit("queryShipList");
-      //       } else {
-      //         if (!res["islogin"]) {
-      //           this.$alert(res["message"]);
-      //         }
-      //       }
-      //     });
+        let data = {
+          presId: this.order.presId,
+          waybillNumber: this.send_obj["waybillNumber"],
+          logistics: this.send_obj["logistics"],
+          splitFlag: this.send_obj.splitFlag
+        };
+        // if(this.send_obj.splitFlag == '1'){
+        //       Object.assign(data,
+        //       selectionList
+        //       {
+        //           PDrugIdListStr:this.,
+        //           PDrugQuantityListStr:this.ExpressDrugDetailSumQuantityList.map(item=>{return item.number}).join(',')
+        //       })
+        //     }
+        console.log(data);
+        //   indexApi
+        //     .doSend(data)
+        //     .then(res => {
+        //       if (res["retCode"]) {
+        //         this.$message("发货成功");
+        //         this.$emit("getOrderList");
+        //         this.$emit("getOrderDetail", this.order.presId);
+        //         this.$emit("queryShipList");
+        //       } else {
+        //         if (!res["islogin"]) {
+        //           this.$alert(res["message"]);
+        //         }
+        //       }
+        //     });
       })
       .catch(() => {
         this.$message({
@@ -939,40 +921,37 @@ splitFlag:this.send_obj.splitFlag,
       });
   }
 
-/**
- * 确认收货
- */
+  /**
+   * 确认收货
+   */
   recvGood() {
-  // expressDetailId
+    // expressDetailId
     this.$confirm("确认收货?", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning"
     })
       .then(() => {
-
         let data = {
-             pres_id:this.order.presId,
+          pres_id: this.order.presId,
           //  order_detail_id:  item.expressDetailId,
-            waybill_number:this.send_obj['waybillNumber'],
-            ship_status:'ORDER_END_GOODS'
-          }
-  
-        indexApi
-          .dorecvGood(data)
-          .then(res => {
-            if (res["retCode"]) {
-              this.$message("已确认收货");
-              this.$emit("getOrderList");
-              this.$emit("getOrderDetail", this.order.presId);
-              this.$emit("queryShipList");
-            } else {
-              if (!res["islogin"]) {
-                this.$alert(res["message"]);
-              }
-              console.error("数据查询错误");
+          waybill_number: this.send_obj["waybillNumber"],
+          ship_status: "ORDER_END_GOODS"
+        };
+
+        indexApi.dorecvGood(data).then(res => {
+          if (res["retCode"]) {
+            this.$message("已确认收货");
+            this.$emit("getOrderList");
+            this.$emit("getOrderDetail", this.order.presId);
+            this.$emit("queryShipList");
+          } else {
+            if (!res["islogin"]) {
+              this.$alert(res["message"]);
             }
-          });
+            console.error("数据查询错误");
+          }
+        });
       })
       .catch(() => {
         this.$message({
@@ -1012,7 +991,7 @@ splitFlag:this.send_obj.splitFlag,
         return "交易关闭";
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
-          case "SENDGOODS_UNFINISHED":
+      case "SENDGOODS_UNFINISHED":
         return "发货未完成";
       case "ORDER_WAIT_RECVGOODS":
         return "待收货";
@@ -1023,8 +1002,8 @@ splitFlag:this.send_obj.splitFlag,
     }
   }
 
-  handleOrderStatusActive (status){
-        switch (status) {
+  handleOrderStatusActive(status) {
+    switch (status) {
       case "ORDER_INIT":
         return 0;
       case "ORDER_WAIT_PAY":
@@ -1035,7 +1014,7 @@ splitFlag:this.send_obj.splitFlag,
         return 0;
       case "ORDER_WAIT_SENDGOODS":
         return 1;
-             case "SENDGOODS_UNFINISHED":
+      case "SENDGOODS_UNFINISHED":
         return 1;
       case "ORDER_WAIT_RECVGOODS":
         return 2;
@@ -1046,9 +1025,7 @@ splitFlag:this.send_obj.splitFlag,
     }
   }
 
-  mounted() {
-
-  }
+  mounted() {}
 }
 </script>
 
@@ -1070,36 +1047,36 @@ splitFlag:this.send_obj.splitFlag,
   background: #fff;
   border: 1px solid #eaeaea;
 }
-.el-header, .el-footer {
-    background-color: #B3C0D1;
-    color: #333;
-
-  }
-  
-  .el-aside {
-    background-color:#dde6ef;
-    color: #333;
-  }
-  
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    padding:10px; 
-  }
-  
-  body > .el-container {
-    margin-bottom: 40px;
-  }
-.send_close{
-position: absolute;
-    right: 1px;
-    z-index: 99;
-    height: 39px;
-    line-height: 39px;
-    padding: 0 20px;
-    cursor: pointer;
+.el-header,
+.el-footer {
+  background-color: #b3c0d1;
+  color: #333;
 }
-.send_close:hover{
-  color:#409EFF
+
+.el-aside {
+  background-color: #dde6ef;
+  color: #333;
+}
+
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  padding: 10px;
+}
+
+body > .el-container {
+  margin-bottom: 40px;
+}
+.send_close {
+  position: absolute;
+  right: 1px;
+  z-index: 99;
+  height: 39px;
+  line-height: 39px;
+  padding: 0 20px;
+  cursor: pointer;
+}
+.send_close:hover {
+  color: #409eff;
 }
 </style>

@@ -1009,7 +1009,7 @@ sendGoods(row){
         a.loading = true
     this.presId = row.presId
         sessionStorage.presId = row.presId
-     this.getOrderDetail(row.presId);
+     this.getOrderDetail(row.presId,true);
      
 }
 
@@ -1125,7 +1125,7 @@ sendGoods(row){
     }
   }
 
-  getOrderDetail(presId) {
+  getOrderDetail(presId,send=null) {
     indexApi
       .getOrderInfo({
         presId: presId
@@ -1136,6 +1136,9 @@ sendGoods(row){
             item.logisticslabel = item.logistics;
             item.waybillNumberlabel = item.waybillNumber;
           });
+
+          console.warn(res.data.invoiceRecords)
+
           if (res.data.invoiceRecords && res.data.invoiceRecords.length > 0) {
             res.data.invoiceObj_logistics =
               res.data.invoiceRecords[0].logistics;
@@ -1149,7 +1152,7 @@ sendGoods(row){
               return
           }
           this.order = res.data;
-          (<any>this.$refs.updateorder).getExpressPackage(presId);
+          (<any>this.$refs.updateorder).getExpressPackage(presId,send);
         } else {
                (<any>this.$refs.updateorder).loading = false
           if (!res["islogin"]) {

@@ -8,7 +8,7 @@
       :router="true" style="border-right: 1px solid #c30d23;"
       >
       <div v-for="menu in menuOption" :key="menu.name"  v-if="menu.position=='menu'">
-      <div v-for="(item,index) in menu.children" :key="item.name" v-if="menu.menu_grade == 1&& dohavePermission(item.promissId)">
+      <div v-for="(item,index) in menu.children" :key="item.name" v-if="(menu.menu_grade == 1 && dohavePermission(item.promissId)) || item.path == '/'">
           <el-menu-item  :index="item.path" >
           <img :src="$route.path == item.path ?item.select_icon :item.icon " style="height:24px;width:24px;margin-right:5px;"/>
            <span :style="$route.path == item.path?handleSelectColor():'color:#fff'" v-if="!collapsed" style="position: relative;">{{item.name}}

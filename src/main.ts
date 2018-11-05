@@ -82,10 +82,12 @@ Vue.directive('promiss', {
       return
     }
     for (let n in binding.modifiers) {
+console.log(router.app._route.meta[n])
       if (!router.app._route.meta[n]) {
         el.style.display = 'none';
       }
     }
+    
   },
   update: function (el, binding) {
 
