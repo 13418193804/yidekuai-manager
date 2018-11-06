@@ -12,7 +12,7 @@
         </div>
 
 
-      <!-- <filterdrug @allDrug="allDrug"></filterdrug> -->
+      <filterdrug @allDrug="allDrug"></filterdrug>
 
 
 

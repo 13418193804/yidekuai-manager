@@ -147,9 +147,6 @@
 				</el-form-item>	
       	<el-form-item label="供应商：" prop="partnerId">
          
-         
-         
-         
   <el-select v-model="addDrug.partnerId"   @change="changePartner" filterable placeholder="请选择供应商" style="max-width:400px;min-width:200px">
     <el-option
       v-for="item in partnerList"
@@ -304,6 +301,7 @@ export default class AddGoods extends Vue {
          productName:[{ required: true, message: '请输入商品名称', trigger: 'blur' }],
          commonName:[{ required: true, message: '请输入通用名称', trigger: 'blur' }],
          specification:[{ required: true, message: '请输入药品规格', trigger: 'blur' }],
+         partnerId:[{ required: true, message: '请选择供应商', trigger: 'blur' }],
         //  packingUnit:[{ required: true, message: '请输入包装单位', trigger: 'blur' }],
         //  usage:[{ required: true, message: '请输入用法', trigger: 'blur' }],
          manufacturer:[{ required: true, message: '请输入生产厂家', trigger: 'blur' }],
