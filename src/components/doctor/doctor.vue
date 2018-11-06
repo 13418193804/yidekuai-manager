@@ -91,17 +91,17 @@
             <el-table-column prop="hospitalDepartment" label="所在科室"></el-table-column>
             <el-table-column prop="doctorGood" label="医生擅长" width="180" show-overflow-tooltip></el-table-column>
             <el-table-column prop="doctorBrief" label="医生简介" width="180" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="consultingFee" label="咨询价格"></el-table-column>
+            <!-- <el-table-column prop="consultingFee" label="咨询价格"></el-table-column>
             <el-table-column prop="prescriptionNum" label="医生处方数量"></el-table-column>
             <el-table-column prop="orderNum" label="医生订单数量"></el-table-column>
             <el-table-column prop="orderMoney" label="医生订单金额"></el-table-column>
-            <el-table-column prop="doctorPatientNum" label="医生患者数量"></el-table-column>
+            <el-table-column prop="doctorPatientNum" label="医生患者数量"></el-table-column> -->
             <el-table-column prop="createrTime" label="医生注册时间" width="150"></el-table-column>
             <el-table-column prop="passTime" label="通过时间" width="150"></el-table-column>
             <el-table-column prop="hspCode" label="医院机构代码" width="150"></el-table-column>
-            <el-table-column prop="remark" label="备注"></el-table-column>
+            <!-- <el-table-column prop="remark" label="备注"></el-table-column>
             <el-table-column prop="age" label="年龄"></el-table-column>
-            <el-table-column prop="dsex" label="性别"></el-table-column>
+            <el-table-column prop="dsex" label="性别"></el-table-column> -->
             <el-table-column prop="doctorTitle" label="职称">
                                 <template slot-scope="scope">
                                     <span v-if="scope.row.doctorTitle=='ASSISTANT_PHYSICIAN'">住院医师</span>

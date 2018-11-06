@@ -10,7 +10,7 @@
             <el-input v-model="formLabelAlign.name"></el-input>
         </el-form-item>
         <el-form-item label="所属医院" prop="hospitalId">
-            <el-select v-model="formLabelAlign.hospitalId" placeholder="请选择医院" :disabled="true" clearable>
+            <el-select v-model="formLabelAlign.hospitalId" placeholder="请选择医院" :disabled="true" clearable style="width:380px;">
                     <el-option
                     v-for="item in selecthospitallist"
                     :key="item.hospitalCode"
@@ -41,10 +41,10 @@
                     </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="医生擅长">
+        <el-form-item label="医生擅长" prop="doctorGood">
             <el-input type="textarea" autosize v-model="formLabelAlign.doctorGood"></el-input>
         </el-form-item>
-        <el-form-item label="医生简介" prop="doctorBrief">
+        <el-form-item label="医生简介">
             <el-input type="textarea" autosize v-model="formLabelAlign.doctorBrief"></el-input>
         </el-form-item>
         <el-form-item label="咨询价格" prop="consultingFee">
@@ -144,7 +144,7 @@
             <el-input v-model="formLabelAlign1.name"></el-input>
         </el-form-item>
         <el-form-item label="所属医院" prop="hospitalId">
-            <el-select v-model="formLabelAlign1.hospitalId" placeholder="请选择医院" :disabled="true" width="380">
+            <el-select v-model="formLabelAlign1.hospitalId" placeholder="请选择医院" :disabled="true" style="width:380px;">
                     <el-option
                     v-for="item in selecthospitallist"
                     :key="item.hospitalCode"
@@ -175,10 +175,10 @@
                     </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="医生擅长">
+        <el-form-item label="医生擅长" prop="doctorGood">
             <el-input type="textarea" autosize v-model="formLabelAlign1.doctorGood"></el-input>
         </el-form-item>
-        <el-form-item label="医生简介" prop="doctorBrief">
+        <el-form-item label="医生简介">
             <el-input type="textarea" autosize v-model="formLabelAlign1.doctorBrief"></el-input>
         </el-form-item>
         <el-form-item label="咨询价格" prop="consultingFee">
@@ -315,21 +315,21 @@
                 </el-col>
                 </el-row>
             </div>
-            <!-- <div class="flex flex-pack-center  flex-align-center" style="height:100%" v-if="noMessage_model">
-            <i class="iconfont icon-shangxin" style="font-size:90px"></i>
-            <div>
-                <div>搜索不到任何患者</div>
-                <div style=" color: #8492a6; font-size: 13px">试试输入准确的信息吧~</div>
+            <div class="flex flex-pack-center  flex-align-center" style="height:100%" v-if="nohospitallist">
+                <i class="iconfont icon-shangxin" style="font-size:90px"></i>
+                <div>
+                    <div>搜索不到医院</div>
+                    <div style=" color: #8492a6; font-size: 13px">请去添加医院吧~</div>
+                </div>
             </div>
-            </div> -->
-            <div class="flex flex-warp-justify" >
+            <div class="flex flex-warp-justify">
                 <div v-for="(item,index) in hospitallist" :key="index" class="flex hospitalCard textLabel" @click="clickhospital(item)">
                     <img src="../../assets/yiyuan.png" style="height: 80px;width: 80px;margin: 5px 10px;"/>
                     <div  style="line-height: 20px;" class="textLabel">
                         <div class="textLabel">{{item.hospitalName}}</div>
                         <div class="textLabel">{{item.hospitalCode}}</div>
-                        <div class="textLabel">{{item.locatedProvince}} {{item.locatedCity}} {{item.locatedArea}}</div>
-                        <div class="textLabel">{{item.hospitalAddress}}</div>
+                        <div class="textLabel">{{item.locatedProvince?item.locatedProvince:''}} {{item.locatedCity?item.locatedCity:''}} {{item.locatedArea?item.locatedArea:''}}</div>
+                        <div class="textLabel" v-if="item.hospitalAddress">{{item.hospitalAddress}}</div>
                     </div>
                 </div>
             </div>
@@ -416,12 +416,12 @@ rules={
     departmentId:[
         { required: true, message: '请选择科室', trigger: 'change' }
     ],
-    // doctorGood:[
-    //     { required: true, message: '请填写主治', trigger: 'blur' }
-    // ],
-    doctorBrief:[
-        { required: true, message: '请填写简介', trigger: 'blur' }
+    doctorGood:[
+        { required: true, message: '请填写擅长', trigger: 'blur' }
     ],
+    // doctorBrief:[
+    //     { required: true, message: '请填写简介', trigger: 'blur' }
+    // ],
     doctorTitle:[
         { required: true, message: '请选择职称', trigger: 'blur' }
     ],
@@ -781,18 +781,24 @@ notPassupdatedoctor(){
     pageSize=10;
     total=0;
     currentPage=0;
+    nohospitallist=false
     clearcurrentPage(){
         this.total = 0;
         this.currentPage = 0;
+        this.nohospitallist=false
         this.gethospitalList();
     }
     hospitalloading = false;
     gethospitalList(){
         this.hospitalloading = true;
+        this.nohospitallist=false
         hospitalApi.queryHospitalList(this.currentPage,this.pageSize, this.keyname,this.province,this.city,this.country).then(res => {
     if (res["retCode"]) {
         this.hospitalloading = false;
         this.hospitallist = res.data.hosipitalList;
+        if(res.data.hosipitalList.length==0){
+           this.nohospitallist=true 
+        }
         this.total = res.data.page.total
       } else {
         if(!res['islogin']){this.$alert(res["message"]);}
@@ -822,6 +828,7 @@ notPassupdatedoctor(){
         this.countrylist=[];
         this.total=0;
         this.currentPage=0;
+        this.nohospitallist=false
     }
 
 
@@ -908,7 +915,7 @@ notPassupdatedoctor(){
                         this.qualificationCertificateFrontUrl='';
                         this.pictureUrl='';
                         this.dialogFormVisible = false;
-                        this.$emit('getDoctorExamineList');
+                        this.$emit('getdoctorList');
                         this.$emit('getdoctorcount');
                                 this.$message('添加成功')
                     } else {
@@ -958,7 +965,7 @@ notPassupdatedoctor(){
                 this.qualificationCertificateFrontUrl='';
                 this.pictureUrl='';
                 this.dialogFormVisible = false;
-                this.$emit('getDoctorExamineList');
+                this.$emit('getdoctorList');
                         this.$emit('getdoctorcount');
                         this.$message('添加成功')
             } else {
