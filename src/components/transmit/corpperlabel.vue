@@ -69,11 +69,11 @@ import * as indexApi from "../../api/indexApi";
 import filterdrug from "../drug/filterdrug";
 import * as Config from "../../api/conf";
 import vuecropper from 'vue-cropper';
-import prescriptioninfo from "../transmit/prescriptioninfo";
+
 @Component({
   props: {},
   components: {
-    filterdrug,vuecropper,prescriptioninfo
+    filterdrug,vuecropper
   }
 })
 export default class AddGoods extends Vue {
