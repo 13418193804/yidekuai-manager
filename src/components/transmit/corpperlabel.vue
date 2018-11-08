@@ -72,7 +72,7 @@
      <i class="el-icon-plus" style="font-size:21px;"></i>
      </div>
     </div>
-        <input type="file" ref="logo" style="display:none;" @change="isSizeClear();" />
+        <input type="file" ref="logo" id="logo" style="display:none;" @change="isSizeClear();" />
 
 </div>
   
@@ -220,15 +220,18 @@ export default class AddGoods extends Vue {
     this.centerDialogVisible = false;
   }
   doClick() {
-    (<any>this.$refs.logo).files = [];
+    if ((<any>this.$refs.logo).files.length == 0) {
+    } else {
+      (<any>this.$refs.logo).value = "";
+    }
+
     (<any>this.$refs.logo).click();
   }
   isSizeClear() {
-
     let form = new FormData();
     let logo = (<any>this.$refs.logo).files[0];
-    if(logo){
-      return
+    if (!logo) {
+      return;
     }
     form.append("file", logo);
     Api.uploadFile(form)
