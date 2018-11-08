@@ -2,7 +2,7 @@
     <div >
   
   <!-- class="min_box" -->
-		<el-dialog width= "70vw" class="small_box" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="model"  title="处方详情">
+		<el-dialog width= "70vw" class="small_box" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="model"  title="处方详情" @close="prsinfoCancel()">
 <!-- 
 <div class="min_title">
 医患信息
@@ -89,13 +89,13 @@
   
   <el-collapse-item title="处方图片" name="picture">
     <div style="width:100%;text-align:center">
-<corpperlabel ref="cropper" :preImageList="preImageList"></corpperlabel>
+<corpperlabel ref="cropper" @getInfo="getInfo" :preImageList="preImageList" :presId="row.presId"></corpperlabel>
 </div>
   </el-collapse-item>
  
-  <el-collapse-item   v-for="(center,index) in  detailInfo" :title="center.title" :name="center.title">
+  <el-collapse-item   v-for="(center,index) in  detailInfo" :key="index" :title="center.title" :name="center.title">
 
-          <div v-for="(item,index) in center.children" class="flex" style="width:50%;margin-left:20px;">
+          <div v-for="(item,index) in center.children" :key="index" class="flex" style="width:50%;margin-left:20px;">
         <div style="line-height:30px;min-width:100px;">
             {{item.name}}：
         </div>
@@ -346,7 +346,10 @@ getPrePic(presId) {
 
 
   }
-
+prsinfoCancel(){
+  let a:any =    this.$refs.cropper
+  a.fileList=[];  
+}
 getInfo(){
     this.model = true;
     setTimeout(() => {

@@ -40,12 +40,20 @@
 
 
 <div style="width:100%;display: flex;margin:10px 0;      overflow: auto; " >
-    <div  v-for="(item,index) in preImageList" style="display: flex;margin-right:20px;" @click="changePreImageUrl(index)" class="" :class="preIndex == index ?'selectImage':'noselect'" >
+    <div  v-for="(item,index) in preImageList" :key="index" style="display: flex;margin-right:20px;" @click="changePreImageUrl(index)" class="" :class="preIndex == index ?'selectImage':'noselect'" >
           <img :src="item.presImageUrl" style="width:100px;height:100px;"/>
     </div>
 </div>
-
-
+<!--  添加图片 -->
+<div style="width:100%;display: flex;margin:10px 0;      overflow: auto; ">
+  <el-upload  accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleSuccess" :file-list="fileList">
+      <i class="el-icon-plus"></i>
+    </el-upload>
+</div>
+<!--  上传图片 -->
+<div>
+  <el-button type="primary" @click="pictureUploadPre()" >上传图片</el-button>
+</div>
 
 
 
@@ -59,12 +67,13 @@ import axios from "axios";
 import { Prop } from "vue-property-decorator";
 import * as indexApi from "../../api/indexApi";
 import filterdrug from "../drug/filterdrug";
-import vuecropper from 'vue-cropper'
-
+import * as Config from "../../api/conf";
+import vuecropper from 'vue-cropper';
+import prescriptioninfo from "../transmit/prescriptioninfo";
 @Component({
   props: {},
   components: {
-    filterdrug,vuecropper
+    filterdrug,vuecropper,prescriptioninfo
   }
 })
 export default class AddGoods extends Vue {
@@ -73,6 +82,9 @@ export default class AddGoods extends Vue {
  
   @Prop({ required: false })
   preImageUrlFlag: any;
+
+  @Prop({ required: false })
+  presId: any;
 
 changePreImageUrl(index){
     setTimeout(() => {
@@ -108,8 +120,75 @@ rotateLeft(){
 a.rotateLeft()
 }
   preIndex = 0;
+  fileUploadUrl = "";
+  fileList: any = [];
+  beforeUpload(file) {
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      this.$message.error("上传图片大小不能超过 5MB!");
+    }
+    return isLt5M;
+  }
+  handleSuccess(response, file, fileList) {
+    let dt = {
+      name: "1.png",
+      url: response.data.filename
+    };
+    this.fileList.push(dt);
+    console.log('this.fileList',this.fileList)
+  }
+  handleRemove(file, fileList) {
+    for (let i in this.fileList) {
+      let url = this.fileList[i].url;
+      if (url == file.url) {
+        console.log("find ...");
+        this.fileList.splice(i, 1);
+        break;
+      }
+    }
+  }
+  pictureUploadPre(){
+    this.$confirm('是否给该处方上传图片?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          closeOnClickModal:false
+        }).then(() => {
+          let imguploadlist = []
+          for(let i=0;i<this.preImageList.length;i++){
+            imguploadlist.push(this.preImageList[i].presImageUrl)
+          }
+          for(let j=0;j<this.fileList.length;j++){
+            imguploadlist.push(this.fileList[j].url)
+          }
+          console.log('imguploadlist',imguploadlist);
+          let updateForm = {'presId':this.presId,"pictureIds":imguploadlist};
+          console.log('updateForm',updateForm)
+          indexApi.updatePre(updateForm).then(res => {
+            if (res["retCode"]) {
+              this.fileList=[];
+              this.$emit('getInfo');
+              this.$message({
+                    type: 'success',
+                    message: '上传成功!'
+              });
+            } else {
+              if (!res["islogin"]) {
+                this.$alert(res["message"]);
+              }
+              console.error("数据查询错误");
+            }
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消上传'
+          });          
+        });
+  }
   mounted() {
       console.log('初始化',this.preImageUrlFlag)
+      this.fileUploadUrl = Config.g_upload_url;
   }
 }
 </script>
