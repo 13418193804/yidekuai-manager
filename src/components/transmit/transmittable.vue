@@ -844,6 +844,8 @@ export default class AddGoods extends Vue {
         return "已审方";
       case "FAIL_AUDIT_PRESCRIPTION":
         return "审方失败";
+               case "GIVEUP_PRESCRIPTION":
+        return "弃单";
       case "REJECT_AUDIT_PRESCRIPTION":
         if (this.$route.path == "/audit") {
           return "已驳回转方";

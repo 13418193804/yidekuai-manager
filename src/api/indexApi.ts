@@ -1625,4 +1625,7 @@ export const addDrugPartner = (model) => {
         return Api.requestForm2('/PYgenerate/addDrugPartner', params)
             .then(res => res);
     }
+
+
+    
     

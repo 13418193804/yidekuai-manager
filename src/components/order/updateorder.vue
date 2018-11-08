@@ -397,8 +397,8 @@
    </el-table-column>
 
   <el-table-column
-      prop="drugPrice"
-      label="药品库价格">
+      prop="price"
+      label="药品价格">
    </el-table-column>
 
     </el-table>
@@ -557,6 +557,8 @@ export default class AddGoods extends Vue {
 
   @Prop({ required: false })
   provinceList;
+
+
 
   loading = false;
 

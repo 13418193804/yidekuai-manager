@@ -89,7 +89,9 @@
   
   <el-collapse-item title="处方图片" name="picture">
     <div style="width:100%;text-align:center">
-<corpperlabel ref="cropper" @getInfo="getInfo" :preImageList="preImageList" :presId="row.presId"></corpperlabel>
+<corpperlabel ref="cropper" @getInfo="getInfo" :preImageList="preImageList" :presId="row.presId" :haveSave="true" :haveDetele="true" :temporary="true"
+:notHaveAdd="row.presState == 'NOT_TRANSLATED_PRESCRIPTION' || row.presState == 'REJECT_AUDIT_PRESCRIPTION'|| row.presState == 'FAIL_TRANSLATED_PRESCRIPTION' || row.presState == 'GIVEUP_PRESCRIPTION'"
+></corpperlabel>
 </div>
   </el-collapse-item>
  
@@ -284,6 +286,8 @@ switch(prescriptionType){
         return "已审方";
       case "FAIL_AUDIT_PRESCRIPTION":
         return "审方失败";
+          case "GIVEUP_PRESCRIPTION":
+        return "弃单";
       case "REJECT_AUDIT_PRESCRIPTION":
         if (this.$route.path == "/audit") {
           return "已驳回转方";
@@ -302,8 +306,9 @@ getPrePic(presId) {
       if (res["retCode"]) {
         this.preImageList = res.data;
          if(res.data.length>0){
+           console.log(this.$refs)
           let a:any =    this.$refs.cropper
-     a.changePreImageUrl(0);
+           a.changePreImageUrl(0);
         }
       } else {
         if(!res['islogin']){this.$alert(res["message"]);}

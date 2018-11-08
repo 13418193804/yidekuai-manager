@@ -214,14 +214,10 @@
   <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
 
       <div style="position: relative;">
-    <corpperlabel  ref="cropper" :preImageList="preImageList" :style="pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK' ? 'visibility: hidden;' : ''"></corpperlabel>
-        
-    <div style="margin-bottom:22px;" class="pre_update_upload" v-loading="add_upload_loading" v-if=" pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK'">
- <h4>处方图片</h4>
-                <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl" list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
-                  <i class="el-icon-plus"></i>
-                </el-upload>
-</div>
+
+        <corpperlabel  ref="cropper" :preImageList="preImageList"  :haveDetele="true"></corpperlabel>
+
+
 
 
 </div>
@@ -466,27 +462,6 @@ export default class AddGoods extends Vue {
     return isLt5M;
   }
 
-  fileList: any = [];
-  handleSuccess1(response, file, fileList) {
-    let dt = {
-      name: "1.png",
-      url: response.data.filename
-    };
-    this.fileList.push(dt);
-
-    this.add_upload_loading = false;
-  }
-
-  handleRemove(file, fileList) {
-    for (let i in this.fileList) {
-      let url = this.fileList[i].url;
-      if (url == file.url) {
-        console.log("find ...");
-        this.fileList.splice(i, 1);
-        break;
-      }
-    }
-  }
   auditingRemake = "";
   presId = "";
   preDrugList = [];
@@ -640,10 +615,10 @@ export default class AddGoods extends Vue {
   }
   after_vaild_doback() {
     if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
-      if (this.fileList.length > 0) {
-        this.createForm.pictureIds = this.fileList
+      if ((<any>this.$refs.cropper).preImageList.length > 0) {
+        this.createForm.pictureIds = (<any>this.$refs.cropper).preImageList
           .map(item => {
-            return item.url;
+            return item.presImageUrl;
           })
           .join(",");
       } else {
@@ -759,10 +734,10 @@ export default class AddGoods extends Vue {
   }
   after_vaild() {
     if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
-      if (this.fileList.length > 0) {
-        this.createForm.pictureIds = this.fileList
+      if ((<any>this.$refs.cropper).preImageList.length > 0) {
+        this.createForm.pictureIds = (<any>this.$refs.cropper).preImageList
           .map(item => {
-            return item.url;
+            return item.presImageUrl;
           })
           .join(",");
       } else {
@@ -818,11 +793,6 @@ export default class AddGoods extends Vue {
     indexApi.getPrePic({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.preImageList = res.data;
-        this.fileList = res.data.map(item => {
-          return {
-            url: item.presImageUrl
-          };
-        });
         if (res.data.length > 0) {
           let a: any = this.$refs.cropper;
           a.changePreImageUrl(0);
