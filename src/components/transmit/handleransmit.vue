@@ -210,14 +210,10 @@
 <el-row :gutter="24"  style="padding:0 0 20px;">
   <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
     <div style="position: relative;">
-<corpperlabel  ref="cropper" :preImageList="preImageList" :style="pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK' ? 'visibility: hidden;' : ''"></corpperlabel>
-  <div style="margin-bottom:22px;" class="pre_update_upload" v-loading="add_upload_loading" v-if=" pres_type === 'DOC_HANDWORK' || pres_type === 'BACK_HANDWORK'">
- <h4>处方图片</h4>
-                <el-upload   accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF"  :action="fileUploadUrl"  list-type="picture-card" ref="upload" :before-upload="beforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess1" :file-list="fileList">
-              <i class="el-icon-plus"></i>
-                </el-upload>
-</div>
+
+<corpperlabel  ref="cropper" :preImageList="preImageList"  :haveDetele="true"></corpperlabel>
   
+
 </div>
   </el-col>
   <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
@@ -507,14 +503,6 @@
                  <el-button type="primary" @click="dotransmit()" >转方</el-button>
 </div>
 </div>
-    <el-dialog  :visible.sync="dialogVisible" @opened="opened">
-
-      <corpperlabel ref="dialogImage" :preImageList="dialogImageUrlList" :preImageUrlFlag="true"></corpperlabel>
-
-
-                <!-- <img width="100%" :src="dialogImageUrl" alt=""> -->
-            </el-dialog>
-
 
 		<el-dialog class="filter_box" width= "70vw" :close-on-click-modal="false" title="搜索" :append-to-body="true" :visible.sync="filter_model"   >
 <div >
@@ -534,7 +522,7 @@
 <div class="flex flex-pack-center  flex-align-center" style="height:100%" v-if="noMessage_model">
   <i class="iconfont icon-shangxin" style="font-size:90px"></i>
   <div>
-    <div>搜索不到任何患者</div>
+    <div>搜索不到任何{{`${filter_type === 'doctor' ? '医生':'患者' }`}}</div>
     <div style=" color: #8492a6; font-size: 13px">试试输入准确的信息吧~</div>
   </div>
 </div>
@@ -866,6 +854,8 @@ export default class AddGoods extends Vue {
         return "已审方";
       case "FAIL_AUDIT_PRESCRIPTION":
         return "审方失败";
+               case "GIVEUP_PRESCRIPTION":
+        return "弃单";
       case "REJECT_AUDIT_PRESCRIPTION":
         if (this.$route.path == "/saveaudit") {
           return "已驳回转方";
@@ -1161,12 +1151,14 @@ export default class AddGoods extends Vue {
   }
   after_vaild() {
     if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
-      if (this.fileList.length > 0) {
-        this.createForm.pictureIds = this.fileList
+
+      if ((<any>this.$refs.cropper).preImageList.length > 0) {
+        this.createForm.pictureIds = (<any>this.$refs.cropper).preImageList
           .map(item => {
-            return item.url;
+            return item.presImageUrl;
           })
           .join(",");
+
       } else {
         this.$message("请上传处方图片");
         return;
@@ -1247,11 +1239,7 @@ export default class AddGoods extends Vue {
     indexApi.getPrePic({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.preImageList = res.data;
-        this.fileList = res.data.map(item => {
-          return {
-            url: item.presImageUrl
-          };
-        });
+  
         if (res.data.length > 0) {
           let a: any = this.$refs.cropper;
           a.changePreImageUrl(0);
@@ -1566,18 +1554,7 @@ export default class AddGoods extends Vue {
   dialogVisible = false;
 dialogImageUrlList=[]
 dialogImageIndex = 0
-  opened(){
 
-(<any>this.$refs.dialogImage).changePreImageUrl(this.dialogImageIndex)
-  }
-  handlePictureCardPreview(file) {
-    this.dialogImageUrlList = this.fileList.map((item,index)=> {
-      if(file.url === item.url){
-       this.dialogImageIndex =  index
-      }
-      return {presImageUrl:item.url}})
-    this.dialogVisible = true;
-  }
 
   add_upload_loading = false;
   fileUploadUrl = "";
@@ -1590,26 +1567,7 @@ dialogImageIndex = 0
     return isLt5M;
   }
 
-  fileList: any = [];
-  handleSuccess1(response, file, fileList) {
-    let dt = {
-      name: "1.png",
-      url: response.data.filename
-    };
-    this.fileList.push(dt);
-    this.add_upload_loading = false;
-  }
-
-  handleRemove(file, fileList) {
-    for (let i in this.fileList) {
-      let url = this.fileList[i].url;
-      if (url == file.url) {
-        console.log("find ...");
-        this.fileList.splice(i, 1);
-        break;
-      }
-    }
-  }
+ 
 
   provinceList = [];
   cityList = [];

@@ -4,6 +4,7 @@ import Vue from 'vue';
 import * as Config from './conf';
 import querystring from 'querystring';
 let base = Config.g_base_url;
+let upload = Config.g_upload_url;
 axios.defaults.timeout =  120000;
 
 //let base = 'http://127.0.0.1:9090';
@@ -575,7 +576,7 @@ export const uploadFile = (form) => {
     //https://mapp.aisimob.com/tfj/multiupload
 
 
-    return axios.post(`https://mapp.aisimob.com/tfj/multiupload`, form, {
+    return axios.post(upload, form, {
         method: 'post',
         headers: { 'Content-Type': 'multipart/form-data' }
     })
