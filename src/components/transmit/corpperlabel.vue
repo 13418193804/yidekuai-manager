@@ -46,9 +46,9 @@
   </div>
 
   <div class="iconcropper" @click="rotateSave()" v-if="haveSave && !notHaveAdd">
-             <el-tooltip class="item" effect="dark" content="保存所有暂存图片" placement="top-start" >
+             <!-- <el-tooltip class="item" effect="dark" content="保存所有暂存图片" placement="top-start" > -->
 <i class="iconfont icon-49"  style="font-size:28px;" :style="allTemporary ?'':'opacity: 0.2;'"></i>
-    </el-tooltip>
+    <!-- </el-tooltip> -->
   </div>
 </div>
 	</div>
@@ -57,14 +57,14 @@
 <div style="width:100%;display: flex;margin:10px 0;align-items: center;overflow: auto; " >
     <div  v-for="(item,index) in preImageList" :key="index" style="display: flex;margin-right:20px;    position: relative;    border-radius: 3px;" @click="changePreImageUrl(index)" class="" :class="preIndex == index ?'selectImage':'noselect'" >
           <img :src="item.presImageUrl" style="width:100px;height:100px;"/>
-             <el-tooltip class="item" effect="dark" content="暂未保存" placement="top-start" v-if="item.temporary">
+             <!-- <el-tooltip class="item" effect="dark" content="暂未保存" placement="top-start" v-if="item.temporary">
      <i class="iconfont icon--"  style="font-size: 24px;
     color: #f4c542;
     position: absolute;
     right: 0;line-height: initial;
     top: -1px;
     border-radius: 3px;" ></i>
-    </el-tooltip>
+    </el-tooltip> -->
     </div>
 
     <div  @click="doClick()" class="el-upload el-upload--picture-card" style="height: 100px;width: 100px;" v-if="!notHaveAdd">

@@ -123,8 +123,8 @@ export default new Router({
         {
           path: '/consultant-manager',
           promissId: 'PER4c5ecb8c13c34a7195a0e8bdfa65991c',
-          icon: require('../assets/menu/中医药 (1).png'),
-          select_icon: require('../assets/menu/中医药.png'),
+          icon: require('../assets/menu/guwen.png'),
+          select_icon: require('../assets/menu/guwen_select.png'),
           name: '顾问管理',
           component: r => require.ensure([], () => r(require('@/components/consultant/consultant')))
         },
