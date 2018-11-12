@@ -96,6 +96,8 @@
             <el-table-column prop="orderNum" label="医生订单数量"></el-table-column>
             <el-table-column prop="orderMoney" label="医生订单金额"></el-table-column>
             <el-table-column prop="doctorPatientNum" label="医生患者数量"></el-table-column> -->
+            <el-table-column prop="payOrderNum" label="已成交订单数量" width="150"></el-table-column>
+            <el-table-column prop="payOrderMoney" label="已成交订单金额" width="150"></el-table-column>
             <el-table-column prop="createrTime" label="医生注册时间" width="150"></el-table-column>
             <el-table-column prop="passTime" label="通过时间" width="150"></el-table-column>
             <el-table-column prop="hspCode" label="医院机构代码" width="150"></el-table-column>
