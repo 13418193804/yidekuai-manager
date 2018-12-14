@@ -75,8 +75,8 @@
   </el-col>
 </el-row>
 </div>
-
-  <el-tabs v-model="adviserType" type="card" @tab-click="handleClick">
+<!-- type="card" -->
+  <el-tabs v-model="adviserType"  @tab-click="handleClick">
     <el-tab-pane v-for=" n in tabPaneList"  :label="n.label+'('+n.count+')'" :name="n.name" >
 <el-table border @sort-change="sortChange"
     :data="YdkAdviser"

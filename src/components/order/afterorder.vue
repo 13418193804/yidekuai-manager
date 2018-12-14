@@ -9,8 +9,8 @@
             </div>
           </div>
 
-
-  <el-tabs v-model="reminderVEnums" type="card" @tab-click="handleClick">
+<!-- type="card" -->
+  <el-tabs v-model="reminderVEnums"  @tab-click="handleClick">
     <el-tab-pane   :label="'待发货订单（'+NEW_ORDER+'）'"  name="NEW_ORDER">
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" >
@@ -49,7 +49,7 @@
 </div>
 
 
-<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
 
     <el-tab-pane   :label="'待收货订单（'+ORDER_WAIT_RECVGOODS+'）'"  name="ORDER_WAIT_RECVGOODS">
@@ -85,7 +85,7 @@
   </el-col>
 </el-row>
 </div>
-<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
     <el-tab-pane   :label="'待付款订单（'+ORDER_WAIT_PAY+'）'"  name="ORDER_WAIT_PAY">
  <div style="padding-bottom:20px;">
@@ -119,10 +119,10 @@
   </el-col>
 </el-row>
 </div>
-<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder" payStatus="ORDER_WAIT_PAY"></remindertable>
+<remindertable ref="remindertable" :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder" payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
-    <el-tab-pane   :label="'待开发票（'+invoice+'）'"  name="rework">
+    <el-tab-pane   :label="'待开发票（'+invoice+'）'"  name="rework" >
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" >
   <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
@@ -150,7 +150,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="rework" ></remindertable>
+<remindertable  ref="remindertable" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="rework" ></remindertable>
   
     </el-tab-pane>
 
@@ -187,7 +187,7 @@
 
 
 
-  <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="7" style="margin-top:10px;">
+  <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="7" style="margin-top:10px;" v-promiss.export>
     <div class="flex flex-align-center ">
          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width: 300px;">
 <el-button type="primary"   @click="getOrderExcel()" >生成导出文件</el-button>
@@ -239,7 +239,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
 
    </el-tab-pane>
 
@@ -319,7 +319,7 @@ export default class AddGoods extends Vue {
       .getExcelUrl({
         startCreateDate: this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
         endCreateDate: this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
-        rderStatus: this.rderStatus,
+        orderStatusEnum: this.rderStatus,
         paymentMode: this.paymentMode
       })
       .then(res => {
@@ -414,7 +414,7 @@ this.rderStatus ="";
         consigneeAddress: this.consigneeAddress,
         startCreateDate: this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
         endCreateDate: this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
-        rderStatus: this.rderStatus,
+        orderStatusEnum: this.rderStatus,
         page: this.page,
         pageSize: this.pageSize
       })

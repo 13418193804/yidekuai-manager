@@ -8,7 +8,8 @@
 平台订单数量统计：{{allprescription}} 单  平台待催订单数量统计：{{PENDING}} 单
             </div>
           </div> 
-  <el-tabs v-model="reminderVEnums" type="card" @tab-click="handleClick">
+          <!-- type="card" -->
+  <el-tabs v-model="reminderVEnums"  @tab-click="handleClick">
     <el-tab-pane   :label="'待催单（'+PENDING+'）'"  name="PENDING">
  <div style="padding-bottom:20px;">
 <el-row :gutter="10" >
@@ -45,7 +46,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
+<remindertable ref="remindertable" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
 
@@ -146,7 +147,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="''"></remindertable>
+<remindertable ref="remindertable" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="''"></remindertable>
 
    </el-tab-pane>
 
@@ -228,7 +229,7 @@ date=[]
     indexApi.getExcelUrl({
     startCreateDate:this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
         endCreateDate:this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
-        rderStatus: this.rderStatus,
+        orderStatusEnum: this.rderStatus,
                 paymentMode:this.paymentMode
     }).then(res => {
       if (res["retCode"]) {
@@ -305,7 +306,7 @@ this.rderStatus ="";
         consigneeAddress: this.consigneeAddress,
         startCreateDate: this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
         endCreateDate: this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
-        rderStatus: this.rderStatus,
+        orderStatusEnum: this.rderStatus,
         page: this.page,
         pageSize: this.pageSize
       })

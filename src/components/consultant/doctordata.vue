@@ -393,11 +393,11 @@ export default class AddGoods extends Vue {
   doctorStatus = "";
   date=[]
   getDoctorList(filter = null) {
+
     this.loading = true;
     if (filter) {
       this.page = 0;
     }
-
     let data = {
       page: this.page,
       pageSize: this.pageSize,
@@ -408,7 +408,10 @@ export default class AddGoods extends Vue {
       doctorStatus: this.doctorStatus,
       orderByStr: this.orderByStr
     };
-    indexApi.getDoctorList(data).then(res => {
+
+new Promise(resolve=>{
+   indexApi.getDoctorList(data).then(res => {
+     resolve()
       if (res["retCode"]) {
         console.log(res.data);
         this.DoctorInfo = res.data.DoctorInfo;
@@ -421,7 +424,11 @@ export default class AddGoods extends Vue {
         return;
       }
     });
+}).then(()=>{
     this.ypStartcreateDate(data);
+})
+
+ 
   }
 
   orderMoney = 0;

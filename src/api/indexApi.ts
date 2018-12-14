@@ -110,8 +110,14 @@ export const countPreByStatu = (model) => {
 
 
 //统计药品数 
-export const allDrug = () => {
-    return Api.requestForm2('/sumDrug', {})
+export const allDrug = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId")
+        }
+
+    return Api.requestForm2('/sumDrug', params)
         .then(res => res);
 }
 
@@ -555,8 +561,12 @@ export const gerOrderList = (model) => {
     }
 
     Object.assign(params, model)
-    return Api.requestForm2('/getYdkPrescription', params)
+    // return Api.requestForm2('/getYdkPrescription', params)
+    //     .then(res => res);
+        return Api.requestForm2('/order/getOrders', params)
         .then(res => res);
+
+        
 }
 
 //待开发票的订单
@@ -1459,7 +1469,7 @@ export const findmemberlike = (model) => {
 
 
 /**
-* 新增处方( 直接开方 )
+* 新增处方( 线下订单 )
 */
 export const createphotoprescription = (model) => {
 
@@ -1626,6 +1636,22 @@ export const addDrugPartner = (model) => {
             .then(res => res);
     }
 
+    
 
+  /**
+   * 更新支付状态
+   */  
     
+  
+
+  export const updatePrePayStatus = (model) => {
     
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/updatePrePayStatus', params)
+            .then(res => res);
+    }

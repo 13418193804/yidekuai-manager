@@ -66,10 +66,25 @@
  <el-collapse-item title="详细信息" >
    
 <div class="flex flex-warp-justify" >
+  <div style="    font-size: 15px;     margin-right:10px;">
+  <span>处方类型：</span>
+  <span>{{ handlepreDrugType(order.preDrugType)}}</span>
+</div>
+
+
+  <div style="    font-size: 15px;     margin-right:10px;">
+  <span>订单类型1：</span>
+  <span>{{ handleprescriptionType(order.prescriptionType) }}</span>
+</div>
+
+
 <div style="    font-size: 15px;     margin-right:10px;">
   <span>订单状态：</span>
   <span>{{ handleOrderStatus(order.orderStatue)}}</span>
 </div>
+
+
+
 </div>
 
 <div class="flex flex-warp-justify">
@@ -102,17 +117,38 @@
   <span>{{order.payTime}}</span>
 </div>
 
-<div style="    font-size: 15px;     margin-right:10px;">
+<div style="font-size: 15px;margin-right:10px;">
   <span>付款状态：</span>
-  <span>{{handlePayStatus(order.payStatus).title}}</span>
+
+
+  <span v-if="pagetype !=='reminder'">{{handlePayStatus(order.payStatus).title}}</span>
+<span v-else> 
+   <el-select v-model="payModeEnum" size="mini" placeholder="请选择">
+    <el-option
+      label="未支付"
+      value="PAY_WAIT">
+    </el-option>
+        <el-option
+      label="已支付"
+      value="PAY_SUCCESS">
+    </el-option>
+         <el-option
+      label="货到付款"
+      value="PAY_ON_DELIVERY">
+    </el-option>
+  </el-select>
+<el-button size="mini" type="primary" @click="doChangePayModeEnum()">保存</el-button>
+
+</span>
 </div>
+
+
 </div>
 
 
 <div style="font-size:14.8px" class="flex flex-warp-justify" v-if="order.orderStatue !== 'ORDER_INIT' &&  order.orderStatue !== 'ORDER_WAIT_PAY' && order.orderStatue !== 'ORDER_CANCEL_PAY'">
   <div style="margin:0">支付方式：</div>
 <div>
-    
     {{handlePaymentMode(order.paymentMode)}}
 </div>
 <div v-if="order.paymentMode == 'ONLINE_PAYMENT'" style="margin-left:20px;">
@@ -184,7 +220,37 @@
     弃单备注：{{order.giveupReason}}
     </div>
     </div>
+    <!-- 西药有 -->
+      <!-- 中药 -->
+    <!-- 共1剂，每日1剂，1剂分1服用 -->
+    <!-- 膏方 -->
+  <!-- 每日 1 次，每次 1 克，约服1天 -->
 
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="order.preDrugType == 'CHINESE_MEDICINE'">
+    <div style="     font-size: 15px;     margin-right:10px;">
+    用法用量： 共{{order.prescription.allDosage}}剂，每日{{order.prescription.everydayDosage}}剂，1剂分{{order.prescription.everytimeDosage}}服用
+    </div>
+   </div>
+
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'">
+    <div style="     font-size: 15px;     margin-right:10px;">
+    用法用量：每日{{order.prescription.everydayTimes}}次，每次{{order.prescription.everytimesG}}克，约服{{order.prescription.howManyDay}}天
+    </div>
+   </div>
+
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'">
+    <div style="     font-size: 15px;     margin-right:10px;">
+    辅料：<span style="font-size:16px;">{{list2string(order.otherAccessories,order.aspartame,order.sugarType)}}</span>
+    </div>
+   <div>
+   </div>
+    </div>
+    
+
+<!-- 膏方  辅料 -->
+   
+      
+      
 
 
   </el-collapse-item>
@@ -232,12 +298,12 @@
 <div>
  
 <div class="flex flex-warp-justify" style="">
-  <h4 style="margin:0;height: 40px;display: flex;align-items: center;" v-if="order.isInvoiced == '1'">发票物流：</h4>
+  <h4 style="margin:0;height: 40px;display: flex;align-items: center;" v-if="order.isInvoiced == '1'" >发票物流：</h4>
     <div >
       <span style="color:#999">
 <div v-if="(pagetype == 'reminder' || pagetype == 'patient') && order.isInvoiced == '1' && order.isInvoicedShipped == '0' " style="line-height:40px;">暂无信息</div>
 <span  v-if="(pagetype == 'afterorder' || pagetype=='rework') && order.invoiceRecords && order.invoiceRecords.length>0&& order.invoiceRecords[0].shipStatus !='HAVE_SIGNED_IN'">
- <el-form label-width="100px"  :inline="true">
+ <el-form label-width="100px"  :inline="true" v-promiss.edit>
         <el-form-item  label="物流公司：" style="margin:0">
 					<el-select v-model="order.invoiceObj_logistics"  size="mini" filterable  style="max-width:400px;min-width:200px;">
 						<el-option v-for="(item,index) in shipList" :value="item.comName" :label="item.comName" :key="index"></el-option>
@@ -308,8 +374,8 @@
         })">物流跟踪</el-button>
 </div>
 
-<div style="    font-size: 15px;     margin-right:10px;">
-				<el-button type="text" size="mini" @click="recvGood()" v-if="order.orderStatue == 'ORDER_WAIT_RECVGOODS'">确认收货</el-button>
+<div style="    font-size: 15px;     margin-right:10px;" v-promiss.edit>
+				<el-button type="text" size="mini" @click="recvGood()" v-if="order.orderStatue == 'ORDER_WAIT_RECVGOODS'" v-promiss.edit>确认收货</el-button>
 </div>
 
       </div>
@@ -333,18 +399,30 @@
 
   <el-table-column fixed="left"
       prop="drugName"
-      label="通用名">
+      :label="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'?'药材名称': '通用名'">
    </el-table-column>
 
   <el-table-column
       prop="productName"
-      label="商品名">
+      :label="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'?'别名': '商品名'">
    </el-table-column>
 
   <el-table-column
       prop="partnerName"
       label="供应商">
    </el-table-column>
+ 
+ 
+   <el-table-column
+      prop="decoctingType"
+      label="煎煮方式" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+   </el-table-column>
+
+<el-table-column
+      prop="chineseType"
+      label="类型(普通、贵细、毒性)"  min-width="200"  v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+   </el-table-column>
+
 
   <el-table-column
       prop="packingUnit"
@@ -353,7 +431,7 @@
    
   <el-table-column
       prop="dosageforms"
-      label="剂型">
+      label="剂型" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'">
    </el-table-column>
 
 
@@ -364,41 +442,53 @@
 
      <el-table-column width="180" 
       prop="manufacturer"
-      label="厂商">
+      label="厂商" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'">
    </el-table-column>
 
+    
+
+
+
  <el-table-column
-      prop="usages"
+      prop="usages" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
       label="用法">
    </el-table-column>
  
    
  <el-table-column
-      prop="dosage"
+      prop="dosage" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
       label="用量">
    </el-table-column>
 
   <el-table-column
       prop="instructions"
-      label="使用说明">
+      label="使用说明" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'">
    </el-table-column>
 
   <el-table-column
       prop="frequency"
-      label="频次">
+      label="频次" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION' ">
    </el-table-column>
+   
+
  <el-table-column v-if="expressPackageList.length>0 && OrderSplitFlag !== '1'"
       prop="surplusSend"
       label="剩余数量">
    </el-table-column>
+   
+  <el-table-column
+      prop="price"
+      label="药品单价">
+   </el-table-column>
+
   <el-table-column
       prop="quantity"
       label="数量">
    </el-table-column>
 
   <el-table-column
-      prop="price"
-      label="药品价格">
+      prop="countSingle"
+      label="药品合计">
    </el-table-column>
 
     </el-table>
@@ -406,6 +496,8 @@
 
 
 <div style="text-align:right; margin-top:20px;    padding-top: 10px;border-top: 1px #e5e5e5 solid;">
+<div v-if="order.preDrugType == 'PASTE_PRESCRIPTION'">制作费：<span style="color:red">￥{{order.makeMoney}}</span></div>
+<div v-if="order.preDrugType == 'CHINESE_MEDICINE'">代煎费：<span style="color:red">￥{{order.replaceDecoctingMoney}}</span></div>
 <div>治疗服务费：<span style="color:red">￥{{order.serviceMoney}}</span></div>
 <div>药品总价：<span style="color:red">￥{{order.presscriptionMoney}}</span></div>
 <div>合计：<span style="color:red">￥{{order.orderMoney}}</span></div>
@@ -419,10 +511,6 @@
   :shipList="shipList"></express>
 </div>
         </el-dialog>
-
-
-
-
 
 		<el-dialog width= "70vw" :close-on-click-modal="false" :append-to-body="true" :visible.sync="send_model" class="send_box"  >
   <div class="send_close" @click="send_close()">关闭</div>
@@ -558,10 +646,63 @@ export default class AddGoods extends Vue {
   @Prop({ required: false })
   provinceList;
 
-
+  payModeEnum = "";
 
   loading = false;
-
+  list2string(...list) {
+    let a = [];
+    for (let n in list) {
+      if (list[n]) {
+        for (let j in JSON.parse(list[n])) {
+          a.push(JSON.parse(list[n])[j]);
+        }
+      }
+    }
+    return a.join(",");
+  }
+  doChangePayModeEnum() {
+    this.loading = true;
+    indexApi
+      .updatePrePayStatus({
+        preId: this.order.presId,
+        payStatusEnum: this.payModeEnum
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          console.log("修改后执行什么更新呢？");
+          this.$emit("getOrderList");
+          this.$emit("getOrderDetail", this.order.presId);
+        } else {
+          this.$alert(res["message"]);
+        }
+      });
+  }
+  handleprescriptionType(prescriptionType) {
+    switch (prescriptionType) {
+      case "BACK_HANDWORK":
+        return "线下订单";
+      case "DOC_HANDWORK":
+        return "直接开方";
+      case "ONLINE":
+        return "在线处方";
+      case "PHOTO":
+        return "普通单";
+      default:
+        return "";
+    }
+  }
+  handlepreDrugType(preDrugType) {
+    switch (preDrugType) {
+      case "CHINESE_MEDICINE":
+        return "中药";
+      case "WESTERN_MEDICINE":
+        return "西药";
+      case "PASTE_PRESCRIPTION":
+        return "膏方";
+      default:
+        return "";
+    }
+  }
   handleTitle() {
     if (this.expressPackageList.length > 0) {
       if (this.OrderSplitFlag == "1") {
@@ -604,12 +745,11 @@ export default class AddGoods extends Vue {
           this.expressPackageList = res.data.ExpressDetailList;
           (<any>this.$refs.express).expressPackageList =
             res.data.ExpressDetailList;
+
           if (!send) {
             //默认选中
-            if (this.OrderSplitFlag == "1") {
-              //  this.expressPackageList.length>0 &&
-              // (<any>this.$refs.express).send_active = this.expressPackageList[0].expressDetailId;
-              // (<any>this.$refs.express).getExpressPackageDrug({name:this.expressPackageList[0].expressDetailId})
+            if (this.OrderSplitFlag == "1" && this.model) {
+              //这里
               (<any>this.$refs.express).send_active = "goods_detail";
             }
 

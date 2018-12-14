@@ -1,5 +1,5 @@
 <template>
-	<el-row class="container">
+	<el-row class="container1">
 		<el-col :span="24" :class="ydkManager =='test'?'header1':'header'" >
 			<el-col @click.prevent="doCollapse" :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
 				{{collapsed?'':sysName}}
@@ -125,7 +125,7 @@ indexApi.updateYdkPrescriptionStatusNum({blueSignal:blueSignal}).then(res => {
 </script>
 
 <style scoped >
-.container {
+.container1 {
   position: absolute;
   top: 0px;
   bottom: 0px;
@@ -240,11 +240,17 @@ aside {
   flex: 0 0 230px;
   width: 230px;
 }
+.menu-expanded::-webkit-scrollbar {
+  display: none;
+}
 .content-container {
   background: #f1f2f7;
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+}
+.content-container::-webkit-scrollbar {
+  display: none;
 }
 .breadcrumb-container {
 }

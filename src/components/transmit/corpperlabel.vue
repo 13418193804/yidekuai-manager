@@ -41,11 +41,11 @@
 <i class="iconfont icon-youxuanzhuan"  style="font-size:28px;" ></i>
   </div>
 
-  <div class="iconcropper" @click="rotateDetele()" v-if="haveDetele && !notHaveAdd" >
+  <div class="iconcropper" @click="rotateDetele()" v-if="haveDetele && !notHaveAdd" v-promiss.edit>
 <i class="iconfont icon-iconfontshanchu3"  style="font-size:24px;" :style="(temporary &&  !preImageList[preIndex].temporary) || preImageList.length==0 ?'opacity: 0.2;':''"></i>
   </div>
 
-  <div class="iconcropper" @click="rotateSave()" v-if="haveSave && !notHaveAdd">
+  <div class="iconcropper" @click="rotateSave()" v-if="haveSave && !notHaveAdd" v-promiss.edit>
              <!-- <el-tooltip class="item" effect="dark" content="保存所有暂存图片" placement="top-start" > -->
 <i class="iconfont icon-49"  style="font-size:28px;" :style="allTemporary ?'':'opacity: 0.2;'"></i>
     <!-- </el-tooltip> -->
@@ -67,7 +67,7 @@
     </el-tooltip> -->
     </div>
 
-    <div  @click="doClick()" class="el-upload el-upload--picture-card" style="height: 100px;width: 100px;" v-if="!notHaveAdd">
+    <div  @click="doClick()" class="el-upload el-upload--picture-card" style="height: 100px;width: 100px;" v-if="!notHaveAdd" >
       <div style="margin-right: 20px;height: 100px;width: 100px;display: flex;justify-content: center;align-items: center;">
      <i class="el-icon-plus" style="font-size:21px;"></i>
      </div>
@@ -224,7 +224,6 @@ export default class AddGoods extends Vue {
     } else {
       (<any>this.$refs.logo).value = "";
     }
-
     (<any>this.$refs.logo).click();
   }
   isSizeClear() {

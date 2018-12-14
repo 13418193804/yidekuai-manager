@@ -37,8 +37,24 @@
   </el-tag>
 </template>
    </el-table-column>
+
+   
+
         <el-table-column  
       label="处方类型" width="150">
+      <template slot-scope="scope">
+    <el-tag v-if="scope.row.preDrugType"
+    
+  :type="handlepreDrugType(scope.row.preDrugType).type">
+        {{handlepreDrugType(scope.row.preDrugType).name}}
+</el-tag>
+      </template>
+   </el-table-column>
+
+
+
+        <el-table-column  
+      label="订单类型1" width="150">
       <template slot-scope="scope">
     <el-tag v-if="scope.row.prescriptionType"
   :type="handleprescriptionType(scope.row.prescriptionType).type">
@@ -46,13 +62,7 @@
 </el-tag>
       </template>
    </el-table-column>
-        <!-- <el-table-column  
-      label="订单类型" width="150">
-      <template slot-scope="scope">
-     {{scope.row.orderSplitFlag==='1'?'拆分订单':'普通订单'}}
-      </template>
-   </el-table-column> -->
-
+   
 
   <el-table-column
       prop="auditingDate"
@@ -76,7 +86,7 @@
 
 
       <el-table-column 
-      label="订单类型"  width="150">
+      label="是否拆分订单" width="150">
      <template slot-scope="scope">
      {{ handleOrderType(scope.row)}}
      </template>
@@ -155,7 +165,7 @@
       label="处方编号" width="200">
    </el-table-column>
 
-   <el-table-column label="操作" fixed="right"  :width="handleWidth()" >
+   <el-table-column label="操作" fixed="right"  :min-width="cowWidth" >
       <template slot-scope="scope">
 
         <el-button
@@ -170,7 +180,7 @@
           size="mini"
           type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
 
-               <!-- <el-button
+        <!-- <el-button
           size="mini"
           type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button> -->
                  
@@ -181,7 +191,7 @@
 
                <el-button
           size="mini"
-          type="primary" @click="sendGoods(scope.row)"   v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED'||scope.row.orderStatue =='ORDER_PAY_ONDEV')" > 发货 </el-button>
+          type="primary" @click="sendGoods(scope.row)"   v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED'||scope.row.orderStatue =='ORDER_PAY_ONDEV')" v-promiss.edit> 发货 </el-button>
          
 
 
@@ -262,8 +272,19 @@
 </template>
    </el-table-column>
      
-   <el-table-column  
+             <el-table-column  
       label="处方类型" width="150">
+      <template slot-scope="scope">
+    <el-tag v-if="scope.row.preDrugType"
+  :type="handlepreDrugType(scope.row.preDrugType).type">
+        {{handlepreDrugType(scope.row.preDrugType).name}}
+</el-tag>
+      </template>
+   </el-table-column>
+
+
+   <el-table-column  
+      label="订单类型1" width="150">
       <template slot-scope="scope">
     <el-tag v-if="scope.row.prescriptionType"
   :type="handleprescriptionType(scope.row.prescriptionType).type">
@@ -271,12 +292,7 @@
 </el-tag>
       </template>
    </el-table-column>
-    <!-- <el-table-column  
-      label="订单类型" width="150">
-      <template slot-scope="scope">
-     {{scope.row.orderSplitFlag==='1'?'拆分订单':'普通订单'}}
-      </template>
-   </el-table-column> -->
+
 
   <el-table-column
       label="申请开票时间" width="180">
@@ -324,7 +340,7 @@
 
 
     <el-table-column 
-      label="订单类型"  width="150">
+      label="是否拆分订单"  width="150">
      <template slot-scope="scope">
      {{ handleOrderType(scope.row)}}
      </template>
@@ -390,7 +406,7 @@
 
   <el-button
           size="mini"
-          type="primary" @click="doRework(scope.$index, scope.row)" >开票</el-button>
+          type="primary" @click="doRework(scope.$index, scope.row)" v-promiss.edit>开票</el-button>
 
              </template>
     </el-table-column>
@@ -526,7 +542,6 @@
               clearable>
               </el-input>
   			</el-form-item>
-
 		<el-form-item label="收货地区：" style="margin:0">
 <div style="    white-space: nowrap;overflow:hidden;">
 <el-row :gutter="24" >
@@ -678,7 +693,8 @@ import corpperlabel from "../transmit/corpperlabel";
   props: {},
   components: {
     prescriptioninfo,
-    updateorder,corpperlabel
+    updateorder,
+    corpperlabel
   }
 })
 export default class AddGoods extends Vue {
@@ -691,32 +707,29 @@ export default class AddGoods extends Vue {
   // @Prop({ required: false })
   // provinceList;
   @Prop({ required: false })
-payStatus
+  payStatus;
 
-
-
-
+  @Prop({ required: false })
+  cowWidth = 0;
   filter_doctor = false;
   filter_type = "doctor";
   filter_model = false;
 
   add_model = false;
   add_model_loading = false;
-  cancelLoading = false
+  cancelLoading = false;
   add_footer_loading = false;
   add_upload_loading = false;
   noMessage_model = false;
   noMessage_loading = false;
-  
+
   mobile = "";
 
   resultList = [];
 
-
   checkPhone = /^1[345789]\d{9}$/;
 
   submitForm() {
-
     if (
       ((this.createForm.doctorid || "") === "" &&
         this.add_model_type == "add") ||
@@ -726,51 +739,49 @@ payStatus
       return;
     }
 
-      if ((this.createForm.memberName || "") === "") {
-        this.$message("请输入患者姓名");
-        return;
-      }
-  let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
-        if ((this.createForm.memberAge || "") === ""&& !re.test(this.createForm.memberAge)) {
-          this.$message("请输入0-130岁的年龄");
-          return;
-        }
-
-      if ((this.createForm.memberPhone || "") === "") {
-        this.$message("请输入患者手机号");
-        return;
-      }
-      if (!this.checkPhone.test(this.createForm.memberPhone)) {
-        this.$message("请输入正确的患者手机号");
-        return;
-      }
-
-      if((this.createForm.patientSex||'')  ===''){
-            this.$message("请选择患者性别");
+    if ((this.createForm.memberName || "") === "") {
+      this.$message("请输入患者姓名");
       return;
-        }
-
-      if((this.createForm.memberAge||'')  ===''){
-            this.$message("请输入患者年龄");
+    }
+    let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+    if (
+      (this.createForm.memberAge || "") === "" &&
+      !re.test(this.createForm.memberAge)
+    ) {
+      this.$message("请输入0-130岁的年龄");
       return;
-        }
-      if ((this.createForm.memberIdcard || "") !== "") {
-        this.vaild_memberIdcard(() => {
-          this.after_vaild();
-        });
-        return;
-      } else {
+    }
+
+    if ((this.createForm.memberPhone || "") === "") {
+      this.$message("请输入患者手机号");
+      return;
+    }
+    if (!this.checkPhone.test(this.createForm.memberPhone)) {
+      this.$message("请输入正确的患者手机号");
+      return;
+    }
+
+    if ((this.createForm.patientSex || "") === "") {
+      this.$message("请选择患者性别");
+      return;
+    }
+
+    if ((this.createForm.memberAge || "") === "") {
+      this.$message("请输入患者年龄");
+      return;
+    }
+    if ((this.createForm.memberIdcard || "") !== "") {
+      this.vaild_memberIdcard(() => {
         this.after_vaild();
-        return;
-      }
+      });
+      return;
+    } else {
+      this.after_vaild();
+      return;
+    }
   }
-  after_vaild(){
-
-
-
-
-
- if (this.fileList.length > 0) {
+  after_vaild() {
+    if (this.fileList.length > 0) {
       this.createForm.pictureIds = this.fileList
         .map(item => {
           return item.url;
@@ -780,59 +791,57 @@ payStatus
       this.$message("请上传处方图片");
       return;
     }
- 
- 
-let showLoading = ()=>{
- this.add_model_loading = true
-this.add_footer_loading =  true
-this.cancelLoading = true
-}
-let closeLoading = ()=>{
-   this.add_model_loading = false
-this.add_footer_loading =  false
-this.cancelLoading = false
-}
 
-      // this.createForm.serviceMoney = this.createForm.servicemoney
+    let showLoading = () => {
+      this.add_model_loading = true;
+      this.add_footer_loading = true;
+      this.cancelLoading = true;
+    };
+    let closeLoading = () => {
+      this.add_model_loading = false;
+      this.add_footer_loading = false;
+      this.cancelLoading = false;
+    };
 
+    // this.createForm.serviceMoney = this.createForm.servicemoney
 
-
-
-
-      if((this.createForm.consigneeName||'')===''){
-       this.$message("请输入收件人");
+    if ((this.createForm.consigneeName || "") === "") {
+      this.$message("请输入收件人");
       return;
-      }
-    if((this.createForm.consigneePhone||'')===''){
-       this.$message("请输入收件号码");
+    }
+    if ((this.createForm.consigneePhone || "") === "") {
+      this.$message("请输入收件号码");
       return;
-      }
-      if((this.createForm.provinceid||'')==='' || (this.createForm.cityid||'')==='' || (this.createForm.areaid||'')==='' ){
-             this.$message("请选择收货地区");
+    }
+    if (
+      (this.createForm.provinceid || "") === "" ||
+      (this.createForm.cityid || "") === "" ||
+      (this.createForm.areaid || "") === ""
+    ) {
+      this.$message("请选择收货地区");
       return;
-      }
-          if((this.createForm.consigneeAddress||'')===''){
-       this.$message("请输入收件地址");
+    }
+    if ((this.createForm.consigneeAddress || "") === "") {
+      this.$message("请输入收件地址");
       return;
-      }
+    }
 
-      showLoading()
-      indexApi.updatePre(this.createForm).then(res => {
-        closeLoading();
-        if (res["retCode"]) {
-          this.$message("更新成功");
-          this.add_model = false;
-          this.$emit("getOrderList");
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
+    showLoading();
+    indexApi.updatePre(this.createForm).then(res => {
+      closeLoading();
+      if (res["retCode"]) {
+        this.$message("更新成功");
+        this.add_model = false;
+        this.$emit("getOrderList");
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
         }
-      });
-
+        console.error("数据查询错误");
+      }
+    });
   }
-   vaild_memberIdcard(callback) {
+  vaild_memberIdcard(callback) {
     indexApi.checkidcard({ idcard: this.createForm.memberIdcard }).then(res => {
       if (res["retCode"]) {
         callback();
@@ -845,17 +854,41 @@ this.cancelLoading = false
       }
     });
   }
+  handlepreDrugType(preDrugType) {
+    switch (preDrugType) {
+      case "CHINESE_MEDICINE":
+        return {
+          name: "中药",
+          type: "success"
+        };
+      case "WESTERN_MEDICINE":
+        return {
+          name: "西药",
+          type: "warning"
+        };
+      case "PASTE_PRESCRIPTION":
+        return {
+          name: "膏方",
+          type: ""
+        };
+      default:
+        return {
+          name: "",
+          type: ""
+        };
+    }
+  }
 
- handleprescriptionType(prescriptionType) {
+  handleprescriptionType(prescriptionType) {
     switch (prescriptionType) {
       case "BACK_HANDWORK":
         return {
-          name: "直接开方",
+          name: "线下订单",
           type: "success"
         };
       case "DOC_HANDWORK":
         return {
-          name: "线下订单",
+          name: "直接开方",
           type: "warning"
         };
       case "PHOTO":
@@ -863,6 +896,12 @@ this.cancelLoading = false
           name: "普通单",
           type: ""
         };
+      case "ONLINE":
+        return {
+          name: "在线处方",
+          type: "warning"
+        };
+
       default:
         return {
           name: "",
@@ -899,9 +938,8 @@ this.cancelLoading = false
   }
   add_model_type = "add";
 
-createForm:any = {}
-changeModel(type, row) {
-
+  createForm: any = {};
+  changeModel(type, row) {
     this.createForm = {
       feeTypeEnum: "SHOW",
       preTypeEnum: "BACK_HANDWORK"
@@ -911,19 +949,18 @@ changeModel(type, row) {
     this.add_model_type = type;
 
     if (row) {
-          this.add_model_loading = true;
-    this.add_footer_loading = true;
+      this.add_model_loading = true;
+      this.add_footer_loading = true;
       row.servicemoney = row.serviceMoney;
 
       row.feeTypeEnum = row.feeHide;
       this.getPrePic(row.presId, () => {
         let a = {};
         (<any>Object).assign(a, row);
+        console.log(row)
         this.createForm = a;
-
         let cityid = this.createForm.cityid;
         let areaid = this.createForm.areaid;
-
         this.queryCityList();
         this.createForm.cityid = cityid;
         this.queryCountryList();
@@ -931,9 +968,8 @@ changeModel(type, row) {
         this.add_model_loading = false;
         this.add_footer_loading = false;
       });
-    this.add_model = !this.add_model;
-      
-    } 
+      this.add_model = !this.add_model;
+    }
   }
   getPrePic(presId, callback) {
     indexApi.getPrePic({ preId: presId }).then(res => {
@@ -948,9 +984,6 @@ changeModel(type, row) {
       callback();
     });
   }
-
-
-
 
   queryCountryList() {
     this.createForm.areaid = "";
@@ -975,44 +1008,39 @@ changeModel(type, row) {
   cityList = [];
   countryList = [];
 
+  handleWidth() {
+    if (this.pagetype == "reminder") {
+      return "290";
+    }
+    return "220";
+  }
 
+  handleInvoinStatus(row) {
+    if (
+      row.invoiceRecords &&
+      row.invoiceRecords.length > 0 &&
+      row.invoiceRecords[0].shipStatus == "HAVE_SIGNED_IN"
+    ) {
+      return { title: "开票完成", type: "success" };
+    } else if (row.isInvoicedShipped == "1") {
+      return { title: "已开发票", type: "warning" };
+    } else if (row.isInvoiced == "1") {
+      return { title: "新增开票", type: "danger" };
+    } else if (row.isInvoiced == "0") {
+      return { title: "未开发票", type: "info" };
+    } else {
+      return { title: "", type: "" };
+    }
+  }
 
-
-
-
-handleWidth(){
-if(this.pagetype=='reminder'){
-  return "290"
-}
-return "220"
-}
-
-
-handleInvoinStatus(row){
-if(row.invoiceRecords && row.invoiceRecords.length>0&& row.invoiceRecords[0].shipStatus == 'HAVE_SIGNED_IN'){
-  return {title:"开票完成",type:'success'}
-}else if(row.isInvoicedShipped == '1'){
-  return {title:"已开发票",type:'warning'}
-}else if(row.isInvoiced == '1'){
-  return {title:"新增开票",type:'danger'}
-}else if(row.isInvoiced == '0'){
-  return {title:"未开发票",type:'info'}
-}else{
-  return {title:"",type:''}
-}
-}
-
-
-sendGoods(row){
+  sendGoods(row) {
     let a: any = this.$refs.updateorder;
     a.send_model = true;
-        a.loading = true
-    this.presId = row.presId
-        sessionStorage.presId = row.presId
-     this.getOrderDetail(row.presId,true);
-     
-}
-
+    a.loading = true;
+    this.presId = row.presId;
+    sessionStorage.presId = row.presId;
+    this.getOrderDetail(row.presId, true);
+  }
 
   invoiceRecordsObj = {};
   invoiceRecordModel = false;
@@ -1078,7 +1106,7 @@ sendGoods(row){
       .then(res => {
         if (res["retCode"]) {
           this.$message("已催单");
-          this.createForm['reminderFlag'] = 0
+          this.createForm["reminderFlag"] = 0;
           this.$emit("getOrderList");
         } else {
           if (!res["islogin"]) {
@@ -1099,62 +1127,59 @@ sendGoods(row){
   getorderInfo(row) {
     let a: any = this.$refs.updateorder;
     a.model = true;
-    a.loading = true
-    this.presId = row.presId
+    a.loading = true;
+    this.presId = row.presId;
     this.getOrderDetail(row.presId);
-
   }
 
-  doRework(index,row){
-      let a: any = this.$refs.updateorder;
+  doRework(index, row) {
+    let a: any = this.$refs.updateorder;
     a.reworkModel = true;
-    a.loading = true
-        this.presId = row.presId
+    a.loading = true;
+    this.presId = row.presId;
     this.getOrderDetail(row.presId);
   }
 
-  
   handlePaymentMode(status) {
     switch (status) {
       case "ONLINE_PAYMENT":
-        return {type:'success',title:"微信支付"};
+        return { type: "success", title: "微信支付" };
       case "ORDER_PAY_ONDEV":
-        return {type:'warning',title:"货到付款"};
+        return { type: "warning", title: "货到付款" };
       default:
-        return {type:'',title:""};
+        return { type: "", title: "" };
     }
   }
 
-  getOrderDetail(presId,send=null) {
+  getOrderDetail(presId, send = null) {
     indexApi
       .getOrderInfo({
         presId: presId
       })
       .then(res => {
         if (res["retCode"]) {
+
           res.data.YdkOrderDetailList.forEach((item, index) => {
             item.logisticslabel = item.logistics;
             item.waybillNumberlabel = item.waybillNumber;
           });
-
-          console.warn(res.data.invoiceRecords)
-
           if (res.data.invoiceRecords && res.data.invoiceRecords.length > 0) {
             res.data.invoiceObj_logistics =
               res.data.invoiceRecords[0].logistics;
             res.data.invoiceObj_waybillNumber =
               res.data.invoiceRecords[0].waybillNumber;
-
-              console.log('------')
-          this.order = res.data;
-               (<any>this.$refs.updateorder).loading = false
-
-              return
+            this.order = res.data;
+            (<any>this.$refs.updateorder).payModeEnum = res.data.payStatus;
+            (<any>this.$refs.updateorder).loading = false;
+            (<any>this.$refs.updateorder).getExpressPackage(presId, send);
+            return;
           }
+
           this.order = res.data;
-          (<any>this.$refs.updateorder).getExpressPackage(presId,send);
+          (<any>this.$refs.updateorder).payModeEnum = res.data.payStatus;
+          (<any>this.$refs.updateorder).getExpressPackage(presId, send);
         } else {
-               (<any>this.$refs.updateorder).loading = false
+          (<any>this.$refs.updateorder).loading = false;
           if (!res["islogin"]) {
             this.$alert(res["message"]);
           }
@@ -1164,7 +1189,6 @@ sendGoods(row){
 
   updateOrder = {};
 
-
   getOrderList() {
     this.$emit("getOrderList");
   }
@@ -1172,26 +1196,25 @@ sendGoods(row){
     switch (status) {
       case "PAY_WAIT":
         return {
-          type:"danger",
-          title:"未支付"
-          };  
-        case "PAY_SUCCESS":
-        return  {
-          type:"success",
-          title:"已支付"
-          };  
+          type: "danger",
+          title: "未支付"
+        };
+      case "PAY_SUCCESS":
+        return {
+          type: "success",
+          title: "已支付"
+        };
       case "ORDER_PAY_ONDEV":
         return {
-          type:"warning",
-          title:"货到付款"
-          }; 
-     case "PAY_ON_DELIVERY":
+          type: "warning",
+          title: "货到付款"
+        };
+      case "PAY_ON_DELIVERY":
         return {
-          type:"warning",
-          title:"货到付款"
-          }; 
+          type: "warning",
+          title: "货到付款"
+        };
 
-          
       default:
         return "";
     }
@@ -1205,60 +1228,62 @@ sendGoods(row){
     a.getInfo();
   }
 
-  handleOrderType(row){
-  if( row.splitFlag==='1'){
-    return "拆分订单"
-  }
-   if( row.splitFlag==='0'){
-    return "普通订单"
-  }
-  return ""
+  handleOrderType(row) {
+    if (row.splitFlag === "1") {
+      return "拆分订单";
+    }
+    if (row.splitFlag === "0") {
+      return "普通订单";
+    }
+    return "";
   }
   handleOrderStatus(status) {
     switch (status) {
       case "ORDER_INIT":
         return {
-          type:"info",
-          title:"订单初始化"
-          };
+          type: "info",
+          title: "订单初始化"
+        };
       case "ORDER_WAIT_PAY":
         return {
-          type:"",
-          title:"等待支付"
-          };
+          type: "",
+          title: "等待支付"
+        };
       case "ORDER_PAY_ONDEV":
-        return  {
-          type:"warning",
-          title:"货到付款"
-          };
+        return {
+          type: "warning",
+          title: "货到付款"
+        };
       case "ORDER_CANCEL_PAY":
         return {
-          type:"info",
-          title:"交易关闭"
-          };
+          type: "info",
+          title: "交易关闭"
+        };
       case "ORDER_WAIT_SENDGOODS":
         return {
-          type:"danger",
-          title:"待发货"
-          }
+          type: "danger",
+          title: "待发货"
+        };
       case "SENDGOODS_UNFINISHED":
-        return   {
-          type:"",
-          title:"发货未完成"
-          }; 
-            case "ORDER_WAIT_RECVGOODS":
         return {
-          type:"warning",
-          title:"待收货"
-          }; 
+          type: "",
+          title: "发货未完成"
+        };
+      case "ORDER_WAIT_RECVGOODS":
+        return {
+          type: "warning",
+          title: "待收货"
+        };
       case "ORDER_END_GOODS":
         return {
-          type:"success",
-          title:"订单已完成"
-          }; 
+          type: "success",
+          title: "订单已完成"
+        };
       default:
-        return {  type:"",
-          title:""};
+        return {
+          type: "",
+          title: ""
+        };
     }
   }
   shipList = [];
@@ -1275,33 +1300,32 @@ sendGoods(row){
     });
   }
   fileUploadUrl = "";
-    dialogImageUrl = "";
+  dialogImageUrl = "";
   dialogVisible = false;
-dialogImageUrlList=[]
-dialogImageIndex = 0
-  opened(){
-
-(<any>this.$refs.dialogImage).changePreImageUrl(this.dialogImageIndex)
+  dialogImageUrlList = [];
+  dialogImageIndex = 0;
+  opened() {
+    (<any>this.$refs.dialogImage).changePreImageUrl(this.dialogImageIndex);
   }
   handlePictureCardPreview(file) {
-    this.dialogImageUrlList = this.fileList.map((item,index)=> {
-      if(file.url === item.url){
-       this.dialogImageIndex =  index
+    this.dialogImageUrlList = this.fileList.map((item, index) => {
+      if (file.url === item.url) {
+        this.dialogImageIndex = index;
       }
-      return {presImageUrl:item.url}})
+      return { presImageUrl: item.url };
+    });
     this.dialogVisible = true;
   }
 
   mounted() {
     this.queryProvinceList();
     this.queryShipList();
-        this.fileUploadUrl = Config.g_upload_url;
+    this.fileUploadUrl = Config.g_upload_url;
   }
 }
 </script>
 
 <style  scoped>
-
 .flex-space {
   display: flex;
   flex-direction: row;

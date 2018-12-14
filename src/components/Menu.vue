@@ -93,6 +93,7 @@ export default class Menu extends Vue {
 
   roleId = "";
   mounted() {
+    // console.log(common);
     this.menuOption = menu["options"].routes;
     this.roleId = sessionStorage.roleId;
     if (
@@ -125,17 +126,13 @@ export default class Menu extends Vue {
 
     this.getYdkPrescriptionStatusNum();
 
-  this.PrescriptionStatusNumtimer = setInterval(() => {
-      this.getYdkPrescriptionStatusNum();
-    }, 5000);
+    this.PrescriptionStatusNumtimer = setInterval(() => {
+        this.getYdkPrescriptionStatusNum();
+      }, 60000);
   }
 
-  
-PrescriptionStatusNumtimer:any={}
+  PrescriptionStatusNumtimer: any = {};
   handlebluedot(path) {
-
-
-
     if (this.UnauditedDoctorNum > 0 && path === "/doctor") {
       return true;
     }
@@ -186,6 +183,8 @@ PrescriptionStatusNumtimer:any={}
   getYdkPrescriptionStatusNum() {
     indexApi.getYdkPrescriptionStatusNum({}).then(res => {
       if (res["retCode"]) {
+        // console.log(JSON.stringify(res.data))
+
         this.NEW_ORDER = res.data.NEW_ORDER;
         this.NEW_PRESCRIPTION = res.data.NEW_PRESCRIPTION;
         this.UnauditedDoctorNum = res.data.UnauditedDoctorNum;
@@ -198,7 +197,7 @@ PrescriptionStatusNumtimer:any={}
           res.data.OrderWaitSendgoodsOrUnfinished;
         this.DoctorNotAnswerNum = res.data.DoctorNotAnswerNum;
       }
-    })
+    });
   }
 }
 </script>

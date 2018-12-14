@@ -10,10 +10,11 @@
      <el-button
           size="small"
           type="primary"
-          @click="addPrescription()"  >直接开方</el-button>
+          @click="addPrescription()"  >线下订单</el-button>
             </div>
         </div>
-  <el-tabs v-model="prescriptionEnums1" type="card" @tab-click="handleClick">
+        <!-- type="card" -->
+  <el-tabs v-model="prescriptionEnums1"  @tab-click="handleClick">
     <el-tab-pane  :label="'未转方（'+notCount+'）'" name="name1">
 <div style="padding-bottom:20px;">
 <el-row :gutter="10" style="padding-left:80px;">
@@ -48,7 +49,7 @@
     </el-tab-pane>
 
 
-    <el-tab-pane :label="`线下订单（${DOC_HANDWORK}）`" name="name3">
+    <el-tab-pane :label="`直接开方（${DOC_HANDWORK}）`" name="name3">
 <div style="padding-bottom:20px;">
 <!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
 ALREADY_TRANSLATED_PRESCRIPTION,        //已转方

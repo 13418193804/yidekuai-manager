@@ -19,9 +19,24 @@
       label="开方时间"  width="170">
    </el-table-column>
 
-   <el-table-column  
+        <el-table-column  
       label="处方类型" width="150">
       <template slot-scope="scope">
+    <el-tag v-if="scope.row.preDrugType"
+  :type="handlepreDrugType(scope.row.preDrugType).type">
+        {{handlepreDrugType(scope.row.preDrugType).name}}
+</el-tag>
+
+      </template>
+   </el-table-column>
+
+
+   <el-table-column  
+      label="订单类型1" width="150">
+      <template slot-scope="scope">
+        <!-- <h4>
+<span v-if="scope.row.prescriptionType" class="label" :class="handleprescriptionType(scope.row.prescriptionType).type">{{handleprescriptionType(scope.row.prescriptionType).name}}</span>
+</h4> -->
     <el-tag v-if="scope.row.prescriptionType"
   :type="handleprescriptionType(scope.row.prescriptionType).type">
         {{handleprescriptionType(scope.row.prescriptionType).name}}
@@ -158,7 +173,7 @@
 
 
 		<el-dialog class="min_box" width= "70vw" :close-on-click-modal="false" 
-    :title="add_model_type == 'add' ?'新增直接开方':`完善手工单（${handleprescriptionType(createForm.prescriptionType).name}）`"
+    :title="add_model_type == 'add' ?'新增线下订单':`完善手工单（${handleprescriptionType(createForm.prescriptionType).name}）`"
      :append-to-body="true" :visible.sync="add_model"   >
 
 <div style="min-height:500px;" v-bouncing="add_model_loading">
@@ -856,16 +871,46 @@ export default class AddGoods extends Vue {
         return "";
     }
   }
-  handleprescriptionType(prescriptionType) {
+ 
+   handlepreDrugType(preDrugType) {
+    switch (preDrugType) {
+      case "CHINESE_MEDICINE":
+        return {
+          name: "中药",
+          type: "success"
+        };
+      case "WESTERN_MEDICINE":
+        return {
+          name: "西药",
+          type: "warning"
+        };
+      case "PASTE_PRESCRIPTION":
+        return {
+          name: "膏方",
+          type: ""
+        };
+      default:
+        return {
+          name: "",
+          type: ""
+        };
+    }
+  }
+ handleprescriptionType(prescriptionType) {
     switch (prescriptionType) {
       case "BACK_HANDWORK":
         return {
-          name: "直接开方",
+          name: "线下订单",
           type: "success"
+        };
+          case "ONLINE":
+        return {
+          name: "在线处方",
+          type: "warning"
         };
       case "DOC_HANDWORK":
         return {
-          name: "线下订单",
+          name: "直接开方",
           type: "warning"
         };
       case "PHOTO":

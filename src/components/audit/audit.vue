@@ -15,8 +15,8 @@
         </div>
         
 
-
-  <el-tabs v-model="prescriptionEnums1" type="card" @tab-click="handleClick">
+<!-- type="card" -->
+  <el-tabs v-model="prescriptionEnums1"  @tab-click="handleClick">
     
     <el-tab-pane  :label="'未审方（'+notCount+'）'" name="name1">
 

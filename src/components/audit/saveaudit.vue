@@ -26,7 +26,7 @@
 <div>
     {{ handleStatus(prodetail.presState)  }}
 </div>
-  <h4 style="margin:0;padding-left:10px;">处方类型：</h4>
+  <h4 style="margin:0;padding-left:10px;">订单类型1：</h4>
 <div>
     {{ handleprescriptionType(prodetail.prescriptionType)  }}
 </div>
@@ -484,9 +484,9 @@ export default class AddGoods extends Vue {
   handleprescriptionType(prescriptionType) {
     switch (prescriptionType) {
       case "BACK_HANDWORK":
-        return "直接开方";
-      case "DOC_HANDWORK":
         return "线下订单";
+      case "DOC_HANDWORK":
+        return "直接开方";
       case "PHOTO":
         return "普通单";
       default:

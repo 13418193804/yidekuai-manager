@@ -1,0 +1,20 @@
+[
+    {
+        "remark": "医德快测试场",
+        "host": "203.195.236.254",
+        "username": "root",
+        "port": 22,
+        "password": "ky2018^%$#@!",
+        "remotFileUrl": "/usr/local/nginx/master/",
+        "localFileUrl": "H:/tongyong/ydk-manager/dist/"
+    },
+    {
+        "remark": "医德快正式场",
+        "host": "134.175.4.131",
+        "username": "root",
+        "port": 22,
+        "password": "kangyang2018!@#",
+        "remotFileUrl": "/usr/local/nginx/master/",
+        "localFileUrl": "H:/tongyong/ydk-manager/dist/"
+    }
+]

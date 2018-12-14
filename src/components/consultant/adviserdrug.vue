@@ -365,7 +365,12 @@ date=[]
         startcreateDate:this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
         endcreateDate:  this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
     };
-    indexApi.getDrugByKeyword(data).then(res => {
+
+
+    
+new Promise(resolve=>{
+     indexApi.getDrugByKeyword(data).then(res => {
+       resolve()
       if (res["retCode"]) {
         this.DrugInfo = res.data.DrugInfo;
         this.total = res.data.page.total;
@@ -377,7 +382,10 @@ date=[]
         return;
       }
     });
-    this.ypStartcreateDate(data);
+}).then(()=>{
+      this.ypStartcreateDate(data);
+})
+
   }
 
   orderMoney = 0;

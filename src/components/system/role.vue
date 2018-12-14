@@ -120,7 +120,7 @@
  <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
 
 <div v-for="item in AuthorityList">
-    <h4 style="margin: 0;">{{item.name}}</h4>
+    <h3 style="margin:5px 0;">{{item.name}}</h3>
   <el-checkbox-group v-model="checkboxGroup6" size="small"  @change="handleCheckedCitiesChange">>
       <el-checkbox  v-for="items in item.ButtonPermissionList" :label="items.permissionId" :checked="items.haveFlag">{{items.name}}</el-checkbox>
     </el-checkbox-group>

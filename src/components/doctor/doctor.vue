@@ -4,7 +4,8 @@
         <div style="border-bottom:1px #e5e5e5 solid;">
         <h3>医生管理</h3>
         <div style="padding-bottom:20px;">平台医生数量统计：{{doctotcount}}个</div>
-        <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+        <!-- type="card" -->
+        <el-tabs v-model="activeName2"  @tab-click="handleClick">
             <!-- 医生申请列表 -->
             <el-tab-pane :label="'申请列表（'+examinedoctorcount+'）'" name="first">
                 <el-table border

@@ -5,16 +5,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import Vue from "vue";
+import Component from "vue-class-component";
 
 @Component({})
 export default class App extends Vue {
-  mounted(){
-    window['myvue'] = this;
-      if(!sessionStorage.merchantUserId || !sessionStorage.token){
-        this.$router.replace('/login');
-      }
+  mounted() {
+    window["myvue"] = this;
+    if (!sessionStorage.merchantUserId || !sessionStorage.token) {
+      this.$router.replace("/login");
+    }
   }
 }
 </script>
@@ -22,62 +22,64 @@ export default class App extends Vue {
 
 <style>
 #app {
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
- }
-*{
 }
- aside{
-   overflow: auto!important;
- }
- .menu-expanded{
-   overflow: auto!important;
- }
-
-
- .menu-expanded{
-    background-color:  #c30d23;
-    color:#fff;
- }
- .el-menu{
-    background-color:  #c30d23;
- }
- .el-menu-item{
-       color: #fff;
-    background-color:  #c30d23;
-    
- }
- .el-menu-item i{
-       color: #fff;
-   
- }
- .el-submenu__title{
-   background-color:#c30d23;
-       color: #fff;
- }
-  .el-menu-item:hover{
-    background-color:  #981122!important;
- }
- .el-submenu__title:hover{
-    background-color:  #981122!important;
- }
-
-.el-menu-item.is-active{
-  color:#EA8D03;
-  background-color:#981122!important;
+* {
 }
-.menu-collapsed{
-  background-color:#c30d23!important;
-  
+aside {
+  overflow: auto !important;
 }
-.el-step.is-simple .el-step__head{
+.menu-expanded {
+  overflow: auto !important;
+}
+
+.menu-expanded {
+  background-color: #c30d23;
+  color: #fff;
+}
+
+.menu-expanded::-webkit-scrollbar {
+  display: none;
+}
+
+.el-menu {
+  background-color: #c30d23;
+}
+.el-menu-item {
+  color: #fff;
+  background-color: #c30d23;
+}
+.el-menu-item i {
+  color: #fff;
+}
+.el-submenu__title {
+  background-color: #c30d23;
+  color: #fff;
+}
+.el-menu-item:hover {
+  background-color: #981122 !important;
+}
+.el-submenu__title:hover {
+  background-color: #981122 !important;
+}
+
+.el-menu-item.is-active {
+  color: #ea8d03;
+  background-color: #981122 !important;
+}
+.menu-collapsed {
+  background-color: #c30d23 !important;
+}
+.el-step.is-simple .el-step__head {
   width: auto;
-    font-size: inherit!important;
-    padding-right: 10px;
+  font-size: inherit !important;
+  padding-right: 10px;
 }
 .flex {
   display: -webkit-box;
@@ -156,63 +158,62 @@ export default class App extends Vue {
 }
 
 .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px!important;
-    height: 100px!important;
-    line-height:100px!important;
-    text-align: center!important;
-  }
-  .avatar {
-    width: 100px!important;
-    height: 100px!important;
-    display: block;
-  }
-  .filter_box .el-dialog__body{
-        padding: 0 15px 30px;
-  }
-.send_box .el-dialog__body{
-  padding:0!important;
-  position:relative;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
-.send_box .el-dialog__header{
-display:none;
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px !important;
+  height: 100px !important;
+  line-height: 100px !important;
+  text-align: center !important;
+}
+.avatar {
+  width: 100px !important;
+  height: 100px !important;
+  display: block;
+}
+.filter_box .el-dialog__body {
+  padding: 0 15px 30px;
+}
+.send_box .el-dialog__body {
+  padding: 0 !important;
+  position: relative;
+}
+.send_box .el-dialog__header {
+  display: none;
 }
 
-.small_box .el-dialog__body{
-  padding:10px 20px!important;
-  position:relative;
-    min-height: 500px!important;
+.small_box .el-dialog__body {
+  padding: 10px 20px !important;
+  position: relative;
+  min-height: 500px !important;
 }
-.min_box .el-dialog__body{
-  padding:0!important;
-  position:relative;
+.min_box .el-dialog__body {
+  padding: 0 !important;
+  position: relative;
 }
-.min_title{
-      background-color: #f2f2f2;
-    padding: 5px 15px;
-    font-weight: 600;
-    border-left: 3px solid #c30d23;
+.min_title {
+  background-color: #f2f2f2;
+  padding: 5px 15px;
+  font-weight: 600;
+  border-left: 3px solid #c30d23;
 }
-.el-select.filter_select   {
-    width: 75px!important;
-  }
-  .filter_select .el-input-group__prepend{
-    background-color: #fff!important;
-  }
+.el-select.filter_select {
+  width: 75px !important;
+}
+.filter_select .el-input-group__prepend {
+  background-color: #fff !important;
+}
 
-
-  @keyframes bouncing-loader {
+@keyframes bouncing-loader {
   from {
     opacity: 1;
     transform: translateY(0);
@@ -240,21 +241,23 @@ display:none;
 .bouncing-loader > div:nth-child(3) {
   animation-delay: 0.4s;
 }
-.bouncing-position{
-  position:relative!important;
+.bouncing-position {
+  position: relative !important;
 }
-.bouncing-none{
-  display:none!important;
+.bouncing-none {
+  display: none !important;
 }
-.diy_collapse .el-collapse-item__header{
-      border-left: 3px red solid;
-    padding-left: 15px;
+.diy_collapse .el-collapse-item__header {
+  border-left: 3px red solid;
+  padding-left: 15px;
 }
-.el-table__body-wrapper{
-  min-height: 500px!important;
+/* .el-table__body-wrapper {
+  min-height: 500px !important;
 }
-.el-table{
-  min-height: 550px!important;
-  
+.el-table {
+  min-height: 550px !important;
+} */
+.el-alert {
+  padding: 8px 10px;
 }
 </style>
