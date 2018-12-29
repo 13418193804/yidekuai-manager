@@ -49,10 +49,11 @@
 <remindertable ref="remindertable" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
+    <el-tab-pane   :label="'在线开方24h内（'+online+'）'"  name="online">
 
 
-
-
+<remindertable ref="remindertable" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
+    </el-tab-pane>
 
 
 
@@ -197,7 +198,7 @@ export default class AddGoods extends Vue {
         return "交易关闭";
       case "ORDER_WAIT_SENDGOODS":
         return "待发货";
-          case "SENDGOODS_UNFINISHED":
+      case "SENDGOODS_UNFINISHED":
         return "发货未完成";
       case "ORDER_WAIT_RECVGOODS":
         return "待收货";
@@ -207,9 +208,9 @@ export default class AddGoods extends Vue {
         return "";
     }
   }
-paymentMode =''
+  paymentMode = "";
   reminderVEnums = "PENDING";
-date=[]
+  date = [];
   allprescription = 0;
   // allPrescription() {
   //   indexApi.allPrescription().then(res => {
@@ -224,44 +225,50 @@ date=[]
   // }
   loading = false;
   getOrderExcel() {
-    this.loading = true;   
-    
-    indexApi.getExcelUrl({
-    startCreateDate:this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-        endCreateDate:this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
+    this.loading = true;
+
+    indexApi
+      .getExcelUrl({
+        startCreateDate:
+          this.date && this.date.length > 0
+            ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
+            : "",
+        endCreateDate:
+          this.date && this.date.length > 0
+            ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
+            : "",
         orderStatusEnum: this.rderStatus,
-                paymentMode:this.paymentMode
-    }).then(res => {
-      if (res["retCode"]) {
+        paymentMode: this.paymentMode
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          console.log(res.data);
 
-        console.log(res.data)
-
-        if (res.data.num>0) {
-          this.doResult(res.data.durl);
+          if (res.data.num > 0) {
+            this.doResult(res.data.durl);
+          } else {
+            this.loading = false;
+            this.$alert("查询结果没有可导出数据");
+          }
         } else {
-        this.loading = false;
-          this.$alert("查询结果没有可导出数据");
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
         }
-      } else {
-        if (!res["islogin"]) {
-          this.$alert(res["message"]);
-        }
-      }
-    });
+      });
   }
-durl =''
-doDownLoad(){
-  window.open(this.durl);
-}
+  durl = "";
+  doDownLoad() {
+    window.open(this.durl);
+  }
   doResult(durl) {
-
     indexApi.orderDoResult({}).then(res => {
-        this.loading = false;
+      this.loading = false;
       if (res["retCode"]) {
         this.$message("导出成功");
-          this.durl = durl
-          // sessionStorage
-          // 塞到缓存
+        this.durl = durl;
+        // sessionStorage
+        // 塞到缓存
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -283,70 +290,80 @@ doDownLoad(){
   consigneeAddress = "";
   handleClick(e) {
     this.rderStatus = "";
-    this.key= "";
-this.paymentMode = "";
-this.consigneeAddress ="";
-this.date=["",""];
-this.rderStatus ="";
- this.page = 0
+    this.key = "";
+    this.paymentMode = "";
+    this.consigneeAddress = "";
+    this.date = ["", ""];
+    this.rderStatus = "";
+    this.page = 0;
     this.getOrderList();
   }
   rderStatus = "";
-  getOrderList(filter=null) {
-    if(filter){
-      this.page = 0
+  getOrderList(filter = null) {
+    if (filter) {
+      this.page = 0;
     }
     this.reminderVEnums == "ALL";
-    this.loading = true
-    indexApi
-      .gerOrderList({
-        paymentMode:this.paymentMode,
-        reminderVEnums: this.reminderVEnums,
-        key: this.key,
-        consigneeAddress: this.consigneeAddress,
-        startCreateDate: this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-        endCreateDate: this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
-        orderStatusEnum: this.rderStatus,
-        page: this.page,
-        pageSize: this.pageSize
-      })
-      .then(res => {
-    this.loading = false
-        this.queryOrderCount();
-        if (res["retCode"]) {
-   
-          this.orderList = res.data.data;
-          this.total = res.data.page.total;
-     
-        } else {
-          if (!res["islogin"]) {
-            this.$alert(res["message"]);
-          }
-          console.error("数据查询错误");
-        }
-      });
-  }
+    this.loading = true;
 
+    let data = {
+      paymentMode: this.paymentMode,
+      reminderVEnums: this.reminderVEnums,
+      key: this.key,
+      consigneeAddress: this.consigneeAddress,
+      startCreateDate:
+        this.date && this.date.length > 0
+          ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
+          : "",
+      endCreateDate:
+        this.date && this.date.length > 0
+          ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
+          : "",
+      orderStatusEnum: this.rderStatus,
+      page: this.page,
+      pageSize: this.pageSize
+    };
+
+    if (this.reminderVEnums == "online") {
+      Object.assign(data, {
+        onlineFlag: 1
+      });
+      data.reminderVEnums = ""
+    }
+
+    indexApi.gerOrderList(data).then(res => {
+      this.loading = false;
+      this.queryOrderCount();
+      if (res["retCode"]) {
+        this.orderList = res.data.data;
+        this.total = res.data.page.total;
+      } else {
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
+        console.error("数据查询错误");
+      }
+    });
+  }
+  online = 0;
   PENDING = 0;
   queryOrderCount() {
     indexApi.queryOrderCount({}).then(res => {
       if (res["retCode"]) {
         this.PENDING = res.data.PENDING;
         this.allprescription = res.data.all;
+        this.online = res.data.INTERR24;
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
         }
-
       }
     });
   }
 
   mounted() {
-
     // this.allPrescription();
     this.getOrderList();
-
   }
 }
 </script>

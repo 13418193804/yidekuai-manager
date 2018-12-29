@@ -62,7 +62,11 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 <transmittable ref="transmittable" @getprescriptionList="getprescriptionList" :table="prescriptionList"  :operationType="operationType">
 </transmittable>
     </el-tab-pane>
+   <el-tab-pane :label="'在线开方24h内（'+online+'）'" name="name3">
+      <transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
+</transmittable>
 
+    </el-tab-pane>
   <el-tab-pane   :label="'全部（'+allprescription+'）'" name="name2"  >
 
 
@@ -176,6 +180,11 @@ export default class AddGoods extends Vue {
     return this.countPreByStatuObj['data2']?this.countPreByStatuObj['data2'].count:0
   }
 
+    get online() {
+    return this.countPreByStatuObj["data6"]
+      ? this.countPreByStatuObj["data6"].count
+      : 0;
+  }
   countPreByStatuObj = {}
 countPreByStatu() {
     indexApi.countPreByStatu({}).then(res => {
@@ -237,6 +246,11 @@ date= []
         operationType:this.operationType,
       })
     }
+
+        if (this.prescriptionEnums1 == "name3") {
+      Object.assign(data, { onlineFlag: 1 });
+    }
+
       Object.assign(data,{
      prescriptionEnums: this.prescriptionEnums,
       })

@@ -85,6 +85,7 @@ export const doQueryData = (model) => {
     return Api.requestForm2('/countByTime', params)
         .then(res => res);
 }
+
 //统计处方数
 export const allPrescription = () => {
 

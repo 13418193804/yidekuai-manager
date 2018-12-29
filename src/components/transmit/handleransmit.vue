@@ -219,116 +219,7 @@
   <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
 
   <el-tabs v-model="drugType"  @tab-click="handleClick">
-    <el-tab-pane  label="中药" name="CHINESE">
-
-	 <el-form label-width="120px">
-
-				<el-form-item label="药材名称：" >
- <el-select style="width:100%;"
-    v-model="drug.drugId"
-    filterable clearable
-    remote
-    placeholder="请输入药品"
-    :remote-method="remoteMethod"
-    :loading="loading" @change="selectDrug">
-    <el-option
-      v-for="item in options4"
-      :key="item.drugId"
-      :label="handleLabel([item.commonName,item.productName,item.producingArea,item.typeName])"
-      :value="item.drugId">
-    </el-option>
-  </el-select>
-				</el-form-item>		
-
-
-
-
- <el-form-item label="供应商：" >
-                      <el-input v-model="drug.manufacturer"
-  placeholder="请输入供应商"  >
-</el-input>
-	</el-form-item>
-
-
-
-               <el-form-item label="单位：" >
-                 
-                    <!-- <el-input v-model="drug.packing_unit"
-  placeholder="请输入单位"  /> -->
-  
-                    <el-select style="width:100%;"
-    v-model="drug.packing_unit"
-    placeholder="请输入单位"
-    :loading="loading"
-    >
-    <el-option
-      v-for="item in packingUnitList"
-      :key="item"
-      :label="item"
-      :value="item">
-    </el-option>
-    
-  </el-select>
-
-				</el-form-item>		
-
-
-               <el-form-item label="煎煮方式：" >
-                    <el-select style="width:100%;"
-    v-model="drug.decoctingType"
-    placeholder="请选择煎煮方式"
-    :loading="loading"
-    >
-  <el-option value="包煎" label="包煎"></el-option>
-<el-option value="水煎" label="水煎"></el-option>
-  </el-select>
-
-				</el-form-item>		
-  <el-form-item label="类型：" >
-                    <el-select style="width:100%;"
-    v-model="drug.chineseType"
-    placeholder="请选择类型"
-    :loading="loading"
-    >
-   <el-option      label="普通"      value="普通">
-    </el-option>
-      <el-option      label="贵细"      value="贵细">
-    </el-option>
-      <el-option      label="毒性"      value="毒性">
-    </el-option>
-  </el-select>
-
-				</el-form-item>		
-  <el-form-item label="单价：" >
-                    <el-input v-model="drug.price"
-  placeholder="请输入单价"  />
-				</el-form-item>		
-                    <el-form-item label="数量：" >
-                      <el-input v-model="drug.quantity"
-  placeholder="请输入数量"  >
-</el-input>
-	</el-form-item>
-
-     <el-form-item label="药品价格：" >
-                      {{drug_total}}
-	</el-form-item>
-
-
-    <el-form-item label="使用说明：" >
-                      <el-input    type="textarea" v-model="instructions"  :rows="4"
-  placeholder="请输入使用说明"   style="max-width:400px;"
-  >
-</el-input>
-				</el-form-item>	
-
-
-                    <el-form-item >
-                 <el-button size="mini" type="primary" @click="docreateDrug()" :disabled="loading">提交</el-button>
-				</el-form-item>	
-
-
-	 </el-form>
-    </el-tab-pane>
+ 
     <el-tab-pane  label="西药" name="WESTERN">
 	 <el-form label-width="120px">
                 <!-- <el-form-item  >
@@ -485,6 +376,119 @@
 				</el-form-item>	
 </el-form>
     </el-tab-pane>
+       <el-tab-pane  label="中药" name="CHINESE">
+
+	 <el-form label-width="120px">
+
+				<el-form-item label="药材名称：" >
+ <el-select style="width:100%;"
+    v-model="drug.drugId"
+    filterable clearable
+    remote
+    placeholder="请输入药品"
+    :remote-method="remoteMethod"
+    :loading="loading" @change="selectDrug">
+    <el-option
+      v-for="item in options4"
+      :key="item.drugId"
+      :label="handleLabel([item.commonName,item.productName,item.producingArea,item.typeName])"
+      :value="item.drugId">
+    </el-option>
+  </el-select>
+				</el-form-item>		
+
+
+
+
+ <el-form-item label="供应商：" >
+                      <el-input v-model="drug.manufacturer"
+  placeholder="请输入供应商"  >
+</el-input>
+	</el-form-item>
+
+
+
+               <el-form-item label="单位：" >
+                 
+                    <!-- <el-input v-model="drug.packing_unit"
+  placeholder="请输入单位"  /> -->
+  
+                    <el-select style="width:100%;"
+    v-model="drug.packing_unit"
+    placeholder="请输入单位"
+    :loading="loading"
+    >
+    <el-option
+      v-for="item in packingUnitList"
+      :key="item"
+      :label="item"
+      :value="item">
+    </el-option>
+    
+  </el-select>
+
+				</el-form-item>		
+
+
+               <el-form-item label="煎煮方式：" >
+     <el-input v-model="drug.decoctingType"
+  placeholder="请输入煎煮方式"  />
+<!-- 
+                    <el-select style="width:100%;"
+    v-model="drug.decoctingType"
+    placeholder="请选择煎煮方式"
+    :loading="loading"
+    >
+  <el-option value="包煎" label="包煎"></el-option>
+<el-option value="水煎" label="水煎"></el-option>
+  </el-select> -->
+
+				</el-form-item>		
+  <el-form-item label="类型：" >
+                    <el-select style="width:100%;"
+    v-model="drug.chineseType"
+    placeholder="请选择类型"
+    :loading="loading"
+    >
+   <el-option      label="普通"      value="普通">
+    </el-option>
+      <el-option      label="贵细"      value="贵细">
+    </el-option>
+      <el-option      label="毒性"      value="毒性">
+    </el-option>
+  </el-select>
+
+				</el-form-item>		
+  <el-form-item label="单价：" >
+                    <el-input v-model="drug.price"
+  placeholder="请输入单价"  />
+				</el-form-item>		
+                    <el-form-item label="数量：" >
+                      <el-input v-model="drug.quantity"
+  placeholder="请输入数量"  >
+</el-input>
+	</el-form-item>
+
+     <el-form-item label="药品价格：" >
+                      {{drug_total}}
+	</el-form-item>
+
+
+    <el-form-item label="使用说明：" >
+                      <el-input    type="textarea" v-model="instructions"  :rows="4"
+  placeholder="请输入使用说明"   style="max-width:400px;"
+  >
+</el-input>
+				</el-form-item>	
+
+
+                    <el-form-item >
+                 <el-button size="mini" type="primary" @click="docreateDrug()" :disabled="loading">提交</el-button>
+				</el-form-item>	
+
+
+	 </el-form>
+    </el-tab-pane>
     <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION">
 
 
@@ -607,7 +611,113 @@
 
 
   <el-tabs v-model="drugType" @tab-click="handleClick">
-    <el-tab-pane  label="中药" name="CHINESE">
+  
+    <el-tab-pane  label="西药" name="WESTERN">
+
+      <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{WESTERN_preDrugListtotal.toFixed(2)}}</span></div>
+<div style="height:25px;"></div>
+
+<el-table border
+    :data="WESTERN_preDrugList"
+    stripe
+    style="width: 100%">
+
+   
+  <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="drugName"
+      label="通用名">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
+   </el-table-column>
+
+  <el-table-column
+      prop="partnerName"
+      label="供应商">
+   </el-table-column>
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="dosageforms"
+      label="剂型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="specification"
+      label="药品规格">
+   </el-table-column>
+
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
+   </el-table-column>
+
+ <el-table-column
+      prop="usages"
+      label="用法">
+   </el-table-column>
+ 
+   
+ <el-table-column
+      prop="dosage"
+      label="用量">
+   </el-table-column>
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="frequency"
+      label="频次">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+
+   <el-table-column label="操作" fixed="right"  width="100">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+        type="text" icon="el-icon-delete" 
+          @click="deletePreDrug(scope.$index, scope.row)" >删除</el-button>
+   </template>
+    </el-table-column>
+
+</el-table>
+      </el-tab-pane>
+        <el-tab-pane  label="中药" name="CHINESE">
 <div>
 <el-form label-width="120px" inline="true">
   	<el-form-item label="是否代煎：" >
@@ -723,111 +833,6 @@
 
 
     </el-tab-pane>
-    <el-tab-pane  label="西药" name="WESTERN">
-
-      <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{WESTERN_preDrugListtotal.toFixed(2)}}</span></div>
-<div style="height:25px;"></div>
-
-<el-table border
-    :data="WESTERN_preDrugList"
-    stripe
-    style="width: 100%">
-
-   
-  <el-table-column  fixed="left"
-      prop="codeId"
-      label="药品编码">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="drugName"
-      label="通用名">
-   </el-table-column>
-
-  <el-table-column
-      prop="productName"
-      label="商品名">
-   </el-table-column>
-
-  <el-table-column
-      prop="partnerName"
-      label="供应商">
-   </el-table-column>
-
-  <el-table-column
-      prop="packingUnit"
-      label="单位">
-   </el-table-column>
-   
-  <el-table-column
-      prop="dosageforms"
-      label="剂型">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="specification"
-      label="药品规格">
-   </el-table-column>
-
-     <el-table-column width="180" 
-      prop="manufacturer"
-      label="厂商">
-   </el-table-column>
-
- <el-table-column
-      prop="usages"
-      label="用法">
-   </el-table-column>
- 
-   
- <el-table-column
-      prop="dosage"
-      label="用量">
-   </el-table-column>
-
-  <el-table-column
-      prop="instructions"
-      label="使用说明">
-   </el-table-column>
-
-  <el-table-column
-      prop="frequency"
-      label="频次">
-   </el-table-column>
-
-  <el-table-column
-      prop="quantity"
-      label="数量">
-   </el-table-column>
-
-  <el-table-column
-      prop="price"
-      label="药品价格">
-   </el-table-column>
-   
-  <el-table-column
-      prop="shouldpay"
-      label="药品合计">
-   </el-table-column>
-
-  <el-table-column
-      prop="createDate"
-      label="提交时间">
-   </el-table-column>
-
-   <el-table-column label="操作" fixed="right"  width="100">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-        type="text" icon="el-icon-delete" 
-          @click="deletePreDrug(scope.$index, scope.row)" >删除</el-button>
-   </template>
-    </el-table-column>
-
-</el-table>
-      </el-tab-pane>
     <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION">
 <div>
 <el-form label-width="120px" inline="true">
@@ -1197,7 +1202,7 @@ export default class AddGoods extends Vue {
     }
     return isJPG && isLt2M;
   }
-  drugType = "CHINESE";
+  drugType = "WESTERN";
   prodeInfo = [
     {
       title: "患者",

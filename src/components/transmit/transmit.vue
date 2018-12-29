@@ -116,8 +116,13 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
 </transmittable>
 
     </el-tab-pane>
+    <el-tab-pane :label="'在线开方24h内（'+online+'）'" name="name2">
 
-    <el-tab-pane :label="'全部（'+allprescription+'）'" name="name2">
+      <transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
+</transmittable>
+
+    </el-tab-pane>
+    <el-tab-pane :label="'全部（'+allprescription+'）'" name="name4">
 <div style="padding-bottom:20px;">
 <!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
 ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
@@ -214,8 +219,8 @@ import moment from "moment";
   }
 })
 export default class AddGoods extends Vue {
-  addPrescription(){
-    (<any>this.$refs.transmittable).addPrescription('add')
+  addPrescription() {
+    (<any>this.$refs.transmittable).addPrescription("add");
   }
 
   get notCount() {
@@ -223,14 +228,22 @@ export default class AddGoods extends Vue {
       ? this.countPreByStatuObj["data5"].count
       : 0;
   }
+
+
+    get online() {
+    return this.countPreByStatuObj["data6"]
+      ? this.countPreByStatuObj["data6"].count
+      : 0;
+  }
+
   allprescription = 0;
-DOC_HANDWORK = 0
+  DOC_HANDWORK = 0;
   allPrescription() {
     indexApi.allPrescription().then(res => {
       if (res["retCode"]) {
         console.log(res.data);
         this.allprescription = res.data.All;
-        this.DOC_HANDWORK = res.data.DOC_HANDWORK
+        this.DOC_HANDWORK = res.data.DOC_HANDWORK;
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -280,7 +293,6 @@ DOC_HANDWORK = 0
   loading = false;
 
   getprescriptionList(filter = null) {
-
     if (filter) {
       this.page = 0;
     }
@@ -292,17 +304,23 @@ DOC_HANDWORK = 0
     let data = {
       prescriptionEnums: this.prescriptionEnums,
       key: this.key,
-      startCreatTime:this.date && this.date.length>0
-        ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
-        : "",
-      endCreatTime: this.date && this.date.length>0
-        ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
-        : ""
+      startCreatTime:
+        this.date && this.date.length > 0
+          ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
+          : "",
+      endCreatTime:
+        this.date && this.date.length > 0
+          ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
+          : ""
     };
 
-  if(this.prescriptionEnums1 =='name3'){
-     data['preTypeEnum'] ='DOC_HANDWORK'
-   }
+    if (this.prescriptionEnums1 == "name2") {
+      Object.assign(data, { onlineFlag: 1 });
+    }
+
+    if (this.prescriptionEnums1 == "name3") {
+      data["preTypeEnum"] = "DOC_HANDWORK";
+    }
 
     sessionStorage.tranObject = JSON.stringify(data);
     Object.assign(data, {
@@ -326,9 +344,8 @@ DOC_HANDWORK = 0
       }
     });
   }
- 
+
   mounted() {
- 
     this.allPrescription();
     this.getprescriptionList();
   }

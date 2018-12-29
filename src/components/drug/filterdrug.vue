@@ -190,7 +190,10 @@
 
    <el-table-column label="操作" fixed="right"  width="250">
       <template slot-scope="scope">
-       
+               <el-button
+          size="mini"
+          type="text"
+          @click="gocenter(scope.$index, scope.row)" >用法用量管理</el-button>
                              <el-button
           size="mini"
           type="text"
@@ -474,7 +477,7 @@
 <!-- :model="CHINESE_addDrug"  :rules="CHINESE_rules"  -->
 	 <el-form label-width="120px" ref="CHINESE"  :model="CHINESE_addDrug"  :rules="CHINESE_rules">
 			 	
-             	<el-form-item label="药品编码" prop="codeId" >
+             	<el-form-item label="药品编码：" prop="codeId" >
               					<el-input v-model="CHINESE_addDrug.codeId"  placeholder="请输入药品编码" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
          	<el-form-item label="药材名称：" prop="commonName">
@@ -488,38 +491,42 @@
               					<el-input v-model="CHINESE_addDrug.producingArea"  placeholder="请输入产地" style="max-width:400px;min-width:200px" ></el-input>
         </el-form-item>
 
-			<el-form-item label="分类："  prop="typeName">
-              					<el-input v-model="CHINESE_addDrug.typeName"  placeholder="请输入分类" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
 
 		<el-form-item label="药品规格："  prop="specification">
               					<el-input v-model="CHINESE_addDrug.specification"  placeholder="请输入药品规格" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
 
 
-			<el-form-item label="单位：" prop="packingUnit">
-              					<el-input v-model.number="CHINESE_addDrug.packingUnit"  placeholder="请输入单位" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-
 
 			<el-form-item label="克/份" prop="unitG">
               					<el-input v-model.number="CHINESE_addDrug.unitG"  placeholder="请输入克/份" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
-
-
-
-           	<el-form-item label="供应商：" prop="manufacturer">
-              					<el-input v-model="CHINESE_addDrug.manufacturer"  placeholder="请输入供应商" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-	
-    
     
          		<el-form-item label="煎煮方式：" prop="decoctingType">
+              
+              					<el-input v-model.number="CHINESE_addDrug.decoctingType"  placeholder="请输入煎煮方式" style="max-width:400px;min-width:200px" ></el-input>
+<!--               
               				<el-select  v-model="CHINESE_addDrug.decoctingType"  placeholder="请输入煎煮方式" style="max-width:400px;min-width:200px">
                         <el-option value="包煎" label="包煎"></el-option>
                         <el-option value="水煎" label="水煎"></el-option>
-                      </el-select>
+                      </el-select> -->
 				</el-form-item>	
+
+
+
+            	<el-form-item label="药品库价格：" prop="sellingPrice" >
+              					<el-input v-model="CHINESE_addDrug.sellingPrice"  placeholder="请输入药品库价格" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+        
+
+			<el-form-item label="单位：" prop="packingUnit">
+              					<el-input v-model.number="CHINESE_addDrug.packingUnit"  placeholder="请输入单位" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+			<el-form-item label="分类："  prop="typeName">
+              					<el-input v-model="CHINESE_addDrug.typeName"  placeholder="请输入分类" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
 <!-- 
         		<el-form-item label="指导价：" prop="guidance">
               					<el-input v-model="CHINESE_addDrug.guidance"  placeholder="请输入指导价" style="max-width:400px;min-width:200px" ></el-input>
@@ -537,15 +544,16 @@
   </el-select>
         </el-form-item>	
 
-            	<el-form-item label="药品库价格：" prop="sellingPrice" >
-              					<el-input v-model="CHINESE_addDrug.sellingPrice"  placeholder="请输入药品库价格" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-        
 
+           	<el-form-item label="供应商：" prop="manufacturer">
+              					<el-input v-model="CHINESE_addDrug.manufacturer"  placeholder="请输入供应商" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+<!-- 
             	<el-form-item label="同步原药品库："  v-if="type=='add'">
   <el-radio v-model="CHINESE_addDrug.synchronousFlag" label="1">是</el-radio>
   <el-radio v-model="CHINESE_addDrug.synchronousFlag" label="0">否</el-radio>
-				</el-form-item>	
+				</el-form-item>	 -->
 
                     </el-form >
 			<span slot="footer" class="dialog-footer" >
@@ -559,16 +567,14 @@
 
 
 
-
-
-
-
-
-
 		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="WESTERN_Model"  :title="type=='add'?'添加西药':'编辑西药'">
 
 	 <el-form label-width="120px" ref="WESTERN" :model="WESTERN_addDrug"  :rules="WESTERN_rules" >
-			 		<el-form-item label="通用名称：" prop="commonName">
+						 	
+             	<el-form-item label="药品编码：" prop="codeId" >
+              					<el-input v-model="WESTERN_addDrug.codeId"  placeholder="请输入药品编码" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+       		<el-form-item label="通用名称：" prop="commonName">
               					<el-input v-model="WESTERN_addDrug.commonName"  placeholder="请输入通用名称" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
       	<el-form-item label="商品名称：" prop="productName" >
@@ -580,8 +586,54 @@
 				</el-form-item>	
 
 
+
+       		<el-form-item label="厂家：" prop="manufacturer">
+              					<el-input v-model="WESTERN_addDrug.manufacturer"  placeholder="请输入厂家" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+
+        	
+
+<el-form-item label="剂型：" prop="dosageforms">
+              					<el-input v-model="WESTERN_addDrug.dosageforms"  placeholder="请输入剂型" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+
+			<el-form-item label="批准文号："  prop="hisCode">
+              					<el-input v-model="WESTERN_addDrug.hisCode"  placeholder="请输入批准文号" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+
+        	<el-form-item label="药品库价格：" prop="sellingPrice" >
+              					<el-input v-model="WESTERN_addDrug.sellingPrice"  placeholder="请输入药品库价格" style="max-width:400px;min-width:200px" ></el-input>
+    <el-button @click="changesellingPriceModel" v-if="WESTERN_addDrug.drugId">转方价格</el-button>
+      	</el-form-item>	
+
 			<el-form-item label="包装单位：" prop="packingUnit">
               					<el-input v-model.number="WESTERN_addDrug.packingUnit"  placeholder="请输入单位" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+    
+
+           <el-form-item label="科室" prop="department">
+            <!-- <el-cascader
+            v-model="addDrug.department"
+            :options="tableTree"
+            @change="changedepartmentId()"
+            change-on-select
+            clearable
+            ></el-cascader> -->
+
+              					<el-input v-model="WESTERN_addDrug.department"  placeholder="请输入科室" style="max-width:400px;min-width:200px" ></el-input>
+            
+        </el-form-item>
+
+			<el-form-item label="计量单位："  prop="dosageCode">
+              					<el-input v-model="WESTERN_addDrug.dosageCode"  placeholder="请输入计量单位" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+            	<el-form-item label="适应症：" prop="adaptability" >
+              					<el-input v-model="WESTERN_addDrug.adaptability" type="textarea"  :rows="4" placeholder="请输入适应症" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
 
 		<el-form-item label="供应商：" prop="partnerId">
@@ -599,52 +651,11 @@
   <el-button type="text" @click="openpartnerModel()" style="margin-left:20px;">新增供应商</el-button>
 				</el-form-item>	
     
-    
 
-           <el-form-item label="科室" prop="department">
-            <!-- <el-cascader
-            v-model="addDrug.department"
-            :options="tableTree"
-            @change="changedepartmentId()"
-            change-on-select
-            clearable
-            ></el-cascader> -->
-
-              					<el-input v-model="WESTERN_addDrug.department"  placeholder="请输入科室" style="max-width:400px;min-width:200px" ></el-input>
-            
-        </el-form-item>
-       		<el-form-item label="厂家：" prop="manufacturer">
-              					<el-input v-model="WESTERN_addDrug.manufacturer"  placeholder="请输入厂家" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-
-
-        	
-            	<el-form-item label="适应症：" prop="adaptability" >
-              					<el-input v-model="WESTERN_addDrug.adaptability" type="textarea"  :rows="4" placeholder="请输入适应症" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-
-<el-form-item label="剂型：" prop="dosageforms">
-              					<el-input v-model="WESTERN_addDrug.dosageforms"  placeholder="请输入剂型" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-
-
-			<el-form-item label="批准文号："  prop="hisCode">
-              					<el-input v-model="WESTERN_addDrug.hisCode"  placeholder="请输入批准文号" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-
-
-			<el-form-item label="计量单位："  prop="dosageCode">
-              					<el-input v-model="WESTERN_addDrug.dosageCode"  placeholder="请输入计量单位" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-
-        	<el-form-item label="药品库价格：" prop="sellingPrice" >
-              					<el-input v-model="WESTERN_addDrug.sellingPrice"  placeholder="请输入药品库价格" style="max-width:400px;min-width:200px" ></el-input>
-    <el-button @click="changesellingPriceModel" v-if="WESTERN_addDrug.drugId">转方价格</el-button>
-      	</el-form-item>	
-            	<el-form-item label="同步原药品库："  v-if="type=='add'">
+            	<!-- <el-form-item label="同步原药品库："  v-if="type=='add'">
   <el-radio v-model="WESTERN_addDrug.synchronousFlag" label="1">是</el-radio>
   <el-radio v-model="WESTERN_addDrug.synchronousFlag" label="0">否</el-radio>
-				</el-form-item>	
+				</el-form-item>	 -->
 
                     </el-form >
 			<span slot="footer" class="dialog-footer" >
@@ -771,7 +782,7 @@ export default class AddGoods extends Vue {
     specification: [
       { required: true, message: "请输入药品规格", trigger: "blur" }
     ],
-    partnerId: [{ required: true, message: "请选择供应商", trigger: "blur" }],
+    // partnerId: [{ required: true, message: "请选择供应商", trigger: "blur" }],
     manufacturer: [
       { required: true, message: "请输入生产厂家", trigger: "blur" }
     ],
@@ -976,11 +987,11 @@ export default class AddGoods extends Vue {
       });
   }
   gocenter(index, row) {
-    if (!row.id) {
+    if (!row.drugId) {
       this.$alert("找不到药品");
       return;
     }
-    sessionStorage.drugCenterId = row.id;
+    sessionStorage.drugCenterId = row.drugId;
     this.$router.push("/drugcenter");
   }
   type = "add";

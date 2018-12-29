@@ -32,25 +32,7 @@
 
       <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList="drugList"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
     </el-tab-pane> -->
-    <el-tab-pane  label="中药" name="CHINESE">
-  
-     <div style="padding-bottom:20px;">
-<el-row :gutter="10">
-  <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
-   <el-input
-  placeholder="请输入商品名称" style="margin-top:20px;" v-model="key"
-  clearable>
-</el-input>
-  </el-col>
-
-  <el-col :xs="5" :sm="5" :md="3" :lg="3" :xl="2" style="min-width: 250px;">
-<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getGrugList(true)">查询</el-button>
-<el-button type="primary"  style="margin-top:20px;" @click="change_CHINESE_Model('add',false)">新增药品</el-button>
-  </el-col>
-</el-row>
-</div>
-  <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList1="drugList1"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
-    </el-tab-pane>
+   
     <el-tab-pane  label="西药" name="WESTERN">
 
  <div style="padding-bottom:20px;">
@@ -72,6 +54,26 @@
       <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList2="drugList2" @allDrug="allDrug" :drugType="drugType"></filterdrug>
     </el-tab-pane>
 
+    <el-tab-pane  label="中药" name="CHINESE">
+  
+     <div style="padding-bottom:20px;">
+<el-row :gutter="10">
+  <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
+   <el-input
+  placeholder="请输入商品名称" style="margin-top:20px;" v-model="key"
+  clearable>
+</el-input>
+  </el-col>
+
+  <el-col :xs="5" :sm="5" :md="3" :lg="3" :xl="2" style="min-width: 250px;">
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getGrugList(true)">查询</el-button>
+<el-button type="primary"  style="margin-top:20px;" @click="change_CHINESE_Model('add',false)">新增药品</el-button>
+  </el-col>
+</el-row>
+</div>
+  <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList1="drugList1"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
+    </el-tab-pane>
+   
   </el-tabs>
 
 <el-col :span="24" class="toolbar">
@@ -105,7 +107,8 @@ export default class AddGoods extends Vue {
 
  }
   
-  drugType = "CHINESE";
+  drugType = "WESTERN";
+  
   allDrug() {
     indexApi.allDrug({}).then(res => {
       if (res["retCode"]) {
