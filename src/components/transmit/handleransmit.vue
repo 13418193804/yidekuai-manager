@@ -21,7 +21,7 @@
 <div  v-if="(presId ||'') !==''">
     {{ handleStatus(prodetail.presState)  }}
 </div>
-  <h4 style="margin:0;" :style="(presId ||'') !==''?'padding-left:10px;':''">订单类型1：</h4>
+  <h4 style="margin:0;" :style="(presId ||'') !==''?'padding-left:10px;':''">订单类型：</h4>
 <div>
   <span  v-if="(presId ||'') !==''">  {{ handleprescriptionType(prodetail.prescriptionType)  }}</span>
   <span v-else> 线下订单</span>
@@ -217,13 +217,15 @@
 </div>
   </el-col>
   <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
+
+  <el-tabs v-model="drugType"  @tab-click="handleClick">
+    <el-tab-pane  label="中药" name="CHINESE">
+
 	 <el-form label-width="120px">
-                <!-- <el-form-item  >
-                 <el-button size="medium" type="primary" @click="changeModel()">选择药品</el-button>
-				</el-form-item> -->
-				<el-form-item label="药品：" >
+
+				<el-form-item label="药材名称：" >
  <el-select style="width:100%;"
-    v-model="drug.id"
+    v-model="drug.drugId"
     filterable clearable
     remote
     placeholder="请输入药品"
@@ -231,15 +233,123 @@
     :loading="loading" @change="selectDrug">
     <el-option
       v-for="item in options4"
-      :key="item.id"
-      :label="item.commonName +'/' +item.productName+'/'+item.specification +'/' +item.manufacturer "
-      :value="item.id">
+      :key="item.drugId"
+      :label="handleLabel([item.commonName,item.productName,item.producingArea,item.typeName])"
+      :value="item.drugId">
+    </el-option>
+  </el-select>
+				</el-form-item>		
+
+
+
+
+ <el-form-item label="供应商：" >
+                      <el-input v-model="drug.manufacturer"
+  placeholder="请输入供应商"  >
+</el-input>
+	</el-form-item>
+
+
+
+               <el-form-item label="单位：" >
+                 
+                    <!-- <el-input v-model="drug.packing_unit"
+  placeholder="请输入单位"  /> -->
+  
+                    <el-select style="width:100%;"
+    v-model="drug.packing_unit"
+    placeholder="请输入单位"
+    :loading="loading"
+    >
+    <el-option
+      v-for="item in packingUnitList"
+      :key="item"
+      :label="item"
+      :value="item">
+    </el-option>
+    
+  </el-select>
+
+				</el-form-item>		
+
+
+               <el-form-item label="煎煮方式：" >
+                    <el-select style="width:100%;"
+    v-model="drug.decoctingType"
+    placeholder="请选择煎煮方式"
+    :loading="loading"
+    >
+  <el-option value="包煎" label="包煎"></el-option>
+<el-option value="水煎" label="水煎"></el-option>
+  </el-select>
+
+				</el-form-item>		
+  <el-form-item label="类型：" >
+                    <el-select style="width:100%;"
+    v-model="drug.chineseType"
+    placeholder="请选择类型"
+    :loading="loading"
+    >
+   <el-option      label="普通"      value="普通">
+    </el-option>
+      <el-option      label="贵细"      value="贵细">
+    </el-option>
+      <el-option      label="毒性"      value="毒性">
     </el-option>
   </el-select>
 
-
 				</el-form-item>		
-     
+  <el-form-item label="单价：" >
+                    <el-input v-model="drug.price"
+  placeholder="请输入单价"  />
+				</el-form-item>		
+                    <el-form-item label="数量：" >
+                      <el-input v-model="drug.quantity"
+  placeholder="请输入数量"  >
+</el-input>
+	</el-form-item>
+
+     <el-form-item label="药品价格：" >
+                      {{drug_total}}
+	</el-form-item>
+
+
+    <el-form-item label="使用说明：" >
+                      <el-input    type="textarea" v-model="instructions"  :rows="4"
+  placeholder="请输入使用说明"   style="max-width:400px;"
+  >
+</el-input>
+				</el-form-item>	
+
+
+                    <el-form-item >
+                 <el-button size="mini" type="primary" @click="docreateDrug()" :disabled="loading">提交</el-button>
+				</el-form-item>	
+
+
+	 </el-form>
+    </el-tab-pane>
+    <el-tab-pane  label="西药" name="WESTERN">
+	 <el-form label-width="120px">
+                <!-- <el-form-item  >
+                 <el-button size="medium" type="primary" @click="changeModel()">选择药品</el-button>
+				</el-form-item> -->
+				<el-form-item label="药品：" >
+ <el-select style="width:100%;"
+    v-model="drug.drugId"
+    filterable clearable
+    remote
+    placeholder="请输入药品"
+    :remote-method="remoteMethod"
+    :loading="loading" @change="selectDrug">
+    <el-option
+      v-for="item in options4"
+      :key="item.drugId"
+      :label="handleLabel([item.commonName,item.productName,item.specification,item.manufacturer])"
+      :value="item.drugId">
+    </el-option>
+  </el-select>
+				</el-form-item>		
                   <el-form-item label="供应商：" >
 
 
@@ -334,21 +444,29 @@
   placeholder="请输入数量"  >
 </el-input>
 	</el-form-item>
-<div class="flex flex-1 flex-pack-justify" style="margin-left:120px;margin-bottom:25px">
-  <el-radio v-model="drug.price" :label="drug.oldprice?drug.oldprice.toString():''" :disabled="!drug.id||!drug.oldprice">{{`上次售价：${drug.oldprice?drug.oldprice:''}`}}</el-radio>
-  <el-radio v-model="drug.price" :label="drug.drugPrice?drug.drugPrice.toString():''" :disabled="!drug.id">{{`药品库价格：${drug.drugPrice?drug.drugPrice:''}`}}</el-radio>
-</div>
+
+
+      <el-form-item label="备注：" >
+              <el-select style="width:100%;"
+    v-model="drug.drugremarkspriceId"
+    placeholder="请选择售价"
+    :loading="loading" @change="chengedrugremarks()"
+    >
+    <el-option
+      v-for="item in DrugPriceList"
+      :key="item"
+      :label="item.remarks"
+      :value="item.priceId">
+    </el-option>
+    
+  </el-select>
+				</el-form-item>		
+
+
       <el-form-item label="药品价格：" >
-                  <div style="display:flex;">
-                  <div style="flex:1;margin-right:20px">
-                    
                       <el-input v-model="drug.price"
-  placeholder="请输入药品价格"  :disabled="editPrice"
-  >
+  placeholder="请输入药品价格" >
 </el-input>
-</div>
-                 <el-button  style="" @click="editPrice =!editPrice" >{{editPrice ?'编辑':'保存'}}</el-button>
-</div>
 				</el-form-item>		
 
 
@@ -366,18 +484,263 @@
                  <el-button size="mini" type="primary" @click="docreateDrug()" :disabled="loading">提交</el-button>
 				</el-form-item>	
 </el-form>
+    </el-tab-pane>
+    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION">
+
+
+	 <el-form label-width="120px">
+
+				<el-form-item label="药材名称：" >
+ <el-select style="width:100%;"
+    v-model="drug.drugId"
+    filterable clearable
+    remote
+    placeholder="请输入药品"
+    :remote-method="remoteMethod"
+    :loading="loading" @change="selectDrug">
+    <el-option
+      v-for="item in options4"
+      :key="item.drugId"
+      :label="handleLabel([item.commonName,item.productName,item.producingArea,item.typeName])"
+      :value="item.drugId">
+    </el-option>
+  </el-select>
+				</el-form-item>		
+
+
+
+
+ <el-form-item label="供应商：" >
+                      <el-input v-model="drug.manufacturer"
+  placeholder="请输入供应商"  >
+</el-input>
+	</el-form-item>
+
+
+
+               <el-form-item label="单位：" >
+                 
+                    <el-input v-model="drug.packing_unit"
+  placeholder="请输入单位"  />
+<!--   
+                    <el-select style="width:100%;"
+    v-model="drug.packing_unit"
+    placeholder="请输入单位"
+    :loading="loading"
+    >
+    <el-option
+      v-for="item in packingUnitList"
+      :key="item"
+      :label="item"
+      :value="item">
+    </el-option>
+    
+  </el-select> -->
+
+				</el-form-item>		
+
+
+               <!-- <el-form-item label="煎煮方式：" >
+                    <el-select style="width:100%;"
+    v-model="drug.decoctingType"
+    placeholder="请选择煎煮方式"
+    :loading="loading"
+    >
+  <el-option value="包煎" label="包煎"></el-option>
+<el-option value="水煎" label="水煎"></el-option>
+  </el-select>
+
+				</el-form-item>		 -->
+  <el-form-item label="类型：" >
+                    <el-select style="width:100%;"
+    v-model="drug.chineseType"
+    placeholder="请选择类型"
+    :loading="loading"
+    >
+   <el-option      label="普通"      value="普通">
+    </el-option>
+      <el-option      label="贵细"      value="贵细">
+    </el-option>
+      <el-option      label="毒性"      value="毒性">
+    </el-option>
+  </el-select>
+
+				</el-form-item>		
+  <el-form-item label="单价：" >
+                    <el-input v-model="drug.price"
+  placeholder="请输入单价" />
+				</el-form-item>		
+                    <el-form-item label="数量：" >
+                      <el-input v-model="drug.quantity"
+  placeholder="请输入数量"  >
+</el-input>
+	</el-form-item>
+
+     <el-form-item label="药品价格：" >
+                      {{drug_total}}
+	</el-form-item>
+
+
+    <el-form-item label="使用说明：" >
+                      <el-input    type="textarea" v-model="instructions"  :rows="4"
+  placeholder="请输入使用说明"   style="max-width:400px;"
+  >
+</el-input>
+				</el-form-item>	
+
+
+                    <el-form-item >
+                 <el-button size="mini" type="primary" @click="docreateDrug()" :disabled="loading">提交</el-button>
+				</el-form-item>	
+
+
+	 </el-form>
+
+    </el-tab-pane>
+  </el-tabs>
   </el-col>
   </el-row>
-<div style="border-bottom:1px #e5e5e5 solid;padding:10px 0;">
+<div>
+
+
 </div>
+
+
+  <el-tabs v-model="drugType" @tab-click="handleClick">
+    <el-tab-pane  label="中药" name="CHINESE">
+<div>
+<el-form label-width="120px" inline="true">
+  	<el-form-item label="是否代煎：" >
+  <el-radio  :label="0" v-model="isReplaceDecocting">不代煎</el-radio>
+  <el-radio  :label="1"   v-model="isReplaceDecocting">代煎</el-radio>
+				</el-form-item>	
+  	<el-form-item label="用法用量：">
+<div class="flex everyNum">
+<div>共</div>
+<div><el-input size="mini" type="text" placeholder="输入数量" v-model="allDosage"/></div>
+<div>剂，每日</div>
+<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everydayDosage"/></div>
+<div>剂，1剂分</div>
+<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everytimeDosage"/></div>
+<div>次服用</div>
+</div>
+	  </el-form-item>	
+</el-form>
+</div>
+      <div style="text-align:right;">代煎费：<span style="color:red" >￥{{replaceDecoctingMoney}}</span></div>
+      <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{CHINESE_preDrugListtotal.toFixed(2)}}</span></div>
+<div style="height:25px;"></div>
 <el-table border
-    :data="preDrugList"
+    :data="CHINESE_preDrugList"
+    stripe
+    style="width: 100%">
+
+  <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="decoctingType"
+      label="煎煮方式">
+   </el-table-column>
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+
+   <el-table-column label="操作" fixed="right"  width="100">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+        type="text" icon="el-icon-delete" 
+          @click="deletePreDrug(scope.$index, scope.row)" >删除</el-button>
+   </template>
+    </el-table-column>
+
+</el-table>
+
+
+
+
+
+    </el-tab-pane>
+    <el-tab-pane  label="西药" name="WESTERN">
+
+      <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{WESTERN_preDrugListtotal.toFixed(2)}}</span></div>
+<div style="height:25px;"></div>
+
+<el-table border
+    :data="WESTERN_preDrugList"
     stripe
     style="width: 100%">
 
    
+  <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
 
-  <el-table-column fixed="left"
+
+  <el-table-column
       prop="drugName"
       label="通用名">
    </el-table-column>
@@ -464,6 +827,153 @@
     </el-table-column>
 
 </el-table>
+      </el-tab-pane>
+    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION">
+<div>
+<el-form label-width="120px" inline="true">
+
+  	<el-form-item label="用法用量：">
+<div class="flex everyNum">
+<div>每日</div>
+<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everydayTime"/></div>
+<div>次，1次</div>
+<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everytimes"/></div>
+<div>克，约服</div>
+<div><el-input size="mini" type="text" placeholder="输入数量" v-model="howManyDay" /></div>
+<div>天</div>
+</div>
+	  </el-form-item>	
+
+
+  	<el-form-item>
+<div class="flex everyNum">
+      膏方制作费：5kg内410元；以上80元/kg
+</div>
+	  </el-form-item>	
+</el-form>
+<div style="padding-left:36px;font-size:15.8px">选择要添加的辅料：</div>
+<el-form label-width="120px">
+  	<el-form-item label="糖类：">
+      <div class="flex">
+        <div class="lanbelBox"  v-for="(n,index) in sugarTypeList" :class="sugarType[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'sugarType')">{{n}}</div>
+</div>
+  	</el-form-item>
+
+
+      	<el-form-item label="代糖：">
+      <div class="flex">
+        <div class="lanbelBox"  v-for="(n,index) in aspartameList" :class="aspartame[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'aspartame')">{{n}}</div>
+</div>
+  	</el-form-item>
+
+
+      	<el-form-item label="其他：">
+      <div class="flex">
+        <div class="lanbelBox"  v-for="(n,index) in otherAccessoriesList" :class="otherAccessories[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'otherAccessories')">{{n}}</div>
+</div>
+  	</el-form-item>
+
+
+
+
+
+</el-form>
+</div>
+
+      <div style="text-align:right;">制作费：<span style="color:red" >￥{{makeMoney}}</span></div>
+      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{PASTE_preDrugListtotal.toFixed(2)}}</span></div>
+
+
+<div style="height:25px;"></div>
+<el-table border
+    :data="PASTE_preDrugList"
+    stripe
+    style="width: 100%">
+
+  <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+
+   <el-table-column label="操作" fixed="right"  width="100">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+        type="text" icon="el-icon-delete" 
+          @click="deletePreDrug(scope.$index, scope.row)" >删除</el-button>
+   </template>
+    </el-table-column>
+
+</el-table>
+
+
+
+    </el-tab-pane>
+  </el-tabs>
+
 
 <!-- <div style="text-align:right;padding:15px">
  <el-input
@@ -480,18 +990,17 @@
 </div>
   <div style="    text-align: right;
     margin-right: 20px;">
-
   <div v-if="pres_type =='DOC_HANDWORK' || pres_type == 'BACK_HANDWORK'">
     治疗服务费：
-          <el-input    v-model="createForm.serviceMoney" size="small"  :rows="4"
+          <el-input    v-model="serviceMoney" size="small"  :rows="4"
   placeholder="请输入治疗服务费"   style="max-width:180px;">
       <template slot="append">元</template>
       </el-input>
   </div>
 
   <div v-else>治疗服务费：<span style="color:red" >￥{{serviceMoney}}</span></div>
-      <div>药品合计：<span style="color:red" >￥{{presscriptionMoney}}</span></div>
-  <div v-if="pres_type !=='DOC_HANDWORK' && pres_type !== 'BACK_HANDWORK'">合计：<span style="color:red" >￥{{orderMoney}}</span></div>
+      <div>药品合计：<span style="color:red" >￥{{parseFloat(CHINESE_preDrugListtotal + WESTERN_preDrugListtotal+PASTE_preDrugListtotal).toFixed(2)}}</span></div>
+  <div >合计：<span style="color:red" >￥{{ parseFloat(CHINESE_preDrugListtotal + WESTERN_preDrugListtotal+PASTE_preDrugListtotal+parseFloat(replaceDecoctingMoney)+parseFloat(makeMoney)+parseFloat(serviceMoney)).toFixed(2)  }}</span></div>
 </div>
 
 <div style="    display: flex;
@@ -550,20 +1059,50 @@
 </div>
 </div>
 </div>
-
 </div>
 </div>
 
 
             </el-dialog>
 
+		<el-dialog  width= "50vw" :close-on-click-modal="false" title="确认转方" :append-to-body="true" :visible.sync="dialogFormVisible"   >
 
+
+  <el-checkbox-group v-model="checkList">
+    <div>
+    <el-checkbox label="CHINESE_MEDICINE"  :disabled="CHINESE_preDrugList.length == 0">中药</el-checkbox>
+    </div>
+    <div>
+    <el-checkbox label="WESTERN_MEDICINE"  :disabled="WESTERN_preDrugList.length == 0">西药</el-checkbox>
+    </div>
+    <div>
+    <el-checkbox label="PASTE_PRESCRIPTION" :disabled="PASTE_preDrugList.length == 0">膏方</el-checkbox>
+    </div>
+  </el-checkbox-group>
+
+
+
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisible = false">取 消</el-button>
+    <el-button type="primary" @click="submitcheckList">确 定</el-button>
+  </div>
+
+    </el-dialog>
+    
+		<el-dialog  width= "50vw" :close-on-click-modal="false" title="特殊药材确认" :append-to-body="true" :visible.sync="drugAdrugModel"   >
+      <div style="font-size:16px;">以下药材不宜同用:</div>
+      <div v-for="n in drugAdrugList" style="font-size: 14.8px;margin: 5px 0;"><span  style="color: #e6a23c;">{{n.guest}}</span>与<span style="color: #e6a23c;">{{n.honour}}</span></div>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="drugAdrugModel = false">取 消</el-button>
+    <el-button type="primary" @click="drugListAudit">确认药方</el-button>
+  </div>
+
+    </el-dialog>
 
     </div>
  </template>
 
 <script lang="ts">
-
 import Vue from "vue";
 import Component from "vue-class-component";
 import axios from "axios";
@@ -658,7 +1197,7 @@ export default class AddGoods extends Vue {
     }
     return isJPG && isLt2M;
   }
-  editPrice = true;
+  drugType = "CHINESE";
   prodeInfo = [
     {
       title: "患者",
@@ -688,25 +1227,45 @@ export default class AddGoods extends Vue {
     }
   ];
   activeNames = [0, 1, 2];
-
+  get drug_total() {
+    let drugTotal: any = this.drug["quantity"] * this.drug["price"];
+    if (drugTotal) {
+      return parseFloat(drugTotal).toFixed(2);
+    } else {
+      return "";
+    }
+  }
   selectDrug(drugId) {
     this.drug = {};
     let a = this.options4.filter(item => {
-      return drugId == item.id;
+      return drugId == item.drugId;
     });
-    this.drug["id"] = a[0].id;
+
+    this.drug["drugId"] = a[0].drugId;
     this.drug["commonName"] = a[0].commonName;
+    this.drug["productName"] = a[0].productName;
+    this.drug["typeName"] = a[0].typeName;
+    this.drug["packingUnit"] = a[0].packingUnit;
+    this.drug["producingArea"] = a[0].producingArea;
+    this.drug["chineseType"] = a[0].chineseType;
+    this.drug["codeId"] = a[0].codeId;
+
+    if (this.drugType === "WESTERN") {
+      this.drug["drugPrice"] = a[0].price;
+    } else {
+      this.drug["price"] = a[0].price;
+    }
+
+    this.drug["unitG"] = a[0].unitG;
+
     this.drug["hisCode"] = a[0].hisCode;
     this.drug["specification"] = a[0].specification;
     this.drug["drugPrice"] = a[0].drugPrice;
-    this.drug["primarykeyID"] = a[0].id;
+    this.drug["primarykeyID"] = a[0].drugId;
     this.drug["manufacturer"] = a[0].manufacturer;
-    this.drug["oldprice"] = a[0].oldprice;
-    if (this.drug.oldprice) {
-      this.drug["price"] = a[0].oldprice.toString();
-    } else {
-      this.drug["price"] = a[0].drugPrice.toString();
-    }
+    this.drug["packing_unit"] = a[0].packingUnit;
+    this.drug["decoctingType"] = a[0].decoctingType;
+    this.drug["chineseType"] = a[0].chineseType;
     //清空数据
     this.commonList();
   }
@@ -715,16 +1274,26 @@ export default class AddGoods extends Vue {
     // 清空数据
     this.commonList();
   }
-
+  chengedrugremarks() {
+    this.drug.price = this.DrugPriceList.filter(item => {
+      return this.drug.drugremarkspriceId == item.priceId;
+    })[0].sellingPrice;
+  }
   usagesList = [];
   frequencyList = [];
   backLoad = false;
   dosageList = [];
   packingUnitList = [];
   dosageformsList = [];
+  DrugPriceList = [];
   commonList() {
+    let drugType = this.drugType;
+    if (this.drugType == "PASTE_PRESCRIPTION") {
+      drugType = "CHINESE";
+    }
     let data = {
-      commonName: this.drug.commonName
+      commonName: this.drug.commonName,
+      drugType: drugType
     };
 
     if (this.drug.manufacturer) {
@@ -787,6 +1356,15 @@ export default class AddGoods extends Vue {
           this.dosageList = res.data.dosageList;
           if (res.data.dosageList[0]) {
             this.drug["dosage"] = res.data.dosageList[0];
+          }
+        }
+
+        // 价格
+        if (res.data.DrugPriceList) {
+          this.DrugPriceList = res.data.DrugPriceList;
+          if (res.data.DrugPriceList[0]) {
+            this.drug["price"] = res.data.DrugPriceList[0].sellingPrice;
+            this.drug["drugremarkspriceId"] = res.data.DrugPriceList[0].priceId;
           }
         }
 
@@ -854,7 +1432,7 @@ export default class AddGoods extends Vue {
         return "已审方";
       case "FAIL_AUDIT_PRESCRIPTION":
         return "审方失败";
-               case "GIVEUP_PRESCRIPTION":
+      case "GIVEUP_PRESCRIPTION":
         return "弃单";
       case "REJECT_AUDIT_PRESCRIPTION":
         if (this.$route.path == "/saveaudit") {
@@ -869,53 +1447,45 @@ export default class AddGoods extends Vue {
   model = false;
 
   doSubmit() {
+    //   if (
+    //     this.pres_type === "BACK_HANDWORK" ||
+    //     this.pres_type == "DOC_HANDWORK"
+    //   ) {
+    //     if ((this.createForm.docterId || "") === "") {
+    //       this.$message("请选择医生");
+    //       return;
+    //     }
 
+    //     if ((this.createForm.memberName || "") === "") {
+    //       this.$message("请输入患者姓名");
+    //       return;
+    //     }
+    // let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+    //       if ((this.createForm.memberAge || "") !== ""&& !re.test(this.createForm.memberAge)) {
+    //         this.$message("请输入0-130岁的年龄");
+    //         return;
+    //       }
 
+    //     if ((this.createForm.memberPhone || "") === "") {
+    //       this.$message("请输入患者手机号");
+    //       return;
+    //     }
+    //     if (!this.checkPhone.test(this.createForm.memberPhone)) {
+    //       this.$message("请输入正确的患者手机号");
+    //       return;
+    //     }
 
+    //     if ((this.createForm.memberIdcard || "") !== "") {
+    //       this.vaild_memberIdcard(() => {
+    //         this.doback();
+    //       });
+    //       return;
+    //     }
+    //   }
 
-  //   if (
-  //     this.pres_type === "BACK_HANDWORK" ||
-  //     this.pres_type == "DOC_HANDWORK"
-  //   ) {
-  //     if ((this.createForm.docterId || "") === "") {
-  //       this.$message("请选择医生");
-  //       return;
-  //     }
-
-  //     if ((this.createForm.memberName || "") === "") {
-  //       this.$message("请输入患者姓名");
-  //       return;
-  //     }
-  // let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
-  //       if ((this.createForm.memberAge || "") !== ""&& !re.test(this.createForm.memberAge)) {
-  //         this.$message("请输入0-130岁的年龄");
-  //         return;
-  //       }
-
-  //     if ((this.createForm.memberPhone || "") === "") {
-  //       this.$message("请输入患者手机号");
-  //       return;
-  //     }
-  //     if (!this.checkPhone.test(this.createForm.memberPhone)) {
-  //       this.$message("请输入正确的患者手机号");
-  //       return;
-  //     }
-
-  //     if ((this.createForm.memberIdcard || "") !== "") {
-  //       this.vaild_memberIdcard(() => {
-  //         this.doback();
-  //       });
-  //       return;
-  //     }
-  //   }
-
-
-          this.doback();
-
-    
+    this.doback();
   }
-  doback(){
-    
+  doback() {
     this.$confirm("确定退回该处方给开方医生?", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -923,8 +1493,6 @@ export default class AddGoods extends Vue {
     })
       .then(() => {
         this.backLoad = true;
-
-
 
         indexApi
           .doKillPreTransmit({
@@ -941,12 +1509,12 @@ export default class AddGoods extends Vue {
               // ) {
               //   this.doUpdatePre(res.data.nextPresId, "退回成功");
               // } else {
-                this.tranRemake = "";
-                if (res.data.nextPresId) {
-                  this.getCountForList("xia", res.data.nextPresId);
-                } else {
-                  this.$router.push("/transmit");
-                }
+              this.tranRemake = "";
+              if (res.data.nextPresId) {
+                this.getCountForList("xia", res.data.nextPresId);
+              } else {
+                this.$router.push("/transmit");
+              }
               // }
             } else {
               if (!res["islogin"]) {
@@ -1007,6 +1575,14 @@ export default class AddGoods extends Vue {
   }
 
   loading = false;
+
+  handleClick(e) {
+    console.log(this.drugType);
+    this.options4 = [];
+    this.drug = {};
+    this.instructions = "";
+  }
+
   docreateDrug() {
     if (!this.drug["quantity"]) {
       this.$alert("请输入药品数量");
@@ -1020,35 +1596,45 @@ export default class AddGoods extends Vue {
       return;
     }
 
-    if (!this.drug["price"]) {
-      this.$alert("请输入药品金额");
-      return;
-    }
-    let a = this.drug["price"] > 0;
-    if (!a) {
-      this.$alert("请输入正确的药品金额");
-      return;
-    }
+    // if (!this.drug["price"]) {
+    //   this.$alert("请输入药品金额");
+    //   return;
+    // }
+    // let a = this.drug["price"] > 0;
+    // if (!a) {
+    //   this.$alert("请输入正确的药品金额");
+    //   return;
+    // }
 
     this.drug["partnerName"] = this.drug.partnerObj;
     // this.drug["partnerId"] = this.drug.partnerObj["partnerId"];
-    this.drug["preId"] = this.presId;
+    this.drug["prescriptionId"] = this.presId;
     this.drug["drugName"] = this.drug["commonName"];
-    this.drug["guidance"] = this.drug["price"];
-    this.drug["instructions"] = this.instructions;
-    this.loading = true;
+    // this.drug["guidance"] = this.drug["price"];
 
+    // this.drug["price"] = this.drug["drugPrice"];
+
+    this.drug["instructions"] = this.instructions;
+
+    if (this.drugType == "CHINESE") {
+      this.drug["preDrugType"] = "CHINESE_MEDICINE";
+    }
+    if (this.drugType == "WESTERN") {
+      this.drug["preDrugType"] = "WESTERN_MEDICINE";
+    }
+    if (this.drugType == "PASTE_PRESCRIPTION") {
+      this.drug["preDrugType"] = "PASTE_PRESCRIPTION";
+    }
+    this.loading = true;
     indexApi.docreateDrug(this.drug).then(res => {
       this.loading = false;
       if (res["retCode"]) {
         if (this.pres_type == "BACK_HANDWORK") {
           this.presId = res.data.prescriptionId;
         }
-
         this.drug = {};
         this.instructions = "";
         this.queryPresDrug();
-        this.editPrice = true;
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -1062,12 +1648,27 @@ export default class AddGoods extends Vue {
   serviceMoney = 0;
   preIndex = 0;
   preDrugList = [];
+  CHINESE_preDrugList = [];
+  PASTE_preDrugList = [];
+  WESTERN_preDrugList = [];
   queryPresDrug() {
     indexApi.queryPresDrug({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.preDrugList = res.data.data;
-        this.presscriptionMoney = res.data.drugMoney;
-        this.orderMoney = res.data.orderMoney;
+        this.CHINESE_preDrugList = res.data.data.filter(item => {
+          return item.preDrugType == "CHINESE_MEDICINE";
+        });
+
+        this.PASTE_preDrugList = res.data.data.filter(item => {
+          return item.preDrugType == "PASTE_PRESCRIPTION";
+        });
+
+        this.WESTERN_preDrugList = res.data.data.filter(item => {
+          return item.preDrugType == "WESTERN_MEDICINE";
+        });
+
+        // this.presscriptionMoney = res.data.drugMoney;
+        // this.orderMoney = res.data.orderMoney;
         this.serviceMoney = res.data.serviceMoney;
       } else {
         if (!res["islogin"]) {
@@ -1111,11 +1712,14 @@ export default class AddGoods extends Vue {
         this.$message("请输入患者姓名");
         return;
       }
-  let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
-        if ((this.createForm.memberAge || "") !== ""&& !re.test(this.createForm.memberAge)) {
-          this.$message("请输入0-130岁的年龄");
-          return;
-        }
+      let re = /^(?:[0-9][0-9]?|1[012][0-9]|130)$/;
+      if (
+        (this.createForm.memberAge || "") !== "" &&
+        !re.test(this.createForm.memberAge)
+      ) {
+        this.$message("请输入0-130岁的年龄");
+        return;
+      }
 
       if ((this.createForm.memberPhone || "") === "") {
         this.$message("请输入患者手机号");
@@ -1128,14 +1732,175 @@ export default class AddGoods extends Vue {
 
       if ((this.createForm.memberIdcard || "") !== "") {
         this.vaild_memberIdcard(() => {
-          this.after_vaild();
+          this.drugAdrugListAudit(() => {
+            this.panduan(() => {
+              this.after_vaild();
+            });
+          });
         });
         return;
       }
     }
-          this.after_vaild();
-    
+    this.drugAdrugListAudit(() => {
+      this.panduan(() => {
+        this.after_vaild();
+      });
+    });
   }
+  drugAdrug(list) {
+    let str = list
+      .map(item => {
+        return item.drugName;
+      })
+      .join(" ");
+    let plist = [];
+    this.wei19list.forEach(item => {
+      if (str.indexOf(item.guest) !== -1 && str.indexOf(item.honour) !== -1) {
+        plist.push(item);
+      }
+    });
+    this.fan18list.forEach(item => {
+      if (str.indexOf(item.guest) !== -1) {
+        item.honourList.forEach(items => {
+          if (str.indexOf(items.honour) !== -1) {
+            plist.push({
+              guest: item.guest,
+              honour: items.honour
+            });
+          }
+        });
+      }
+    });
+
+    return plist;
+  }
+
+  wei19list = [
+    { guest: "硫黄", honour: "朴硝" },
+    { guest: "水银", honour: "砒霜" },
+    { guest: "狼毒", honour: "密陀僧" },
+    { guest: "巴豆", honour: "牵牛" },
+    { guest: "丁香", honour: "郁金" },
+    { guest: "川乌", honour: "犀角" },
+    { guest: "草乌", honour: "犀角" },
+    { guest: "牙硝", honour: "三棱" },
+    { guest: "官桂", honour: "赤石脂" },
+    { guest: "人参", honour: "五灵脂" }
+  ];
+
+  fan18list = [
+    {
+      guest: "甘草",
+      honourList: [
+        { honour: "甘遂" },
+        { honour: "大戟" },
+        { honour: "海藻" },
+        { honour: "芫花" }
+      ]
+    },
+    {
+      guest: "乌头",
+      honourList: [
+        { honour: "贝母" },
+        { honour: "瓜蒌" },
+        { honour: "半夏" },
+        { honour: "白蔹" },
+        { honour: "白芨" }
+      ]
+    },
+    {
+      guest: "藜芦",
+      honourList: [
+        { honour: "人参" },
+        { honour: "沙参" },
+        { honour: "丹参" },
+        { honour: "玄参" },
+        { honour: "细辛" },
+        { honour: "芍药" }
+      ]
+    }
+  ];
+
+  drugListAudit() {
+    this.drugAdrugModel = false;
+    this.panduan(() => {
+      this.after_vaild();
+    });
+  }
+
+  drugAdrugList = [];
+  drugAdrugModel = false;
+  drugAdrugListAudit(callback) {
+    this.drugAdrugList = [];
+    //中药 和中药
+    // 膏方和膏方
+    let drugAdrugCHINESE_preDrugList = this.drugAdrug(this.CHINESE_preDrugList);
+    let drugAdrugPASTE_preDrugList = this.drugAdrug(this.PASTE_preDrugList);
+    if (
+      drugAdrugCHINESE_preDrugList.length > 0 ||
+      drugAdrugPASTE_preDrugList.length > 0
+    ) {
+      this.drugAdrugList = drugAdrugCHINESE_preDrugList.concat(
+        drugAdrugPASTE_preDrugList
+      );
+      this.drugAdrugModel = true;
+      return;
+    } else {
+      callback();
+    }
+  }
+  PreDrugType = [];
+  panduan(callback) {
+    let count = 0;
+    let PreDrugType = [];
+    this.PreDrugType = [];
+    if (this.CHINESE_preDrugList.length > 0) {
+      if (parseInt(this.allDosage) >= 1) {
+      } else {
+        this.$alert("剂≥1");
+        return;
+      }
+      if (
+        (this.everydayDosage || "") == "" ||
+        (this.everytimeDosage || "") == ""
+      ) {
+        this.$message.error("请填写完整用法用量");
+        return;
+      }
+      count++;
+      PreDrugType.push("CHINESE_MEDICINE");
+    }
+    if (this.WESTERN_preDrugList.length > 0) {
+      count++;
+      PreDrugType.push("WESTERN_MEDICINE");
+    }
+    if (this.PASTE_preDrugList.length > 0) {
+      if (
+        (this.everydayTime || "") == "" ||
+        (this.everytimes || "") == "" ||
+        (this.howManyDay || "") == ""
+      ) {
+        this.$message.error("请填写完整用法用量");
+        return;
+      }
+
+      count++;
+      PreDrugType.push("PASTE_PRESCRIPTION");
+    }
+    if (count == 0) {
+      this.$alert("至少添加一条药品信息");
+      return;
+    }
+    this.PreDrugType = PreDrugType;
+
+    if (count > 1) {
+      this.dialogFormVisible = true;
+      return;
+    } else {
+      callback();
+    }
+  }
+
   vaild_memberIdcard(callback) {
     indexApi.checkidcard({ idcard: this.createForm.memberIdcard }).then(res => {
       if (res["retCode"]) {
@@ -1149,27 +1914,39 @@ export default class AddGoods extends Vue {
       }
     });
   }
-  after_vaild() {
-    if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
+  dialogFormVisible = false;
+  checkList = [];
+  submitcheckList() {
+    let list = [];
+    this.checkList.forEach(item => {
+      list = list.concat(
+        this.preDrugList.filter(res => {
+          return item === res.preDrugType;
+        })
+      );
+    });
 
+    let a = list.map(item => {
+      return item.prescriptionDrugId;
+    });
+
+    this.after_vaild(a);
+  }
+
+  after_vaild(list = null) {
+    if (this.pres_type == "BACK_HANDWORK" || this.pres_type == "DOC_HANDWORK") {
       if ((<any>this.$refs.cropper).preImageList.length > 0) {
         this.createForm.pictureIds = (<any>this.$refs.cropper).preImageList
           .map(item => {
             return item.presImageUrl;
           })
           .join(",");
-
       } else {
         this.$message("请上传处方图片");
         return;
       }
     }
 
-    //验证
-    if (this.preDrugList.length == 0) {
-      this.$alert("至少添加一条药品信息");
-      return;
-    }
     if ((this.diagnosis || "") == "") {
       this.$alert("请填写诊断");
       return;
@@ -1182,49 +1959,78 @@ export default class AddGoods extends Vue {
     })
       .then(() => {
         this.backLoad = true;
-        let temporaryPrescriptiondrugIds = [];
-        this.preDrugList.forEach((item, index) => {
-          temporaryPrescriptiondrugIds.push(item.prescriptionDrugId);
-          if (temporaryPrescriptiondrugIds.length == this.preDrugList.length) {
-            indexApi
-              .dotransmit({
-                temporaryPrescriptiondrugId: temporaryPrescriptiondrugIds.join(
-                  ","
-                ),
-                prescriptionId: this.presId,
-                tranRemake: this.tranRemake,
-                changeName: sessionStorage.name,
-                changeId: sessionStorage.merchantUserId,
-                diagnosis: this.diagnosis
-                // serviceMoney:0,
-              })
-              .then(res => {
-                this.backLoad = false;
-                if (res["retCode"]) {
-                  this.createForm.presId = res.data.prescription.presId;
-
-                  if (
-                    this.pres_type == "BACK_HANDWORK" ||
-                    this.pres_type == "DOC_HANDWORK"
-                  ) {
-                    this.doUpdatePre(res.data.nextPresId, "转方成功");
-                  } else {
-                    this.tranRemake = "";
-                    if ((res.data.nextPresId || "") !== "") {
-                      this.getCountForList("xia", res.data.nextPresId);
-                    } else {
-                      this.$router.push("/transmit");
-                    }
-                  }
-                } else {
-                  if (!res["islogin"]) {
-                    this.$alert(res["message"]);
-                  }
-                  console.error("数据查询错误");
-                }
-              });
+        this.dialogFormVisible = false;
+        let temporaryPrescriptiondrugIds = this.preDrugList.map(
+          (item, index) => {
+            return item.prescriptionDrugId;
           }
-        });
+        );
+        if (list) {
+          temporaryPrescriptiondrugIds = list;
+        }
+
+        indexApi
+          .dotransmit({
+            temporaryPrescriptiondrugId: temporaryPrescriptiondrugIds.join(","),
+            prescriptionId: this.presId,
+            tranRemake: this.tranRemake,
+            changeName: sessionStorage.name,
+            changeId: sessionStorage.merchantUserId,
+            diagnosis: this.diagnosis,
+            isReplaceDecocting: this.isReplaceDecocting,
+            allDosage: this.allDosage,
+            everydayDosage: this.everydayDosage,
+            everytimeDosage: this.everytimeDosage,
+            everydayTimes: this.everydayTime,
+            everytimesG: this.everytimes,
+            howManyDay: this.howManyDay,
+            serviceMoney: this.serviceMoney,
+            PreDrugType: this.PreDrugType.join(","),
+            sugarType: this.sugarType
+              .filter(item => {
+                return item;
+              })
+              .join(","),
+            aspartame: this.aspartame
+              .filter(item => {
+                return item;
+              })
+              .join(","),
+            otherAccessories: this.otherAccessories
+              .filter(item => {
+                return item;
+              })
+              .join(",")
+            // serviceMoney:0,
+          })
+          .then(res => {
+            this.backLoad = false;
+
+            if (res["retCode"]) {
+              this.createForm.presId = res.data.prescription.presId;
+              this.sugarType = [];
+              this.aspartame = [];
+              this.otherAccessories = [];
+              if (
+                this.pres_type == "BACK_HANDWORK" ||
+                this.pres_type == "DOC_HANDWORK"
+              ) {
+                this.doUpdatePre(res.data.nextPresId, "转方成功");
+              } else {
+                this.tranRemake = "";
+                if ((res.data.nextPresId || "") !== "") {
+                  this.getCountForList("xia", res.data.nextPresId);
+                } else {
+                  this.$router.push("/transmit");
+                }
+              }
+            } else {
+              if (!res["islogin"]) {
+                this.$alert(res["message"]);
+              }
+              console.error("数据查询错误");
+            }
+          });
       })
       .catch(() => {
         this.$message({
@@ -1239,7 +2045,7 @@ export default class AddGoods extends Vue {
     indexApi.getPrePic({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
         this.preImageList = res.data;
-  
+
         if (res.data.length > 0) {
           let a: any = this.$refs.cropper;
           a.changePreImageUrl(0);
@@ -1259,7 +2065,7 @@ export default class AddGoods extends Vue {
   queryPresDetatil() {
     indexApi.queryPresDetatil({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
-        this.prodetail = res.data;
+        this.prodetail = res.data.prescription;
 
         this.pres_type = this.prodetail["prescriptionType"];
         if (
@@ -1292,7 +2098,14 @@ export default class AddGoods extends Vue {
           this.createForm.docterId = this.prodetail["docterId"];
           this.createForm.docterName = this.prodetail["docterName"];
           this.createForm.docterName = this.prodetail["docterName"];
-          this.createForm.serviceMoney = this.prodetail["serviceMoney"];
+
+          this.serviceMoney = this.prodetail["serviceMoney"];
+          //  if (this.prodetail["serviceMoney"] > 0) {
+          //       this.createForm.serviceMoney = this.prodetail["serviceMoney"];
+          //     } else {
+          //       this.createForm.serviceMoney = 0;
+          //     }
+
           this.createForm.doctorMobile = this.prodetail["doctorMobile"];
           this.createForm.hospitalName = this.prodetail["hospitalName"];
           this.createForm.docterDept = this.prodetail["docterDept"];
@@ -1322,8 +2135,43 @@ export default class AddGoods extends Vue {
             ? this.prodetail["consigneeAddress"]
             : "";
         }
-        if (res.data) {
-          this.diagnosis = res.data.diagnose;
+        if (res.data.prescription) {
+          this.diagnosis = res.data.prescription.diagnose;
+          if (res.data.prescription.allDosage) {
+            this.allDosage = res.data.prescription.allDosage;
+          }
+          this.everydayDosage = res.data.prescription.everydayDosage;
+          this.everytimeDosage = res.data.prescription.everytimeDosage;
+          this.everydayTime = res.data.prescription.everydayTimes;
+          this.everytimes = res.data.prescription.everytimesG;
+          this.howManyDay = res.data.prescription.howManyDay;
+          // this.sugarType = res.data.prescription.sugarType;
+          this.otherAccessories = [];
+
+          res.data.prescription.sugarType.split(",").forEach(item => {
+            this.sugarTypeList.forEach((items, index) => {
+              if (item == items) {
+                console.log(this.sugarType);
+                this.sugarType[index] = items;
+              }
+            });
+          });
+
+          res.data.prescription.otherAccessories.split(",").forEach(item => {
+            this.otherAccessoriesList.forEach((items, index) => {
+              if (item == items) {
+                this.otherAccessories[index] = items;
+              }
+            });
+          });
+
+          res.data.prescription.aspartame.split(",").forEach(item => {
+            this.aspartameList.forEach((items, index) => {
+              if (item == items) {
+                this.aspartame[index] = items;
+              }
+            });
+          });
         }
         //  if(this.pres_type==='BACK_HANDWORK'){
         // }
@@ -1356,14 +2204,22 @@ export default class AddGoods extends Vue {
   drugList = [];
   getDrugList(query) {
     //  this.drug.commonName
+
+    let drugType = this.drugType;
+    if (this.drugType == "PASTE_PRESCRIPTION") {
+      drugType = "CHINESE";
+    }
+
     indexApi
       .getGrugList({
         keyFName: query,
-        preId: this.presId
+        preId: this.presId,
+        drugType: drugType
       })
       .then(res => {
         if (res["retCode"]) {
           this.options4 = res.data.list;
+          console.log(this.options4)
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -1552,9 +2408,8 @@ export default class AddGoods extends Vue {
 
   dialogImageUrl = "";
   dialogVisible = false;
-dialogImageUrlList=[]
-dialogImageIndex = 0
-
+  dialogImageUrlList = [];
+  dialogImageIndex = 0;
 
   add_upload_loading = false;
   fileUploadUrl = "";
@@ -1566,8 +2421,6 @@ dialogImageIndex = 0
     }
     return isLt5M;
   }
-
- 
 
   provinceList = [];
   cityList = [];
@@ -1594,6 +2447,138 @@ dialogImageIndex = 0
   }
 
   pres_type = "";
+  //是否代煎
+  isReplaceDecocting = 0;
+
+  // 共多少剂
+  allDosage = "1";
+  // 每日多少剂
+  everydayDosage = "0";
+  // 每一剂分多少次
+  everytimeDosage = "0";
+  // 每日多少次
+  everydayTime = "0";
+  // 一次多少克
+  everytimes = "0";
+  // 服用多少天
+  howManyDay = "0";
+
+  sugarTypeList = ["白冰糖", "红糖", "饴糖", "蜂蜜", "麦芽糖"];
+  //糖类
+  sugarType = [];
+
+  sugarTypechange(n, index, type) {
+    if (type == "sugarType") {
+      if (this.sugarType[index] == n) {
+        this.sugarType[index] = null;
+      } else {
+        this.sugarType[index] = n;
+      }
+      this.sugarType.push();
+    }
+
+    if (type === "aspartame") {
+      if (this.aspartame[index] == n) {
+        this.aspartame[index] = null;
+      } else {
+        this.aspartame[index] = n;
+      }
+      this.aspartame.push();
+    }
+
+    if (type === "otherAccessories") {
+      if (this.otherAccessories[index] == n) {
+        this.otherAccessories[index] = null;
+      } else {
+        this.otherAccessories[index] = n;
+      }
+      this.otherAccessories.push();
+    }
+  }
+
+  aspartameList = ["木糖醇", "甜蜜素", "元贞糖", "蛋白糖"];
+  //代糖
+  aspartame = [];
+  otherAccessoriesList = ["益母草膏", "黄酒", "雪梨膏"];
+  //其他辅料
+  otherAccessories = [];
+
+  get CHINESE_preDrugListtotal() {
+    let CHINESE_preDrugList = this.CHINESE_preDrugList.map(item => {
+      return item.shouldpay;
+    });
+    console.log(CHINESE_preDrugList);
+    if (CHINESE_preDrugList.length > 0) {
+      return (
+        CHINESE_preDrugList.reduce((total, num) => {
+          return total + num;
+        }) * parseFloat(this.allDosage)
+      );
+    } else {
+      return 0;
+    }
+  }
+  get WESTERN_preDrugListtotal() {
+    let WESTERN_preDrugList = this.WESTERN_preDrugList.map(item => {
+      return item.shouldpay;
+    });
+    if (WESTERN_preDrugList.length > 0) {
+      return WESTERN_preDrugList.reduce((total, num) => {
+        return total + num;
+      });
+    } else {
+      return 0;
+    }
+  }
+
+  get PASTE_preDrugListtotal() {
+    let PASTE_preDrugList = this.PASTE_preDrugList.map(item => {
+      return item.shouldpay;
+    });
+    if (PASTE_preDrugList.length > 0) {
+      return PASTE_preDrugList.reduce((total, num) => {
+        return total + num;
+      });
+    } else {
+      return 0;
+    }
+  }
+
+  get makeMoney() {
+    if (this.PASTE_preDrugList.length == 0) {
+      return 0;
+    }
+
+    // unitG
+    let PASTE_preDrugList = this.PASTE_preDrugList.map(item => {
+      return item.unitG * parseFloat(item.quantity);
+    });
+
+    let total = PASTE_preDrugList.reduce((total, num) => {
+      return total + num;
+    });
+    if (total > 5000) {
+      return (total - 5000) * 80 / 1000 + 410;
+    } else {
+      return 410.0;
+    }
+  }
+
+  get replaceDecoctingMoney() {
+    let total = parseFloat(this.allDosage) * 3.5;
+    if (total > 0 && this.isReplaceDecocting == 1) {
+      return total.toFixed(2);
+    } else {
+      return 0;
+    }
+  }
+  handleLabel(list) {
+    return list
+      .filter(item => {
+        return item;
+      })
+      .join("/");
+  }
   mounted() {
     this.fileUploadUrl = Config.g_upload_url;
     if (
@@ -1723,5 +2708,39 @@ dialogImageIndex = 0
   content: "*";
   color: #f56c6c;
   margin-right: 4px;
+}
+.everyNum {
+  font-size: 16px;
+}
+.everyNum input {
+  font-size: 16px;
+
+  width: 80px;
+  margin: 0 5px;
+  border: none;
+  border-bottom: 1px #000 solid;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.lanbelBox {
+  border-radius: 3px;
+  cursor: pointer;
+  line-height: 25px;
+  margin-top: 6px;
+  margin-right: 10px;
+  padding: 2px 10px;
+  height: 25px;
+}
+.lanbelBox_notactive {
+  background-color: #fff;
+  color: #aeaeae;
+  border: #aeaeae 1px solid;
+}
+
+.lanbelBox_active {
+  background-color: #e51c23;
+  color: #fff;
+  border: #e51c23 1px solid;
 }
 </style>

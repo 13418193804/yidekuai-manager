@@ -13,7 +13,22 @@
 <el-tag :type="handleOrderStatus(scope.row.orderStatue).type">
  {{handleOrderStatus(scope.row.orderStatue).title}}
 </el-tag>
- 
+</template>
+   </el-table-column>
+
+
+<el-table-column v-if="pagetype =='afterorder'"
+      label="是否处理" width="120">
+<template slot-scope="scope">
+     <el-switch @change="updateSign(scope.row)"
+    v-model="scope.row.sign"
+    active-color="#13ce66"
+    inactive-color="#ff4949"
+    :active-value="1"
+    :inactive-value="0" active-text="是"
+  inactive-text="否"
+ >
+  </el-switch>
 </template>
    </el-table-column>
 
@@ -24,7 +39,6 @@
 {{handlePayStatus(scope.row.payStatus).title}} 
 </template>
    </el-table-column>
-
 
 
 <!-- v-if="patModel != 'PENDING'" -->
@@ -38,31 +52,6 @@
 </template>
    </el-table-column>
 
-   
-
-        <el-table-column  
-      label="处方类型" width="150">
-      <template slot-scope="scope">
-    <el-tag v-if="scope.row.preDrugType"
-    
-  :type="handlepreDrugType(scope.row.preDrugType).type">
-        {{handlepreDrugType(scope.row.preDrugType).name}}
-</el-tag>
-      </template>
-   </el-table-column>
-
-
-
-        <el-table-column  
-      label="订单类型1" width="150">
-      <template slot-scope="scope">
-    <el-tag v-if="scope.row.prescriptionType"
-  :type="handleprescriptionType(scope.row.prescriptionType).type">
-        {{handleprescriptionType(scope.row.prescriptionType).name}}
-</el-tag>
-      </template>
-   </el-table-column>
-   
 
   <el-table-column
       prop="auditingDate"
@@ -86,7 +75,7 @@
 
 
       <el-table-column 
-      label="是否拆分订单" width="150">
+      label="拆分订单" width="150">
      <template slot-scope="scope">
      {{ handleOrderType(scope.row)}}
      </template>
@@ -150,6 +139,31 @@
 </el-tag>
      </template>
    </el-table-column>
+   
+        <el-table-column  
+      label="处方类型" width="200">
+      <template slot-scope="scope">
+    <div v-if="scope.row.preDrugType">
+  <el-tag v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
+  :type="handlepreDrugType(n).type">
+        {{handlepreDrugType(n).name}}
+</el-tag>
+    </div>
+      </template>
+   </el-table-column>
+
+
+
+        <el-table-column  
+      label="订单类型" width="150">
+      <template slot-scope="scope">
+    <el-tag v-if="scope.row.prescriptionType"
+  :type="handleprescriptionType(scope.row.prescriptionType).type">
+        {{handleprescriptionType(scope.row.prescriptionType).name}}
+</el-tag>
+      </template>
+   </el-table-column>
+   
        <el-table-column
       prop="remark"
       label="开方医生备注"  width="180">
@@ -199,6 +213,7 @@
           :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button> -->
          <el-button size="mini" 
           :type="scope.row.presState == 'GIVEUP_PRESCRIPTION'?'':'primary'" @click="doGiveup(scope.row)" v-if="pagetype =='reminder'" :disabled="scope.row.presState == 'GIVEUP_PRESCRIPTION'"  >{{  scope.row.presState == 'GIVEUP_PRESCRIPTION'?'已弃单':'弃单'}}</el-button>
+<el-button type="warning" size="mini"   @click="getOrderExport(scope.row.presId)"  >下载业务单</el-button>
   
 
      </template>
@@ -221,6 +236,23 @@
 </template>
    </el-table-column>
    
+
+<el-table-column 
+      label="是否处理" width="120">
+<template slot-scope="scope">
+     <el-switch @change="updateSign(scope.row)"
+    v-model="scope.row.sign"
+    active-color="#13ce66"
+    inactive-color="#ff4949"
+    :active-value="1"
+    :inactive-value="0" active-text="是"
+  inactive-text="否"
+ >
+  </el-switch>
+</template>
+   </el-table-column>
+
+
      <el-table-column
       label="收货人(开票)"  width="150">
 <template  slot-scope="scope">
@@ -254,6 +286,7 @@
    </el-table-column>
 
 
+
 <el-table-column 
       label="支付状态" width="150">
 <template slot-scope="scope">
@@ -271,27 +304,8 @@
   </el-tag>
 </template>
    </el-table-column>
-     
-             <el-table-column  
-      label="处方类型" width="150">
-      <template slot-scope="scope">
-    <el-tag v-if="scope.row.preDrugType"
-  :type="handlepreDrugType(scope.row.preDrugType).type">
-        {{handlepreDrugType(scope.row.preDrugType).name}}
-</el-tag>
-      </template>
-   </el-table-column>
 
 
-   <el-table-column  
-      label="订单类型1" width="150">
-      <template slot-scope="scope">
-    <el-tag v-if="scope.row.prescriptionType"
-  :type="handleprescriptionType(scope.row.prescriptionType).type">
-        {{handleprescriptionType(scope.row.prescriptionType).name}}
-</el-tag>
-      </template>
-   </el-table-column>
 
 
   <el-table-column
@@ -340,7 +354,7 @@
 
 
     <el-table-column 
-      label="是否拆分订单"  width="150">
+      label="拆分订单"  width="150">
      <template slot-scope="scope">
      {{ handleOrderType(scope.row)}}
      </template>
@@ -378,6 +392,28 @@
       label="药品金额" width="180">
    </el-table-column>
 
+           <el-table-column  
+      label="处方类型" width="200">
+      <template slot-scope="scope">
+    <div v-if="scope.row.preDrugType">
+  <el-tag v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
+  :type="handlepreDrugType(n).type">
+        {{handlepreDrugType(n).name}}
+</el-tag>
+    </div>
+      </template>
+   </el-table-column>
+
+
+   <el-table-column  
+      label="订单类型" width="150">
+      <template slot-scope="scope">
+    <el-tag v-if="scope.row.prescriptionType"
+  :type="handleprescriptionType(scope.row.prescriptionType).type">
+        {{handleprescriptionType(scope.row.prescriptionType).name}}
+</el-tag>
+      </template>
+   </el-table-column>
        <el-table-column
       prop="remark"
       label="开方医生备注"  width="180">
@@ -407,6 +443,7 @@
   <el-button
           size="mini"
           type="primary" @click="doRework(scope.$index, scope.row)" v-promiss.edit>开票</el-button>
+<el-button type="warning" size="mini"  @click="getOrderExport(scope.row.presId)"  >下载业务单</el-button>
 
              </template>
     </el-table-column>
@@ -957,7 +994,7 @@ export default class AddGoods extends Vue {
       this.getPrePic(row.presId, () => {
         let a = {};
         (<any>Object).assign(a, row);
-        console.log(row)
+        console.log(row);
         this.createForm = a;
         let cityid = this.createForm.cityid;
         let areaid = this.createForm.areaid;
@@ -1158,7 +1195,6 @@ export default class AddGoods extends Vue {
       })
       .then(res => {
         if (res["retCode"]) {
-
           res.data.YdkOrderDetailList.forEach((item, index) => {
             item.logisticslabel = item.logistics;
             item.waybillNumberlabel = item.waybillNumber;
@@ -1174,7 +1210,6 @@ export default class AddGoods extends Vue {
             (<any>this.$refs.updateorder).getExpressPackage(presId, send);
             return;
           }
-
           this.order = res.data;
           (<any>this.$refs.updateorder).payModeEnum = res.data.payStatus;
           (<any>this.$refs.updateorder).getExpressPackage(presId, send);
@@ -1230,10 +1265,10 @@ export default class AddGoods extends Vue {
 
   handleOrderType(row) {
     if (row.splitFlag === "1") {
-      return "拆分订单";
+      return "是";
     }
     if (row.splitFlag === "0") {
-      return "普通订单";
+      return "否";
     }
     return "";
   }
@@ -1317,6 +1352,27 @@ export default class AddGoods extends Vue {
     this.dialogVisible = true;
   }
 
+  // 导出业务单
+  getOrderExport(presId) {
+    indexApi.getOrderExport(presId);
+  }
+
+  updateSign(row) {
+    indexApi
+      .updateSign({
+        preId: row.presId
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          this.$emit("getOrderList");
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+          console.error("数据查询错误");
+        }
+      });
+  }
   mounted() {
     this.queryProvinceList();
     this.queryShipList();

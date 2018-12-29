@@ -1,0 +1,150 @@
+
+	 <el-form label-width="120px">
+                <!-- <el-form-item  >
+                 <el-button size="medium" type="primary" @click="changeModel()">选择药品</el-button>
+				</el-form-item> -->
+				<el-form-item label="药品：" >
+ <el-select style="width:100%;"
+    v-model="drug.id"
+    filterable clearable
+    remote
+    placeholder="请输入药品"
+    :remote-method="remoteMethod"
+    :loading="loading" @change="selectDrug">
+    <el-option
+      v-for="item in options4"
+      :key="item.id"
+      :label="item.commonName +'/' +item.productName+'/'+item.specification +'/' +item.manufacturer "
+      :value="item.id">
+    </el-option>
+  </el-select>
+
+
+				</el-form-item>		
+     
+                  <el-form-item label="供应商：" >
+
+
+<!-- <el-autocomplete style="width:100%;"
+      class="inline-input"
+       v-model="drug.partnerObj"
+      value-key="partnerName"
+      :fetch-suggestions="querySearch4"
+      placeholder="请输入供应商"
+    ></el-autocomplete> -->
+
+
+
+ <el-select style="width:100%;"
+    v-model="drug.partnerObj"
+    clearable
+    placeholder="请选择供应商"
+    :loading="loading">
+    <el-option
+      v-for="item in partnerNameList"
+      :key="item.partnerId"
+      :label="item.partnerName"
+      :value="item.partnerId">
+    </el-option>
+  </el-select>
+
+				</el-form-item>		
+
+
+               <el-form-item label="单位：" >
+                    <el-select style="width:100%;"
+    v-model="drug.packing_unit"
+    placeholder="请输入单位"
+    :loading="loading"
+    >
+    <el-option
+      v-for="item in packingUnitList"
+      :key="item"
+      :label="item"
+      :value="item">
+    </el-option>
+    
+  </el-select>
+
+				</el-form-item>		
+
+
+       <el-form-item label="剂型：" >
+                    <el-select style="width:100%;"
+    v-model="drug.dosageforms"
+    placeholder="请输入剂型"
+    :loading="loading" 
+    >
+    <el-option
+      v-for="item in dosageformsList"
+      :key="item"
+      :label="item"
+      :value="item">
+    </el-option>
+    
+  </el-select>
+
+				</el-form-item>		
+
+
+                  <el-form-item label="用法：" >
+<el-autocomplete style="width:100%;"
+      class="inline-input"
+      v-model="drug.usages"
+      :fetch-suggestions="querySearch1"
+      placeholder="请输入用法"
+    ></el-autocomplete>
+				</el-form-item>		
+         <el-form-item label="单次用量：" >
+<el-autocomplete style="width:100%;"
+      class="inline-input"
+      v-model="drug.dosage"
+      :fetch-suggestions="querySearch2"
+      placeholder="请输入单次用量"
+    ></el-autocomplete>
+				</el-form-item>		
+         <el-form-item label="频次：" >
+<el-autocomplete style="width:100%;"
+      class="inline-input"
+      v-model="drug.frequency"
+      :fetch-suggestions="querySearch3"
+      placeholder="请输入频次" clearable
+    ></el-autocomplete>
+				</el-form-item>	
+                    <el-form-item label="数量：" >
+                      <el-input v-model="drug.quantity"
+  placeholder="请输入数量"  >
+</el-input>
+	</el-form-item>
+<div class="flex flex-1 flex-pack-justify" style="margin-left:120px;margin-bottom:25px">
+  <el-radio v-model="drug.price" :label="drug.oldprice?drug.oldprice.toString():''" :disabled="!drug.id||!drug.oldprice">{{`上次售价：${drug.oldprice?drug.oldprice:''}`}}</el-radio>
+  <el-radio v-model="drug.price" :label="drug.drugPrice?drug.drugPrice.toString():''" :disabled="!drug.id">{{`药品库价格：${drug.drugPrice?drug.drugPrice:''}`}}</el-radio>
+</div>
+      <el-form-item label="药品价格：" >
+                  <div style="display:flex;">
+                  <div style="flex:1;margin-right:20px">
+                    
+                      <el-input v-model="drug.price"
+  placeholder="请输入药品价格"  :disabled="editPrice"
+  >
+</el-input>
+</div>
+                 <el-button  style="" @click="editPrice =!editPrice" >{{editPrice ?'编辑':'保存'}}</el-button>
+</div>
+				</el-form-item>		
+
+
+
+    <el-form-item label="使用说明：" >
+                      <el-input    type="textarea" v-model="instructions"  :rows="4"
+  placeholder="请输入使用说明"   style="max-width:400px;"
+  >
+</el-input>
+				</el-form-item>	
+  
+
+
+                    <el-form-item >
+                 <el-button size="mini" type="primary" @click="docreateDrug()" :disabled="loading">提交</el-button>
+				</el-form-item>	
+</el-form>

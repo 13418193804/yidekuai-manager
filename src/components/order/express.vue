@@ -1,5 +1,6 @@
 <template>
     <div>
+  
   <el-tabs v-model="send_active"  type="border-card" @tab-click="getExpressPackageDrug" id="send_active">
     <el-tab-pane   label="商品信息"  name="goods_detail" v-if="type =='detail' && send_obj.splitFlag == '1' ">
 <div style=" margin-top:20px;    padding-top: 10px;">
@@ -10,46 +11,64 @@
 <div>合计：<span >￥{{order.orderMoney}}</span></div>
 </div>
 
-  <el-table border
-    :data="order.YdkOrderDetailList[0].YdkPrescriptiondrugList"
-    stripe 
+
+  <el-tabs v-model="all_drugType" >
+    <el-tab-pane  label="中药" name="CHINESE" v-if="order.SplitPrescription.CHINESE_MEDICINE && order.SplitPrescription.CHINESE_MEDICINE.drugs.length>0">
+
+<el-table border
+    :data="order.SplitPrescription.CHINESE_MEDICINE.drugs"
+    stripe
     style="width: 100%">
+    <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
 
-  <el-table-column fixed="left"
+  <el-table-column 
       prop="drugName"
-      :label="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'?'药材名称': '通用名'">
+      label="药材名称">
    </el-table-column>
 
   <el-table-column
-      prop="specification"
-      label="药品规格">
-   </el-table-column>
- 
-   <el-table-column
-      prop="decoctingType"
-      label="煎煮方式" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+      prop="productName"
+      label="别名">
    </el-table-column>
 
-<el-table-column
-      prop="chineseType"
-      label="类型(普通、贵细、毒性)"  min-width="200"  v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+  <el-table-column
+      prop="producingArea"
+      label="产地">
    </el-table-column>
 
-
- <el-table-column
-      prop="usages" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
-      label="用法">
+  <el-table-column
+      prop="typeName"
+      label="类名">
    </el-table-column>
- 
    
- <el-table-column
-      prop="dosage" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
-      label="用量">
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
    </el-table-column>
 
+
   <el-table-column
-      prop="frequency"
-      label="频次" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION' ">
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="decoctingType"
+      label="煎煮方式">
+   </el-table-column>
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
    </el-table-column>
 
   <el-table-column
@@ -57,31 +76,210 @@
       label="数量">
    </el-table-column>
 
- <el-table-column width="180" 
-      prop="manufacturer"
-      label="厂商" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'">
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+</el-table>
+      <div style="text-align:right;">代煎费：<span style="color:red" >￥{{order.prescription.isReplaceDecocting===1?order.prescription.replaceDecoctingMoney:0}}</span></div>
+          <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{order.SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
+
+
+    </el-tab-pane>
+    <el-tab-pane  label="西药" name="WESTERN" v-if="order.SplitPrescription.WESTERN_MEDICINE && order.SplitPrescription.WESTERN_MEDICINE.drugs.length>0">
+
+
+<el-table border
+    :data="order.SplitPrescription.WESTERN_MEDICINE.drugs"
+    stripe
+    style="width: 100%">
+    <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+   
+
+  <el-table-column 
+      prop="drugName"
+      label="通用名">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
+   </el-table-column>
+
+ <el-table-column
+      prop="usages"
+      label="用法">
+   </el-table-column>
+ 
+   
+ <el-table-column
+      prop="dosage"
+      label="用量">
+   </el-table-column>
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="frequency"
+      label="频次">
+   </el-table-column>
+  <el-table-column
+      prop="expressQuantity"
+      label="发货数量">
    </el-table-column>
 
 
   <el-table-column
-      prop="price"
-      label="单价">
+      prop="quantity"
+      label="数量">
    </el-table-column>
 
- <el-table-column
-      :prop="order.preDrugType !== 'CHINESE_MEDICINE'||order.preDrugType !== 'PASTE_PRESCRIPTION'?'manufacturer':'partnerName'"
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="partnerName"
+      label="供应商">
+   </el-table-column>
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="dosageforms"
+      label="剂型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="specification"
+      label="药品规格">
+   </el-table-column>
+
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+   </el-table>
+    <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{order.SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
+
+   </el-tab-pane>
+    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION" v-if="order.SplitPrescription.PASTE_PRESCRIPTION && order.SplitPrescription.PASTE_PRESCRIPTION.drugs.length>0">
+<el-table border
+    :data="order.SplitPrescription.PASTE_PRESCRIPTION.drugs"
+    stripe
+    style="width: 100%">
+
+    <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
       label="供应商">
    </el-table-column>
 
 
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
 
   <el-table-column
-      prop="countSingle"
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
       label="药品合计">
    </el-table-column>
-    </el-table>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+
+</el-table>
+
+   <div style="text-align:right;">制作费：<span style="color:red" >￥{{order.makeMoney}}</span></div>
+      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{order.SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
+    </el-tab-pane>
+  </el-tabs>
 
       </el-tab-pane>
+
+
+
 
 
     <el-tab-pane   label="未发货"  name="send_goods" v-if="type =='send'">
@@ -93,7 +291,6 @@
     </el-radio-group>
   </div>
   <div style="height:15px;"></div>
-<!-- v-if="send_obj.splitFlag =='0'" -->
 <div >
    <div>
 收货人： {{order.consigneeName}}
@@ -105,46 +302,6 @@
 收货地址：{{order.province}} &nbsp;&nbsp;{{order.city}} &nbsp;&nbsp;{{order.area}}  &nbsp;&nbsp;{{order.consigneeAddress}}
 </div>
 </div>
-
-<!-- <div v-else>
-			 <el-form label-width="100px" >
-				<el-form-item label="联系人名称" style="margin-bottom: 10px;">
-					<el-input v-model="addressObj.contactName" maxlength="10" size="mini" style="max-width:400px;"></el-input>
-				</el-form-item>
-
-				<el-form-item label="联系人号码" style="margin-bottom: 10px;">
-					<el-input v-model="addressObj.contactMobile" maxlength="20" size="mini" style="max-width:400px;"></el-input>
-				</el-form-item>
-		<el-form-item label="地区" style="margin:0;">
-<el-row :gutter="24" >
-  <el-col :xs="24" :sm="8" :md="6" :lg="5" :xl="3" style=" padding-left:0;   margin-bottom: 10px;">
-<el-select v-model="addressObj.provinceId" @change="queryCityList()" size="mini">
-<el-option v-for="(n,index) in provinceList" :key="index" :label="n.name" :value="n.id" ></el-option>
-</el-select>
-  </el-col>
-  <el-col :xs="24" :sm="8" :md="6" :lg="5" :xl="3" style="   padding-left:0; margin-bottom: 10px;">
-        <el-select v-model="addressObj.cityId" @change="queryCountryList()" size="mini">
-<el-option v-for="(n,index) in cityList" :key="index" :label="n.name" :value="n.id"></el-option>
-</el-select>
-
-  </el-col>
-
-  <el-col :xs="24" :sm="8" :md="6" :lg="5" :xl="3" style=" padding-left:0;   margin-bottom: 10px;">
-
-        <el-select v-model="addressObj.countryId" size="mini">
-<el-option v-for="(n,index) in countryList" :key="index" :label="n.name" :value="n.id"></el-option>
-</el-select>
-  </el-col>
-</el-row>
-
-    		</el-form-item>
-
-
-				<el-form-item label="联系地址">
-					<el-input v-model="addressObj.address" maxlength="50" size="mini" style="max-width:650px;"></el-input>
-				</el-form-item>
-			</el-form>
-</div> -->
 
 
     
@@ -158,101 +315,325 @@
 					<el-input v-model="send_obj.waybillNumber"   size="mini" style="max-width:400px;min-width:200px;"></el-input>
 				</el-form-item>
         
-        <!-- <el-form-item>
-        		<el-button type="primary" size="mini" @click="recvGood(item)" v-if="order.orderStatue == 'ORDER_WAIT_RECVGOODS' && pagetype =='afterorder'">确认收货</el-button>
-				</el-form-item> -->
 </el-form>
  <el-form label-width="100px" >
       <el-form-item  label="包裹备注：">
 					<el-input v-model="send_obj.remarks" placeholder="患者可见"  size="mini" style="max-width:400px;min-width:200px;"></el-input>
 				</el-form-item>
 </el-form>
-
       <div>
-<el-table border   ref="multipleTable"
-    :data="ExpressDrugDetailSumQuantityList"
-    stripe    @selection-change="handleSelectionChange"
+
+
+
+
+  <el-tabs v-model="drugType" >
+    <el-tab-pane  label="中药" name="CHINESE" v-if="CHINESE_preDrugList.length>0">
+
+<el-table border @selection-change="handleSelectionChange"
+    :data="CHINESE_preDrugList"
+    stripe
     style="width: 100%">
-   <el-table-column
+      <el-table-column fixed="left" v-if="send_obj.splitFlag == '1'"
       type="selection"
       width="55">
     </el-table-column>
- <el-table-column fixed="left"
+    <el-table-column
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
       prop="drugName"
-      :label="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'?'药材名称': '通用名'">
+      label="药材名称">
    </el-table-column>
 
   <el-table-column
-      prop="specification"
-      label="药品规格">
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
    </el-table-column>
 
 
-   <el-table-column
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
       prop="decoctingType"
-      label="煎煮方式" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+      label="煎煮方式">
    </el-table-column>
 
-<el-table-column
+    <el-table-column
       prop="chineseType"
-      label="类型(普通、贵细、毒性)"  min-width="200"  v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+</el-table>
+
+
+
+
+
+
+
+
+      <div style="text-align:right;">代煎费：<span style="color:red" >￥{{order.prescription.isReplaceDecocting===1?order.prescription.replaceDecoctingMoney:0}}</span></div>
+          <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{order.SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
+
+
+    </el-tab-pane>
+    <el-tab-pane  label="西药" name="WESTERN" v-if="WESTERN_preDrugList.length>0">
+
+
+<el-table border @selection-change="handleSelectionChange"
+    :data="WESTERN_preDrugList"
+    stripe
+    style="width: 100%">
+
+      <el-table-column fixed="left" v-if="send_obj.splitFlag == '1'"
+      type="selection"  width="55" >
+    </el-table-column>
+   
+    <el-table-column  
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+
+
+  <el-table-column 
+      prop="drugName"
+      label="通用名">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
    </el-table-column>
 
 
  <el-table-column
-      prop="usages" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
+      prop="usages"
       label="用法">
    </el-table-column>
  
    
  <el-table-column
-      prop="dosage" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
+      prop="dosage"
       label="用量">
    </el-table-column>
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
   <el-table-column
       prop="frequency"
-      label="频次" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION' ">
+      label="频次">
    </el-table-column>
-   
 
 
-
-<el-table-column width="150"  v-if="send_obj.splitFlag =='1'" 
+<el-table-column width="150" 
       label="添加数量/剩余数量">
       <template slot-scope="scope">
-        <div class="flex flex-align-center">
+        <div class="flex flex-align-center" >
           <div class="flex-1">
-        <el-input size="small"  v-model="scope.row.number" />
+            <span v-if="send_obj.splitFlag == '1'" > 
+        <el-input size="small"   v-model="scope.row.number" />
+            </span>
+            <span v-else style="float: right;">
+                {{scope.row.surplusSend}}
+            </span>
         </div>
         <div class="flex-1">&nbsp;/&nbsp;{{scope.row.surplusSend}}</div>
         </div>
       </template>
    </el-table-column>
 
-<el-table-column
+
+  <el-table-column
       prop="quantity"
       label="数量">
    </el-table-column>
 
- <el-table-column width="180" 
-      prop="manufacturer"
-      label="厂商" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'">
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
    </el-table-column>
 
   <el-table-column
-      prop="price"
-      label="单价">
-   </el-table-column>
- <el-table-column
-      :prop="order.preDrugType !== 'CHINESE_MEDICINE'||order.preDrugType !== 'PASTE_PRESCRIPTION'?'manufacturer':'partnerName'"
+      prop="partnerName"
       label="供应商">
    </el-table-column>
 
   <el-table-column
-      prop="countSingle"
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="dosageforms"
+      label="剂型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="specification"
+      label="药品规格">
+   </el-table-column>
+
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
+   </el-table-column>
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+   </el-table>
+    <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{order.SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
+
+   </el-tab-pane>
+    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION" v-if="PASTE_preDrugList.length>0">
+<el-table border @selection-change="handleSelectionChange"
+    :data="PASTE_preDrugList"
+    stripe
+    style="width: 100%">
+
+     <el-table-column fixed="left"
+      type="selection" v-if="send_obj.splitFlag == '1'"
+      width="55">
+    </el-table-column>
+    <el-table-column  
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
       label="药品合计">
    </el-table-column>
-    </el-table>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+
+</el-table>
+
+   <div style="text-align:right;">制作费：<span style="color:red" >￥{{order.makeMoney}}</span></div>
+      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{order.SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
+    </el-tab-pane>
+  </el-tabs>
+    
+
+
+
+
+
+
+
+
     </div>
 
 <div style="text-align:right; margin-top:20px;    padding-top: 10px;border-top: 1px #e5e5e5 solid;">
@@ -267,81 +648,331 @@
       </el-tab-pane>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <el-tab-pane   label="未发货"  name="send_detail"   v-if="type =='detail'">
       
-        
 
-<el-table border   
-    :data="ExpressDrugDetailSumQuantityList"
-    stripe    
+
+
+
+
+
+
+
+
+
+  <el-tabs v-model="wait_drugType" >
+    <el-tab-pane  label="中药" name="CHINESE" v-if="waitCHINESE_preDrugList.length>0">
+
+<el-table border
+    :data="waitCHINESE_preDrugList"
+    stripe
     style="width: 100%">
- <el-table-column 
-      prop="drugName"
-      :label="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'?'药材名称': '通用名'">
+    <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
    </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="decoctingType"
+      label="煎煮方式">
+   </el-table-column>
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+</el-table>
+      <div style="text-align:right;">代煎费：<span style="color:red" >￥{{order.prescription.isReplaceDecocting===1?order.prescription.replaceDecoctingMoney:0}}</span></div>
+          <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{order.SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
+
+
+    </el-tab-pane>
+    <el-tab-pane  label="西药" name="WESTERN" v-if="waitWESTERN_preDrugList.length>0">
+
+
+<el-table border
+    :data="waitWESTERN_preDrugList"
+    stripe
+    style="width: 100%">
+
+       <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+
+
+  <el-table-column 
+      prop="drugName"
+      label="通用名">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
+   </el-table-column>
+
+  <el-table-column
+      prop="partnerName"
+      label="供应商">
+   </el-table-column>
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="dosageforms"
+      label="剂型">
+   </el-table-column>
+
 
   <el-table-column
       prop="specification"
       label="药品规格">
    </el-table-column>
-    
-   <el-table-column
-      prop="decoctingType"
-      label="煎煮方式" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
-   </el-table-column>
 
-<el-table-column
-      prop="chineseType"
-      label="类型(普通、贵细、毒性)"  min-width="200"  v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
    </el-table-column>
 
  <el-table-column
-      prop="usages" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
+      prop="usages"
       label="用法">
    </el-table-column>
  
    
  <el-table-column
-      prop="dosage" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
+      prop="dosage"
       label="用量">
    </el-table-column>
 
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
 
   <el-table-column
       prop="frequency"
-      label="频次" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION' ">
+      label="频次">
    </el-table-column>
-   
-<el-table-column prop="surplusSend"
-      label="剩余数量">
-   </el-table-column>
-<el-table-column
+
+  <el-table-column
       prop="quantity"
       label="数量">
    </el-table-column>
 
-     <el-table-column width="180" 
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+   </el-table>
+    <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{order.SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
+
+   </el-tab-pane>
+    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION" v-if="waitPASTE_preDrugList.length>0">
+<el-table border
+    :data="waitPASTE_preDrugList"
+    stripe
+    style="width: 100%">
+
+   
+    <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
       prop="manufacturer"
-      label="厂商" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'">
+      label="供应商">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
    </el-table-column>
 
   <el-table-column
       prop="price"
-      label="单价">
+      label="药品价格">
    </el-table-column>
-
- <el-table-column
-      :prop="order.preDrugType !== 'CHINESE_MEDICINE'||order.preDrugType !== 'PASTE_PRESCRIPTION'?'manufacturer':'partnerName'"
-      label="供应商">
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
    </el-table-column>
 
   <el-table-column
-      prop="countSingle"
-      label="药品合计">
+      prop="createDate"
+      label="提交时间">
    </el-table-column>
-    </el-table>
+
+</el-table>
+
+   <div style="text-align:right;">制作费：<span style="color:red" >￥{{order.makeMoney}}</span></div>
+      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{order.SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
+    </el-tab-pane>
+  </el-tabs>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       </el-tab-pane>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <el-tab-pane v-for="(item,index) in expressPackageList"  :label="item. expressName"  :name="item.expressDetailId" >
 <el-container>
     <el-header style="height: 100px;">
@@ -376,78 +1007,323 @@
 <div style="margin:0 10px;">
   包裹发货时间：{{ExpressDetailModel.deliveryTime}}
 </div>
-<el-table border 
-    :data="ExpressDrugDetailList"
-    stripe 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+  <el-tabs v-model="send_drugType" >
+    <el-tab-pane  label="中药" name="CHINESE" v-if="send_CHINESE_preDrugList.length>0">
+
+<el-table border
+    :data="send_CHINESE_preDrugList"
+    stripe
     style="width: 100%">
 
+    <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
 
- <el-table-column fixed="left"
+  <el-table-column 
       prop="drugName"
-      :label="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'?'药材名称': '通用名'">
+      label="药材名称">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="productName"
+      label="别名">
    </el-table-column>
 
   <el-table-column
-      prop="specification"
-      label="药品规格">
-   </el-table-column>
-    
-   <el-table-column
-      prop="decoctingType"
-      label="煎煮方式" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+      prop="producingArea"
+      label="产地">
    </el-table-column>
 
-<el-table-column
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="decoctingType"
+      label="煎煮方式">
+   </el-table-column>
+
+    <el-table-column
       prop="chineseType"
-      label="类型(普通、贵细、毒性)"  min-width="200"  v-if="order.preDrugType == 'PASTE_PRESCRIPTION'||order.preDrugType == 'CHINESE_MEDICINE'">
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+</el-table>
+      <!-- <div style="text-align:right;">代煎费：<span style="color:red" >￥{{order.prescription.isReplaceDecocting===1?order.prescription.replaceDecoctingMoney:0}}</span></div> -->
+          <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
+
+
+    </el-tab-pane>
+    <el-tab-pane  label="西药" name="WESTERN" v-if="send_WESTERN_preDrugList.length>0">
+
+
+<el-table border
+    :data="send_WESTERN_preDrugList"
+    stripe
+    style="width: 100%">
+
+       <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="通用名">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="商品名">
    </el-table-column>
 
  <el-table-column
-      prop="usages" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
+      prop="usages"
       label="用法">
    </el-table-column>
  
    
  <el-table-column
-      prop="dosage" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'"
+      prop="dosage"
       label="用量">
    </el-table-column>
 
   <el-table-column
-      prop="frequency"
-      label="频次" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION' ">
+      prop="instructions"
+      label="使用说明">
    </el-table-column>
-   
+
+  <el-table-column
+      prop="frequency"
+      label="频次">
+   </el-table-column>
   <el-table-column
       prop="expressQuantity"
       label="发货数量">
    </el-table-column>
-     <el-table-column
-      prop="expressPrice"
-      label="发货金额">
-   </el-table-column>
 
-     <el-table-column width="180" 
-      prop="manufacturer"
-      label="厂商" v-if="order.preDrugType !== 'CHINESE_MEDICINE'&&order.preDrugType !== 'PASTE_PRESCRIPTION'">
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
    </el-table-column>
 
   <el-table-column
       prop="price"
-      label="单价">
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
    </el-table-column>
 
-
- <el-table-column
-      :prop="order.preDrugType !== 'CHINESE_MEDICINE'||order.preDrugType !== 'PASTE_PRESCRIPTION'?'manufacturer':'partnerName'"
+  <el-table-column
+      prop="partnerName"
       label="供应商">
    </el-table-column>
 
   <el-table-column
-      prop="countSingle"
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+   
+  <el-table-column
+      prop="dosageforms"
+      label="剂型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="specification"
+      label="药品规格">
+   </el-table-column>
+
+     <el-table-column width="180" 
+      prop="manufacturer"
+      label="厂商">
+   </el-table-column>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+   </el-table>
+    <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
+
+   </el-tab-pane>
+    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION" v-if="send_PASTE_preDrugList.length>0">
+<el-table border
+    :data="send_PASTE_preDrugList"
+    stripe
+    style="width: 100%">
+
+     <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+
+  <el-table-column
+      prop="producingArea"
+      label="产地">
+   </el-table-column>
+
+  <el-table-column
+      prop="typeName"
+      label="类名">
+   </el-table-column>
+   
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+
+    <el-table-column
+      prop="chineseType"
+      label="类型">
+   </el-table-column>
+
+
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
       label="药品合计">
    </el-table-column>
-    </el-table>
+
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+
+</el-table>
+
+   <!-- <div style="text-align:right;">制作费：<span style="color:red" >￥{{order.makeMoney}}</span></div> -->
+      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
+    </el-tab-pane>
+  </el-tabs>
 
     </el-main>
   </el-container>
@@ -456,88 +1332,7 @@
 
 
 </el-tab-pane>
-<!-- 
-<el-tab-pane   label="包裹列表"  name="packlist">
-<el-container>
 
-  <el-container>
-    <el-header style="height: 100px;">
-      <div>
-      <div>
-收货人： 陈锷
-</div>
-      <div>
-收货电话： 13632303429
-</div>
-      <div>
-收货地址： 四川省   攀枝花市   米易县   这话
-</div>
-    <div>
-物流单号：455034994161 物流公司：顺丰速递 <span style="color: #409EFF;    cursor: pointer;">物流跟踪</span>
-</div>
-</div>
-    </el-header>
-    <el-main>
-<div style="margin: 10px;">
-  药品总价：￥100.00
-</div>
-<el-table border 
-    :data="order.YdkOrderDetailList[0].YdkPrescriptiondrugList"
-    stripe 
-    style="width: 100%">
-
-  <el-table-column  fixed="left"
-      prop="drugName"
-      label="药品名称">
-   </el-table-column>
-  <el-table-column
-      prop="partnerName"
-      label="供应商">
-   </el-table-column>
-  <el-table-column
-      prop="specification"
-      label="药品规格">
-   </el-table-column>
- <el-table-column
-      prop="usages"
-      label="用法">
-   </el-table-column>
- <el-table-column
-      prop="dosage"
-      label="用量">
-   </el-table-column>
-    <el-table-column
-      prop="instructions"
-      label="使用说明">
-   </el-table-column>
-  <el-table-column
-      prop="frequency"
-      label="频次">
-   </el-table-column>
-  <el-table-column
-      prop="quantity"
-      label="数量">
-   </el-table-column>
-     <el-table-column
-      prop="manufacturer"
-      label="厂家">
-   </el-table-column>
-  <el-table-column
-      prop="price"
-      label="单价">
-   </el-table-column>
-
-    <el-table-column
-      prop="createDate"
-      label="提交时间">
-      </el-table-column>
-    </el-table>
-
-    </el-main>
-  </el-container>
-</el-container>
-
-    </el-tab-pane> -->
   </el-tabs>
 
 
@@ -577,7 +1372,28 @@ export default class AddGoods extends Vue {
   @Prop({ required: false })
   provinceList = [];
 
+  @Prop({ required: false })
+  waitCHINESE_preDrugList = [];
+  @Prop({ required: false })
+  waitPASTE_preDrugList = [];
+  @Prop({ required: false })
+  waitWESTERN_preDrugList = [];
+
+  wait_drugType = "CHINESE";
+
   ExpressDrugDetailSumQuantityList = [];
+
+  CHINESE_preDrugList = [];
+  PASTE_preDrugList = [];
+  WESTERN_preDrugList = [];
+
+  send_CHINESE_preDrugList = [];
+  send_PASTE_preDrugList = [];
+  send_WESTERN_preDrugList = [];
+
+  all_drugType = "CHINESE";
+
+  drugType = "CHINESE";
 
   loading = false;
   send_obj = {
@@ -588,6 +1404,7 @@ export default class AddGoods extends Vue {
 
   cityList = [];
   countryList = [];
+
   doSend() {
     let data = {
       presId: this.order.presId,
@@ -596,46 +1413,71 @@ export default class AddGoods extends Vue {
       splitFlag: this.send_obj.splitFlag,
       remarks: this.send_obj["remarks"]
     };
+
     if (this.send_obj.splitFlag == "1") {
-      if (this.selection.length == 0) {
-        this.$alert("请选择需要发货的药品");
+      if (
+        this.CHINESE_selection.length == 0 &&
+        this.WESTERN_selection.length == 0 &&
+        this.PASTE_selection.length == 0
+      ) {
+        this.$message.error("请选择需要发货的药品");
         return;
       }
 
+      if (this.CHINESE_selection.length != 0) {
+        if (this.CHINESE_preDrugList.length != this.CHINESE_selection.length) {
+          this.$message.error("中药不可以分开发货");
+          return;
+        } else {
+          Object.assign(data, { chineseExpressFlag: "1" });
+        }
+      }
+
+      if (this.PASTE_selection.length != 0) {
+        if (this.PASTE_preDrugList.length != this.PASTE_selection.length) {
+          this.$message.error("膏方不可以分开发货");
+          return;
+        } else {
+          Object.assign(data, { pasteExpressFlag: "1" });
+        }
+      }
+
       let PDrugQuantityListStr = [];
-      for (let i = 0; i < this.selection.length; i++) {
-        for (let j = 0; j < this.ExpressDrugDetailSumQuantityList.length; j++) {
+
+      for (let i = 0; i < this.WESTERN_selection.length; i++) {
+        for (let j = 0; j < this.WESTERN_preDrugList.length; j++) {
           if (
-            this.selection[i] ==
-              this.ExpressDrugDetailSumQuantityList[j].prescriptionDrugId &&
-            !this.ExpressDrugDetailSumQuantityList[j].number &&
-            typeof !parseFloat(this.ExpressDrugDetailSumQuantityList[j].number)
+            this.WESTERN_selection[i] ==
+              this.WESTERN_preDrugList[j].prescriptionDrugId &&
+            !this.WESTERN_preDrugList[j].number &&
+            typeof !parseFloat(this.WESTERN_preDrugList[j].number)
           ) {
             this.$alert("请输入正确的数量");
             return;
           }
 
           if (
-            this.ExpressDrugDetailSumQuantityList[j].number >
-            this.ExpressDrugDetailSumQuantityList[j].surplusSend
+            this.WESTERN_preDrugList[j].number >
+            this.WESTERN_preDrugList[j].surplusSend
           ) {
             this.$alert("发货数量超过剩余数量");
             return;
           }
-
+          console.log(this.WESTERN_preDrugList[j]);
           if (
-            this.selection[i] ==
-            this.ExpressDrugDetailSumQuantityList[j].prescriptionDrugId
+            this.WESTERN_selection[i] ==
+            this.WESTERN_preDrugList[j].prescriptionDrugId
           ) {
             PDrugQuantityListStr.push(
-              parseFloat(this.ExpressDrugDetailSumQuantityList[j].number)
+              parseFloat(this.WESTERN_preDrugList[j].number)
             );
             break;
           }
         }
       }
+
       Object.assign(data, {
-        PDrugIdListStr: this.selection.join(","),
+        PDrugIdListStr: this.WESTERN_selection.join(","),
         PDrugQuantityListStr: PDrugQuantityListStr.join(","),
         provinceid: this.addressObj["provinceId"],
         cityid: this.addressObj["cityid"],
@@ -684,6 +1526,7 @@ export default class AddGoods extends Vue {
         });
       });
   }
+
   queryCountryList() {
     this.addressObj["countryId"] = "";
     ApiOrder.queryCountryList(this.addressObj["cityId"]).then(res => {
@@ -699,15 +1542,37 @@ export default class AddGoods extends Vue {
   SendActive_type() {
     return this.type;
   }
+
   selection = [];
+  CHINESE_selection = [];
+  WESTERN_selection = [];
+  PASTE_selection = [];
   handleSelectionChange(e) {
-    this.selection = e.map(item => {
+    let list = e.map(item => {
       return item.prescriptionDrugId;
     });
+    switch (this.drugType) {
+      case "CHINESE":
+        this.CHINESE_selection = list;
+        break;
+
+      case "WESTERN":
+        this.WESTERN_selection = list;
+        break;
+
+      case "PASTE_PRESCRIPTION":
+        this.PASTE_selection = list;
+        break;
+    }
+
+    // this.selection = e.map(item => {
+    //   return item.prescriptionDrugId;
+    // });
   }
 
   ExpressDetailModel: any = {};
   ExpressDrugDetailList = [];
+
   setaddress() {
     this.addressObj = {
       contactName: this.order.consigneeName,
@@ -758,22 +1623,17 @@ export default class AddGoods extends Vue {
     } else {
       this.setaddress();
     }
-    // <div v-if="send_obj.splitFlag =='0'">
-    //    <div>
-    // 收货人： {{order.consigneeName}}
-    // </div>
-    //       <div>
-    // 收货电话： {{order.consigneePhone}}
-    // </div>
-    //       <div>
-    // 收货地址：{{order.province}} &nbsp;&nbsp;{{order.city}} &nbsp;&nbsp;{{order.area}}  &nbsp;&nbsp;{{order.consigneeAddress}}
-    // </div>
   }
   showShipInfo(obj) {
     this.$emit("showShipInfo", obj);
   }
-
+  SplitPrescription = [];
   getExpressPackageDrug(expressDetailId) {
+    // this.send_drugType = this.handleValue(
+    //       this.send_CHINESE_preDrugList,
+    //       this.send_WESTERN_preDrugList,
+    //       this.send_PASTE_preDrugList
+    //     );
     if (
       expressDetailId.name == "send_goods" ||
       expressDetailId.name == "goods_detail" ||
@@ -789,6 +1649,31 @@ export default class AddGoods extends Vue {
         if (res["retCode"]) {
           this.ExpressDetailModel = res.data.ExpressDetailModel;
           this.ExpressDrugDetailList = res.data.ExpressDrugDetailList;
+          this.SplitPrescription = res.data.SplitPrescription;
+
+          this.send_CHINESE_preDrugList = res.data.ExpressDrugDetailList.filter(
+            item => {
+              return item.preDrugType == "CHINESE_MEDICINE";
+            }
+          );
+
+          this.send_PASTE_preDrugList = res.data.ExpressDrugDetailList.filter(
+            item => {
+              return item.preDrugType == "PASTE_PRESCRIPTION";
+            }
+          );
+
+          this.send_WESTERN_preDrugList = res.data.ExpressDrugDetailList.filter(
+            item => {
+              return item.preDrugType == "WESTERN_MEDICINE";
+            }
+          );
+
+          this.send_drugType = this.handleValue(
+            this.send_CHINESE_preDrugList,
+            this.send_WESTERN_preDrugList,
+            this.send_PASTE_preDrugList
+          );
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -877,6 +1762,23 @@ export default class AddGoods extends Vue {
           message: "已取消操作"
         });
       });
+  }
+  send_drugType = "";
+
+  handleValue(CHINESE_preDrugList, WESTERN_preDrugList, PASTE_preDrugList) {
+    if (CHINESE_preDrugList.length > 0) {
+      return "CHINESE";
+    }
+
+    if (WESTERN_preDrugList.length > 0) {
+      return "WESTERN";
+    }
+
+    if (PASTE_preDrugList.length > 0) {
+      return "PASTE_PRESCRIPTION";
+    }
+
+    return "";
   }
 
   mounted() {}

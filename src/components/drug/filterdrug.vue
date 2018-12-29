@@ -40,7 +40,7 @@
       prop="department"
       label="科室">
    </el-table-column>
-<el-table-column
+<el-table-column 
       prop="manufacturer"
       label="厂家">
    </el-table-column>
@@ -103,13 +103,15 @@
 </div>
 
 <div v-if="drugType=='WESTERN'">
-
 <el-table border ref="table"
     :data="drugList2"
     stripe height="600"
     style="width: 100%;">
-
-  <el-table-column  fixed="left"
+   <el-table-column fixed="left"
+      prop="codeId"  width="120"
+      label="药品编码">
+   </el-table-column>
+  <el-table-column 
       prop="commonName"
       label="通用名称">
    </el-table-column>
@@ -140,7 +142,7 @@
       label="科室">
    </el-table-column>
 
-<el-table-column
+<el-table-column width="200px"
       prop="manufacturer"
       label="厂家">
    </el-table-column>
@@ -172,7 +174,7 @@
       prop="sellingPrice"
       label="药品库价格">
    </el-table-column>
-   
+
 <el-table-column
       label="状态">
       <template slot-scope="scope">
@@ -207,8 +209,11 @@
     :data="drugList1"
     stripe height="600"
     style="width: 100%;">
-
-  <el-table-column  fixed="left"
+   <el-table-column fixed="left"
+      prop="codeId" width="120"
+      label="药品编码">
+   </el-table-column>
+  <el-table-column 
       prop="commonName"
       label="药材名称">
    </el-table-column>
@@ -248,6 +253,7 @@
       prop="sellingPrice"
       label="药品库价格">
    </el-table-column>
+
 <el-table-column
       label="状态">
       <template slot-scope="scope">
@@ -396,6 +402,12 @@
 			</span>
 </el-dialog>
 
+		<el-dialog width= "50vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="sellingPriceModel"  title="转方价格">
+
+       <div style="    margin-bottom: 10px;">
+        <el-button size="mini" type="primary" @click="changeaddsellingPriceModel">添加转方价格</el-button>
+
+       </div>
 
 
 
@@ -403,6 +415,57 @@
 
 
 
+<el-table border 
+    :data="sellingPriceList"
+    stripe
+    style="width: 100%;">
+  <el-table-column   width="120"
+      prop="sellingPrice"
+      label="转方价格">
+   </el-table-column>
+  <el-table-column
+      prop="remarks"
+      label="备注">
+   </el-table-column>
+
+   <el-table-column label="操作" fixed="right"  width="250">
+      <template slot-scope="scope">
+      
+                <el-button
+          size="mini"
+          type="danger"
+         @click="sumbitdeletesellingPrice(scope.row)" >删除</el-button>
+      </template>
+    </el-table-column>
+
+
+</el-table>
+    </el-dialog>
+
+		<el-dialog width= "50vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="addsellingPriceModel"  title="添加转方价格">
+
+
+
+
+	 <el-form label-width="120px" ref="CHINESE"  :model="addsellingPriceForm" >
+
+ 		<el-form-item label="转方价格：" >
+              					<el-input v-model="addsellingPriceForm.sellingPrice"  placeholder="请输入转方价格" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+
+
+ 		<el-form-item label="备注：" >
+              					<el-input v-model="addsellingPriceForm.remarks"  placeholder="备注" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+	 </el-form>
+
+
+	<span slot="footer" class="dialog-footer" >
+				<el-button @click="addsellingPriceModel = false">取 消</el-button>
+				<el-button type="primary" @click="submitaddsellingPrice" :disabled="loading">确 定</el-button>
+			</span>
+
+    </el-dialog>
 
 
 
@@ -410,7 +473,11 @@
 		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="CHINESE_Model"  :title="type=='add'?'添加中药':'编辑中药'">
 <!-- :model="CHINESE_addDrug"  :rules="CHINESE_rules"  -->
 	 <el-form label-width="120px" ref="CHINESE"  :model="CHINESE_addDrug"  :rules="CHINESE_rules">
-			 		<el-form-item label="药材名称：" prop="commonName">
+			 	
+             	<el-form-item label="药品编码" prop="codeId" >
+              					<el-input v-model="CHINESE_addDrug.codeId"  placeholder="请输入药品编码" style="max-width:400px;min-width:200px" ></el-input>
+				</el-form-item>	
+         	<el-form-item label="药材名称：" prop="commonName">
               					<el-input v-model="CHINESE_addDrug.commonName"  placeholder="请输入药材名称" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
       	<el-form-item label="别名：" prop="productName" >
@@ -448,7 +515,10 @@
     
     
          		<el-form-item label="煎煮方式：" prop="decoctingType">
-              					<el-input v-model="CHINESE_addDrug.decoctingType"  placeholder="请输入煎煮方式" style="max-width:400px;min-width:200px" ></el-input>
+              				<el-select  v-model="CHINESE_addDrug.decoctingType"  placeholder="请输入煎煮方式" style="max-width:400px;min-width:200px">
+                        <el-option value="包煎" label="包煎"></el-option>
+                        <el-option value="水煎" label="水煎"></el-option>
+                      </el-select>
 				</el-form-item>	
 <!-- 
         		<el-form-item label="指导价：" prop="guidance">
@@ -470,6 +540,7 @@
             	<el-form-item label="药品库价格：" prop="sellingPrice" >
               					<el-input v-model="CHINESE_addDrug.sellingPrice"  placeholder="请输入药品库价格" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>	
+        
 
             	<el-form-item label="同步原药品库："  v-if="type=='add'">
   <el-radio v-model="CHINESE_addDrug.synchronousFlag" label="1">是</el-radio>
@@ -568,8 +639,8 @@
 
         	<el-form-item label="药品库价格：" prop="sellingPrice" >
               					<el-input v-model="WESTERN_addDrug.sellingPrice"  placeholder="请输入药品库价格" style="max-width:400px;min-width:200px" ></el-input>
-				</el-form-item>	
-
+    <el-button @click="changesellingPriceModel" v-if="WESTERN_addDrug.drugId">转方价格</el-button>
+      	</el-form-item>	
             	<el-form-item label="同步原药品库："  v-if="type=='add'">
   <el-radio v-model="WESTERN_addDrug.synchronousFlag" label="1">是</el-radio>
   <el-radio v-model="WESTERN_addDrug.synchronousFlag" label="0">否</el-radio>
@@ -710,15 +781,11 @@ export default class AddGoods extends Vue {
     dosageforms: [{ required: true, message: "请输入剂型", trigger: "blur" }]
   };
 
-
-
-
-
-  CHINESE_rules ={
-       partnerName: [{ required: true, message: "请选择供应商", trigger: "blur" }],
+  CHINESE_rules = {
+    partnerName: [{ required: true, message: "请选择供应商", trigger: "blur" }],
     hisCode: [{ required: true, message: "请输入批准文号", trigger: "blur" }],
     sellingPrice: [
-      { required: true, message: "请输入药品库价格", trigger: "blur" },
+      { required: true, message: "请输入药品库价格", trigger: "blur" }
       // { type: "number", message: "售价必须为数字值" }
     ],
     productName: [
@@ -727,10 +794,11 @@ export default class AddGoods extends Vue {
     commonName: [
       { required: true, message: "请输入通用名称", trigger: "blur" }
     ],
-        unitG: [
-      { required: true, message: "请输入克/份", trigger: "blur" }
+    unitG: [{ required: true, message: "请输入克/份", trigger: "blur" }],
+    decoctingType: [
+      { required: true, message: "请输入煎煮方式", trigger: "blur" }
     ],
-    
+
     specification: [
       { required: true, message: "请输入药品规格", trigger: "blur" }
     ],
@@ -742,17 +810,13 @@ export default class AddGoods extends Vue {
       { required: true, message: "请输入制剂类型", trigger: "blur" }
     ],
     dosageforms: [{ required: true, message: "请输入剂型", trigger: "blur" }]
-  }
+  };
 
-
-
-
-  
-WESTERN_rules = {
-     partnerName: [{ required: true, message: "请选择供应商", trigger: "blur" }],
+  WESTERN_rules = {
+    partnerName: [{ required: true, message: "请选择供应商", trigger: "blur" }],
     hisCode: [{ required: true, message: "请输入批准文号", trigger: "blur" }],
     sellingPrice: [
-      { required: true, message: "请输入药品库价格", trigger: "blur" },
+      { required: true, message: "请输入药品库价格", trigger: "blur" }
       // { type: "number", message: "售价必须为数字值" }
     ],
     productName: [
@@ -765,18 +829,12 @@ WESTERN_rules = {
       { required: true, message: "请输入药品规格", trigger: "blur" }
     ],
     partnerId: [{ required: true, message: "请选择供应商", trigger: "blur" }],
-    manufacturer: [
-      { required: true, message: "请输入厂家", trigger: "blur" }
-    ],
+    manufacturer: [{ required: true, message: "请输入厂家", trigger: "blur" }],
     preparations: [
       { required: true, message: "请输入制剂类型", trigger: "blur" }
     ],
     dosageforms: [{ required: true, message: "请输入剂型", trigger: "blur" }]
-}
-
-
-
-
+  };
 
   CHINESE_addDrug: any = {};
 
@@ -834,7 +892,7 @@ WESTERN_rules = {
     }
 
     if (this.type === "edit") {
-      obj.synchronousFlag = "0"
+      obj.synchronousFlag = "0";
       drugApi.updateYdkDrugNew(obj).then(res => {
         this.loading = false;
         if (res["retCode"]) {
@@ -945,7 +1003,7 @@ WESTERN_rules = {
   CHINESE_Model = false;
   change_CHINESE_Model(type, row) {
     this.type = type;
-    this.CHINESE_addDrug = { drugType: "CHINESE",synchronousFlag:"1" };
+    this.CHINESE_addDrug = { drugType: "CHINESE", synchronousFlag: "1" };
     this.CHINESE_Model = true;
     if (row) {
       let a = {};
@@ -958,7 +1016,7 @@ WESTERN_rules = {
   WESTERN_Model = false;
   change_WESTERN_Model(type, row) {
     this.type = type;
-    this.WESTERN_addDrug = { drugType: "WESTERN",synchronousFlag:"1"  };
+    this.WESTERN_addDrug = { drugType: "WESTERN", synchronousFlag: "1" };
     this.queryAllPartner();
     this.WESTERN_Model = true;
     if (row) {
@@ -1099,6 +1157,99 @@ WESTERN_rules = {
       }
     });
   }
+  sellingPriceModel = false;
+  addsellingPriceModel = false;
+
+  addsellingPriceForm = {
+    sellingPrice: "",
+    remarks: ""
+  };
+
+  sumbitdeletesellingPrice(row) {
+    this.$confirm("是否删除该转方价格?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning"
+    })
+      .then(() => {
+        indexApi
+          .sumbitdeletesellingPrice({
+            priceId: row.priceId
+          })
+          .then(res => {
+            if (res["retCode"]) {
+              this.getsellingPriceList();
+            } else {
+              if (!res["islogin"]) {
+                this.$alert(res["message"]);
+              }
+            }
+          });
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消操作"
+        });
+      });
+  }
+
+  sellingPriceList = [];
+  changesellingPriceModel() {
+    this.sellingPriceModel = true;
+    this.getsellingPriceList();
+  }
+  changeaddsellingPriceModel() {
+    this.addsellingPriceForm = {
+      sellingPrice: "",
+      remarks: ""
+    };
+
+    this.addsellingPriceModel = true;
+  }
+  submitaddsellingPrice() {
+    if ((this.addsellingPriceForm.sellingPrice || "") === "") {
+      this.$message.warning("请输入转方价格");
+      return;
+    }
+
+    indexApi
+      .addsellingPrice({
+        drugId: this.WESTERN_addDrug.drugId,
+        sellingPrice: this.addsellingPriceForm.sellingPrice,
+        remarks: this.addsellingPriceForm.remarks
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          console.log(res.data);
+          this.addsellingPriceModel = false;
+          this.getsellingPriceList();
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+        }
+      });
+  }
+  getsellingPriceList() {
+    indexApi
+      .getsellingPriceList({
+        drugId: this.WESTERN_addDrug.drugId,
+        page: 0,
+        pageSize: 500
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          console.log(res.data);
+          this.sellingPriceList = res.data.DrugPrice;
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+        }
+      });
+  }
+
   mounted() {}
 }
 </script>

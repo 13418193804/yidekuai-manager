@@ -227,11 +227,11 @@
 
 
   <el-tabs v-model="drugType" >
-    <el-tab-pane  label="中药" name="CHINESE" v-if="CHINESE_preDrugList.length>0">
+    <el-tab-pane  label="中药" name="CHINESE">
 
 <div>
 <el-form label-width="120px" inline="true">
-  	<el-form-item label="是否代煎："  >
+  	<el-form-item label="是否代煎：" >
       {{prodetail.isReplaceDecocting == '0' ? '不代煎':'代煎'}}
   <!-- <el-radio  :label="0" v-model="isReplaceDecocting">不代煎</el-radio>
   <el-radio  :label="1"   v-model="isReplaceDecocting">代煎</el-radio> -->
@@ -251,20 +251,13 @@
 
 </div>
 
-      <div style="text-align:right;">代煎费：<span style="color:red" >￥{{prodetail.replaceDecoctingMoney}}</span></div>
-          <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
-<div style="height:25px;"></div>
 
 <el-table border
     :data="CHINESE_preDrugList"
     stripe
     style="width: 100%">
-  <el-table-column  fixed="left"
-      prop="codeId"
-      label="药品编码">
-   </el-table-column>
 
-  <el-table-column 
+  <el-table-column fixed="left"
       prop="drugName"
       label="药材名称">
    </el-table-column>
@@ -334,21 +327,23 @@
 </el-table>
 
     </el-tab-pane>
-    <el-tab-pane  label="西药" name="WESTERN" v-if="WESTERN_preDrugList.length>0">
-    <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
-<div style="height:25px;"></div>
+    <el-tab-pane  label="西药" name="WESTERN">
+
+
+
+
+
+
+      </el-tab-pane>
+    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION">
 
 <el-table border
-    :data="WESTERN_preDrugList"
-    stripe 
+    :data="preDrugList"
+    stripe :height="500"
     style="width: 100%">
+   
 
-     <el-table-column  fixed="left"
-      prop="codeId"
-      label="药品编码">
-   </el-table-column>
-
-  <el-table-column 
+  <el-table-column fixed="left"
       prop="drugName"
       label="通用名">
    </el-table-column>
@@ -420,20 +415,13 @@
    </el-table-column>
 </el-table>
 
-
-
-
-      </el-tab-pane>
-    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION" v-if="PASTE_preDrugList.length>0">
-
-
 <div>
 <el-form label-width="120px" inline="true">
 
   	<el-form-item label="用法用量：">
 <div class="flex everyNum">
 <div>每日</div>
-<div>{{prodetail.everydayTimes}}</div>
+<div>{{prodetail.everydayTime}}</div>
 <div>次，1次</div>
 <div>{{prodetail.everytimes}}</div>
 <div>克，约服</div>
@@ -442,31 +430,23 @@
 </div>
 	  </el-form-item>	
   	<el-form-item label="辅料：">
-      {{list2string(prodetail.sugarType,prodetail.aspartame,prodetail.otherAccessories)}}
 	  </el-form-item>	
 </el-form>
 </div>
 
 
-   <div style="text-align:right;">制作费：<span style="color:red" >￥{{prodetail.makeMoney}}</span></div>
-      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
-<div style="height:25px;"></div>
 
 <el-table border
     :data="PASTE_preDrugList"
     stripe
     style="width: 100%">
 
-     <el-table-column  fixed="left"
-      prop="codeId"
-      label="药品编码">
-   </el-table-column>
+   
 
-  <el-table-column 
+  <el-table-column fixed="left"
       prop="drugName"
       label="药材名称">
    </el-table-column>
-
 
   <el-table-column
       prop="productName"
@@ -494,7 +474,10 @@
       label="单位">
    </el-table-column>
    
-
+  <el-table-column
+      prop="decoctingType"
+      label="煎煮方式">
+   </el-table-column>
 
     <el-table-column
       prop="chineseType"
@@ -983,7 +966,7 @@ export default class AddGoods extends Vue {
       }
     }
 
-    this.$confirm("确定要退回给转方？", "提示", {
+    this.$confirm("确定要退回审方？", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning"
@@ -1029,12 +1012,6 @@ export default class AddGoods extends Vue {
           this.WESTERN_preDrugList = res.data.filter(item => {
             return item.preDrugType == "WESTERN_MEDICINE";
           });
-          
-          this.drugType = this.handleValue(
-            this.CHINESE_preDrugList,
-            this.WESTERN_preDrugList,
-            this.PASTE_preDrugList
-          );
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -1044,21 +1021,6 @@ export default class AddGoods extends Vue {
       });
   }
 
-  handleValue(CHINESE_preDrugList, WESTERN_preDrugList, PASTE_preDrugList) {
-    if (CHINESE_preDrugList.length > 0) {
-      return "CHINESE";
-    }
-
-    if (WESTERN_preDrugList.length > 0) {
-      return "WESTERN";
-    }
-
-    if (PASTE_preDrugList.length > 0) {
-      return "PASTE_PRESCRIPTION";
-    }
-
-    return "";
-  }
   preIndex = 0;
   preImageList: any = [];
   getPrePic() {
@@ -1080,13 +1042,11 @@ export default class AddGoods extends Vue {
   prodetail = {};
   createForm: any = {};
   payModeEnum = "";
-  SplitPrescription = []
   queryPresDetatil() {
     indexApi.queryPresDetatil({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
-        
-        this.prodetail = res.data.prescription;
-          this.SplitPrescription = res.data.SplitPrescription
+        this.prodetail = res.data;
+
         this.pres_type = this.prodetail["prescriptionType"];
 
         if (
@@ -1327,20 +1287,6 @@ export default class AddGoods extends Vue {
     });
   }
   pres_type = "";
-    list2string(...list) {
-    let a = [];
-    for (let n in list) {
-      if (list[n]) {
-        for (let j in list[n].split(',')) {
-          a.push(list[n].split(',')[j]);
-        }
-      }
-    }
-    return a.join(",");
-  }
-
-
-
   mounted() {
     this.fileUploadUrl = Config.g_upload_url;
 

@@ -6,6 +6,7 @@ import querystring from 'querystring';
 let base = Config.g_base_url;
 let upload = Config.g_upload_url;
 axios.defaults.timeout =  120000;
+let node_base = Config.g_node_url
 
 //let base = 'http://127.0.0.1:9090';
 // let base ='http://127.0.0.1:9090/';
@@ -50,6 +51,11 @@ export const requestForm = (urlPath, params) => {
         .then(res => res)
         .catch(error => error);
 };
+
+
+export const preViewApi = (presId)=>{
+    window.open(`${node_base}/getpicture?presId=${presId}`)
+}
 
 
 export const requestForm2 = Vue.prototype.ydkManager=='test'? (urlPath, params) => {

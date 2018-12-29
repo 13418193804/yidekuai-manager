@@ -10,7 +10,6 @@ let base = Config.g_base_url;
 
 
 
-
 // axios.interceptors.response.use(
 //     response => {
 //         if(response.config && response.config.responseType == 'blob') {
@@ -1655,3 +1654,96 @@ export const addDrugPartner = (model) => {
         return Api.requestForm2('/updatePrePayStatus', params)
             .then(res => res);
     }
+
+    
+
+  export const getOrderExport = (presId) => {
+    
+      let params = {
+          token: sessionStorage.getItem("token"),
+          merchantUserId: sessionStorage.getItem("userId"),
+      }
+      console.log()
+  window.open(`${base}/order/exportOrderExcel?presId=${presId}`)
+  };
+
+  /**
+   * 转方价格查询
+   */  
+  export const getsellingPriceList = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/PYgenerate/getDrugPrice', params)
+            .then(res => res);
+    }
+
+
+
+    
+  /**
+   * 添加转方价格
+   */  
+  export const addsellingPrice = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/PYgenerate/addDrugPrice', params)
+            .then(res => res);
+    }
+
+
+      
+  /**
+   * 删除转方价格
+   */  
+  export const sumbitdeletesellingPrice = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/PYgenerate/deleteDrugPrice', params)
+            .then(res => res);
+    }
+
+          
+  /**
+   * 修改是否处理
+   */  
+  export const updateSign = (model) => {
+    
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/updateSign', params)
+            .then(res => res);
+    }
+
+    
+    
+              
+  /**
+   * 修改是否处理
+   */  
+  export const preViewApi = (presId) => {
+       
+        return Api.preViewApi( presId)
+    }
+
+    
+    
+    

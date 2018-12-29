@@ -235,7 +235,6 @@
 <el-button type="primary" icon="el-icon-search"  @click="getOrderList(true)"  style="margin-top:20px;">查询</el-button>
   </el-col>
 
-  
 </el-row>
 </div>
 
@@ -455,6 +454,7 @@ this.rderStatus ="";
       }
     });
   }
+
 
   mounted() {
     // this.allPrescription();

@@ -13,7 +13,7 @@
 
 
   <el-tabs v-model="drugType"  @tab-click="handleClick">
-    <el-tab-pane  label="原药品库" name="drug">
+    <!-- <el-tab-pane  label="原药品库" name="drug">
       <div style="padding-bottom:20px;">
 <el-row :gutter="10">
   <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
@@ -31,9 +31,9 @@
 </div>
 
       <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList="drugList"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
-    </el-tab-pane>
+    </el-tab-pane> -->
     <el-tab-pane  label="中药" name="CHINESE">
-    
+  
      <div style="padding-bottom:20px;">
 <el-row :gutter="10">
   <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
@@ -105,7 +105,7 @@ export default class AddGoods extends Vue {
 
  }
   
-  drugType = "drug";
+  drugType = "CHINESE";
   allDrug() {
     indexApi.allDrug({}).then(res => {
       if (res["retCode"]) {

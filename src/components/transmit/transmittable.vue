@@ -19,31 +19,6 @@
       label="开方时间"  width="170">
    </el-table-column>
 
-        <el-table-column  
-      label="处方类型" width="150">
-      <template slot-scope="scope">
-    <el-tag v-if="scope.row.preDrugType"
-  :type="handlepreDrugType(scope.row.preDrugType).type">
-        {{handlepreDrugType(scope.row.preDrugType).name}}
-</el-tag>
-
-      </template>
-   </el-table-column>
-
-
-   <el-table-column  
-      label="订单类型1" width="150">
-      <template slot-scope="scope">
-        <!-- <h4>
-<span v-if="scope.row.prescriptionType" class="label" :class="handleprescriptionType(scope.row.prescriptionType).type">{{handleprescriptionType(scope.row.prescriptionType).name}}</span>
-</h4> -->
-    <el-tag v-if="scope.row.prescriptionType"
-  :type="handleprescriptionType(scope.row.prescriptionType).type">
-        {{handleprescriptionType(scope.row.prescriptionType).name}}
-</el-tag>
-      </template>
-   </el-table-column>
-
 
    <el-table-column
       prop="docterName"
@@ -104,6 +79,30 @@
       prop="transDate"
       label="转方时间" width="170">
    </el-table-column>
+   
+        <el-table-column
+      label="处方类型" width="200">
+      <template slot-scope="scope">
+    <div v-if="scope.row.preDrugType">
+  <el-tag v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
+  :type="handlepreDrugType(n).type">
+        {{handlepreDrugType(n).name}}
+</el-tag>
+    </div>
+      </template>
+   </el-table-column>
+
+
+   <el-table-column  
+      label="订单类型" width="150">
+      <template slot-scope="scope">
+    <el-tag v-if="scope.row.prescriptionType"
+  :type="handleprescriptionType(scope.row.prescriptionType).type">
+        {{handleprescriptionType(scope.row.prescriptionType).name}}
+</el-tag>
+      </template>
+   </el-table-column>
+
   <el-table-column
       prop="transRemark"
       label="转方备注" width="220">

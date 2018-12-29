@@ -14,9 +14,9 @@ new Promise(resolve => {
         }
         if (data.indexOf(`const manager: any = "manager"`) != -1) {
             console.warn('选择正式场发布代码中...')
-            // resolve(linkList.filter(item => {
-            //     return item.host == '134.175.4.131'
-            // })[0])
+            resolve(linkList.filter(item => {
+                return item.host == '134.175.4.131'
+            })[0])
         }
     })
 
