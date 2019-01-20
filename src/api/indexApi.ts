@@ -1679,7 +1679,7 @@ export const addDrugPartner = (model) => {
             userId: sessionStorage.getItem("userId"),
         }
         Object.assign(params, model)
-        return Api.requestForm2('/PYgenerate/getDrugPrice', params)
+        return Api.requestForm2('/PYgenerate/getDrugPriceByDrugId', params)
             .then(res => res);
     }
 
@@ -1697,7 +1697,7 @@ export const addDrugPartner = (model) => {
             userId: sessionStorage.getItem("userId"),
         }
         Object.assign(params, model)
-        return Api.requestForm2('/PYgenerate/addDrugPrice', params)
+        return Api.requestForm2('/PYgenerate/addDoctorDrugPrice', params)
             .then(res => res);
     }
 
@@ -1714,7 +1714,7 @@ export const addDrugPartner = (model) => {
             userId: sessionStorage.getItem("userId"),
         }
         Object.assign(params, model)
-        return Api.requestForm2('/PYgenerate/deleteDrugPrice', params)
+        return Api.requestForm2('/PYgenerate/deleteDoctorDrugPrice', params)
             .then(res => res);
     }
 
@@ -1746,5 +1746,101 @@ export const addDrugPartner = (model) => {
     }
 
     
+      /**
+   * 医生的id查医生列表
+   */  
+  export const getPricebindDoctor = (model) => {
     
+        let params = {
+            token: sessionStorage.getItem("token"),
+            userid: sessionStorage.getItem("userId"),
+            userId: sessionStorage.getItem("userId"),
+        }
+        Object.assign(params, model)
+        return Api.requestForm2('/PYgenerate/getDoctorListByIdList', params)
+            .then(res => res);
+    }
     
+    /**
+     * 未绑定该药品的医生
+     */
+    export const getPriceunbindDoctor = (model) => {
+        
+            let params = {
+                token: sessionStorage.getItem("token"),
+                userid: sessionStorage.getItem("userId"),
+                userId: sessionStorage.getItem("userId"),
+            }
+            Object.assign(params, model)
+            return Api.requestForm2('/PYgenerate/getUnboundDoctorByDrugId', params)
+                .then(res => res);
+        }
+
+
+
+          /**
+     * 药品价格里面删除医生
+     */
+    export const submitPriceDoctorDelete = (model) => {
+    
+            let params = {
+                token: sessionStorage.getItem("token"),
+                userid: sessionStorage.getItem("userId"),
+                userId: sessionStorage.getItem("userId"),
+            }
+            Object.assign(params, model)
+            return Api.requestForm2('/PYgenerate/deleteDoctorDrugPriceByDDP', params)
+                .then(res => res);
+        }
+
+        
+          /**
+     *  顾问树
+     */
+    export const getAdviserLevelTree = (model) => {
+        
+                let params = {
+                    token: sessionStorage.getItem("token"),
+                    userid: sessionStorage.getItem("userId"),
+                    userId: sessionStorage.getItem("userId"),
+                }
+                Object.assign(params, model)
+                return Api.requestForm2('/api/adviser/getAdviserLevelTree', params)
+                    .then(res => res);
+            }
+    
+
+            
+        
+          /**
+     * 选择上级顾问
+     */
+    export const getAdviserLevel = (model) => {
+        
+                let params = {
+                    token: sessionStorage.getItem("token"),
+                    userid: sessionStorage.getItem("userId"),
+                    userId: sessionStorage.getItem("userId"),
+                }
+                Object.assign(params, model)
+                return Api.requestForm2('/api/adviser/getAdviserLevel', params)
+                    .then(res => res);
+            }
+    
+                      /**
+     * 选择上级顾问
+     */
+    export const getAdviserAndUpFWebList = (model) => {
+        
+                let params = {
+                    token: sessionStorage.getItem("token"),
+                    userid: sessionStorage.getItem("userId"),
+                    userId: sessionStorage.getItem("userId"),
+                }
+                Object.assign(params, model)
+                return Api.requestForm2('/api/adviser/getAdviserAndUpFWebList', params)
+                    .then(res => res);
+            }
+    
+            
+            

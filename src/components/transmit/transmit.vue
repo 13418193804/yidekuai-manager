@@ -1,6 +1,5 @@
 <template>
     <div v-bouncing="loading">
-
         <div style="">
           <h3>转方管理
           </h3>
@@ -13,7 +12,6 @@
           @click="addPrescription()"  >线下订单</el-button>
             </div>
         </div>
-        <!-- type="card" -->
   <el-tabs v-model="prescriptionEnums1"  @tab-click="handleClick">
     <el-tab-pane  :label="'未转方（'+notCount+'）'" name="name1">
 <div style="padding-bottom:20px;">
@@ -48,19 +46,8 @@
 </transmittable>
     </el-tab-pane>
 
-
     <el-tab-pane :label="`直接开方（${DOC_HANDWORK}）`" name="name3">
 <div style="padding-bottom:20px;">
-<!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
-ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
-FAIL_TRANSLATED_PRESCRIPTION,        //转方失败
-REJECT_TRANSLATED_PRESCRIPTION,        //转方退回
-ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
-
-ALREADY_AUDIT_PRESCRIPTION,             //已审方
-FAIL_AUDIT_PRESCRIPTION,             //审方失败
-REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
-
 
 <el-row :gutter="10" style="margin-top:20px;">
 	 <el-form label-width="80px" :inline="true" >
@@ -70,7 +57,6 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
       <el-option value="" label="全部"></el-option>
       <el-option value="NOT_TRANSLATED_PRESCRIPTION" label="未转方"></el-option>
       <el-option value="ALREADY_TRANSLATED_PRESCRIPTION" label="已转方"></el-option>
-      <!-- <el-option value="FAIL_TRANSLATED_PRESCRIPTION" label="转方失败"></el-option> -->
             <el-option value="ALREADY_AUDIT_PRESCRIPTION" label="已审方"></el-option>
       <el-option value="REJECT_TRANSLATED_PRESCRIPTION" label="已驳回开方"></el-option>
       <el-option value="REJECT_AUDIT_PRESCRIPTION" label="审方退回"></el-option>
@@ -124,15 +110,6 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
     </el-tab-pane>
     <el-tab-pane :label="'全部（'+allprescription+'）'" name="name4">
 <div style="padding-bottom:20px;">
-<!-- NOT_TRANSLATED_PRESCRIPTION,            //未转方
-ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
-FAIL_TRANSLATED_PRESCRIPTION,        //转方失败
-REJECT_TRANSLATED_PRESCRIPTION,        //转方退回
-ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
-
-ALREADY_AUDIT_PRESCRIPTION,             //已审方
-FAIL_AUDIT_PRESCRIPTION,             //审方失败
-REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
 
 
 <el-row :gutter="10" style="margin-top:20px;">
@@ -143,24 +120,17 @@ REJECT_AUDIT_PRESCRIPTION,//审方退回 -->
       <el-option value="" label="全部"></el-option>
       <el-option value="NOT_TRANSLATED_PRESCRIPTION" label="未转方"></el-option>
       <el-option value="ALREADY_TRANSLATED_PRESCRIPTION" label="已转方"></el-option>
-      <!-- <el-option value="FAIL_TRANSLATED_PRESCRIPTION" label="转方失败"></el-option> -->
             <el-option value="ALREADY_AUDIT_PRESCRIPTION" label="已审方"></el-option>
       <el-option value="REJECT_TRANSLATED_PRESCRIPTION" label="已驳回开方"></el-option>
       <el-option value="REJECT_AUDIT_PRESCRIPTION" label="审方退回"></el-option>
     </el-select>
 				</el-form-item>
-
   </el-col>
         </el-form>
 </el-row>
 
 
-
-
-
 <el-row :gutter="10" style="padding-left:80px;">
-
- 
   <el-col :xs="24" :sm="16" :md="8" :lg="6" :xl="6">
    <el-input
   placeholder="姓名/处方号/手机号" style="margin-top:20px;"  v-model="key"
@@ -229,14 +199,13 @@ export default class AddGoods extends Vue {
       : 0;
   }
 
-
-    get online() {
+  get online() {
     return this.countPreByStatuObj["data6"]
       ? this.countPreByStatuObj["data6"].count
       : 0;
   }
 
-  allprescription = 0;
+  allprescription = 222;
   DOC_HANDWORK = 0;
   allPrescription() {
     indexApi.allPrescription().then(res => {
@@ -335,6 +304,7 @@ export default class AddGoods extends Vue {
       this.countPreByStatu();
       if (res["retCode"]) {
         this.prescriptionList = res.data.list;
+
         this.total = res.data.page.total;
       } else {
         if (!res["islogin"]) {
@@ -344,10 +314,39 @@ export default class AddGoods extends Vue {
       }
     });
   }
+  //  NOT_TRANSLATED_PRESCRIPTION,            //未转方
+  // ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
+  // FAIL_TRANSLATED_PRESCRIPTION,        //转方失败
+  // REJECT_TRANSLATED_PRESCRIPTION,        //转方退回
+  // ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
+
+  // ALREADY_AUDIT_PRESCRIPTION,             //已审方
+  // FAIL_AUDIT_PRESCRIPTION,             //审方失败
+  // REJECT_AUDIT_PRESCRIPTION,//审方退回
 
   mounted() {
     this.allPrescription();
     this.getprescriptionList();
+    // Vue.component(
+    //   "transmittable",
+    //   // 这个 `import` 函数会返回一个 `Promise` 对象。
+    //   () => {
+    //         console.log('return')
+    //     return ({
+
+    //     // 需要加载的组件 (应该是一个 `Promise` 对象)
+    //     component: import("./transmittable.vue"),
+    //     // 异步组件加载时使用的组件
+    //     // loading: LoadingComponent,
+    //     // 加载失败时使用的组件
+    //     // error: ErrorComponent,
+    //     // 展示加载时组件的延时时间。默认值是 200 (毫秒)
+    //     delay: 5000,
+    //     // 如果提供了超时时间且组件加载也超时了，
+    //     // 则使用加载失败时使用的组件。默认值是：`Infinity`
+    //     timeout: 12000
+    //   })}
+    // );
   }
 }
 </script>

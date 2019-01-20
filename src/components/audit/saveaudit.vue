@@ -521,20 +521,66 @@
       prop="shouldpay"
       label="药品合计">
    </el-table-column>
-
   <el-table-column
       prop="createDate"
       label="提交时间">
    </el-table-column>
-
 </el-table>
-
-
-
-
-
-
     </el-tab-pane>
+    <el-tab-pane  label="器械" name="INSTRUMENTS" v-if="INSTRUMENTS_preDrugList.length>0">
+
+<el-table border
+    :data="INSTRUMENTS_preDrugList"
+    stripe
+    style="width: 100%">
+     <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+     <el-table-column
+      prop="specification"
+      label="药品规格">
+   </el-table-column>
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+</el-table>
+    </el-tab-pane>
+
   </el-tabs>
 
 
@@ -1008,6 +1054,7 @@ export default class AddGoods extends Vue {
   CHINESE_preDrugList = [];
   PASTE_preDrugList = [];
   WESTERN_preDrugList = [];
+  INSTRUMENTS_preDrugList = []
   queryPresDrugback() {
     indexApi
       .queryPresDrugback({
@@ -1030,10 +1077,15 @@ export default class AddGoods extends Vue {
             return item.preDrugType == "WESTERN_MEDICINE";
           });
           
+          this.INSTRUMENTS_preDrugList = res.data.filter(item => {
+          return item.preDrugType == "INSTRUMENTS";
+        });
+
           this.drugType = this.handleValue(
             this.CHINESE_preDrugList,
             this.WESTERN_preDrugList,
-            this.PASTE_preDrugList
+            this.PASTE_preDrugList,
+            this.INSTRUMENTS_preDrugList
           );
         } else {
           if (!res["islogin"]) {
@@ -1044,7 +1096,7 @@ export default class AddGoods extends Vue {
       });
   }
 
-  handleValue(CHINESE_preDrugList, WESTERN_preDrugList, PASTE_preDrugList) {
+  handleValue(CHINESE_preDrugList, WESTERN_preDrugList, PASTE_preDrugList,INSTRUMENTS_preDrugList) {
     if (CHINESE_preDrugList.length > 0) {
       return "CHINESE";
     }
@@ -1055,6 +1107,9 @@ export default class AddGoods extends Vue {
 
     if (PASTE_preDrugList.length > 0) {
       return "PASTE_PRESCRIPTION";
+    }
+        if (INSTRUMENTS_preDrugList.length > 0) {
+      return "INSTRUMENTS";
     }
 
     return "";

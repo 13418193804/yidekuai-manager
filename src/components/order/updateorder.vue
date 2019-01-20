@@ -1,7 +1,7 @@
 <template>
     <div>
 
-		<el-dialog width= "70vw" :close-on-click-modal="false" :append-to-body="true" :visible.sync="model"  :title="handleTitle()" >
+		<el-dialog width= "70vw"  :close-on-click-modal="false" :append-to-body="true" :visible.sync="model"  :title="handleTitle()" >
 <div v-bouncing="loading">
 
 <el-steps :active="handleOrderStatusActive(order.orderStatue)" finish-status="success" simple style="margin-bottom:20px;">
@@ -395,8 +395,6 @@
   <span>{{expressPackageList[0].remarks}}</span>
 </div>
 </div>
-
-
 <div v-if="OrderSplitFlag == '0'">
 <h4 style="margin:0 0 10px 0;">药品信息</h4>
 
@@ -583,6 +581,7 @@
     <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{order.SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
 
    </el-tab-pane>
+
     <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION" v-if="PASTE_preDrugList.length>0">
 <el-table border
     :data="PASTE_preDrugList"
@@ -662,6 +661,62 @@
    <div style="text-align:right;">制作费：<span style="color:red" >￥{{order.makeMoney}}</span></div>
       <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{order.SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
     </el-tab-pane>
+    
+    <el-tab-pane  label="器械" name="INSTRUMENTS" v-if="INSTRUMENTS_preDrugList.length>0">
+
+<el-table border
+    :data="INSTRUMENTS_preDrugList"
+    stripe
+    style="width: 100%">
+     <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+     <el-table-column
+      prop="specification"
+      label="药品规格">
+   </el-table-column>
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+</el-table>
+
+      <!-- <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{order.SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div> -->
+    </el-tab-pane>
   </el-tabs>
     
 <div style="text-align:right; margin-top:20px;    padding-top: 10px;border-top: 1px #e5e5e5 solid;">
@@ -674,7 +729,7 @@
 </div>
 
 <express ref="express" 
- :waitCHINESE_preDrugList="CHINESE_preDrugList" :waitPASTE_preDrugList="PASTE_preDrugList" :waitWESTERN_preDrugList="WESTERN_preDrugList"  v-show="OrderSplitFlag == '1' " @getExpressPackage="getExpressPackage"
+ :waitCHINESE_preDrugList="CHINESE_preDrugList" :waitPASTE_preDrugList="PASTE_preDrugList" :waitWESTERN_preDrugList="WESTERN_preDrugList" :waitINSTRUMENTS_preDrugList="INSTRUMENTS_preDrugList" v-show="OrderSplitFlag == '1' " @getExpressPackage="getExpressPackage"
  @showShipInfo="showShipInfo"  @doUpdate="doUpdate" @close="send_close"
  type="detail" :expressPackageList="expressPackageList" :provinceList="provinceList"
  :ExpressDrugDetailList="ExpressDrugDetailList" :order="order" 
@@ -686,7 +741,7 @@
   <div class="send_close" @click="send_close()">关闭</div>
 <div v-bouncing="loading">
 <express ref="express" 
- :waitCHINESE_preDrugList="CHINESE_preDrugList" :waitPASTE_preDrugList="PASTE_preDrugList" :waitWESTERN_preDrugList="WESTERN_preDrugList"  @showShipInfo="showShipInfo" @getExpressPackage="getExpressPackage"
+ :waitCHINESE_preDrugList="CHINESE_preDrugList" :waitPASTE_preDrugList="PASTE_preDrugList" :waitWESTERN_preDrugList="WESTERN_preDrugList" waitINSTRUMENTS_preDrugList="INSTRUMENTS_preDrugList"  @showShipInfo="showShipInfo" @getExpressPackage="getExpressPackage"
  type="send"   :expressPackageList="expressPackageList"   @doUpdate="doUpdate"  @close="send_close"
  :ExpressDrugDetailList="ExpressDrugDetailList" :order="order"  :provinceList="provinceList"
  :shipList="shipList"></express>
@@ -873,7 +928,7 @@ export default class AddGoods extends Vue {
         return "";
     }
   }
-    handlepreDrugType1(preDrugType) {
+  handlepreDrugType1(preDrugType) {
     switch (preDrugType) {
       case "CHINESE_MEDICINE":
         return {
@@ -889,6 +944,11 @@ export default class AddGoods extends Vue {
         return {
           name: "膏方",
           type: ""
+        };
+      case "INSTRUMENTS":
+        return {
+          name: "器械",
+          type: "danger"
         };
       default:
         return {
@@ -927,7 +987,7 @@ export default class AddGoods extends Vue {
   CHINESE_preDrugList = [];
   PASTE_preDrugList = [];
   WESTERN_preDrugList = [];
-
+  INSTRUMENTS_preDrugList = [];
   drugType = "CHINESE";
 
   floatPackAge(presId, send = null) {
@@ -938,6 +998,7 @@ export default class AddGoods extends Vue {
     (<any>this.$refs.express).CHINESE_preDrugList = [];
     (<any>this.$refs.express).PASTE_preDrugList = [];
     (<any>this.$refs.express).WESTERN_preDrugList = [];
+    (<any>this.$refs.express).INSTRUMENTS_preDrugList = [];
 
     this.splitListClear();
 
@@ -1012,11 +1073,19 @@ export default class AddGoods extends Vue {
             }
           );
 
+          (<any>this.$refs
+            .express).INSTRUMENTS_preDrugList = res.data.ExpressDrugDetailSumQuantityList.filter(
+            item => {
+              return item.preDrugType == "INSTRUMENTS";
+            }
+          );
+
           (<any>this.$refs.express).drugType = (<any>this.$refs
             .express).handleValue(
             (<any>this.$refs.express).CHINESE_preDrugList,
             (<any>this.$refs.express).WESTERN_preDrugList,
-            (<any>this.$refs.express).PASTE_preDrugList
+            (<any>this.$refs.express).PASTE_preDrugList,
+            (<any>this.$refs.express).INSTRUMENTS_preDrugList
           );
 
           this.splitList(res.data.ExpressDrugDetailSumQuantityList);
@@ -1041,8 +1110,10 @@ export default class AddGoods extends Vue {
     this.CHINESE_preDrugList = [];
     this.PASTE_preDrugList = [];
     this.WESTERN_preDrugList = [];
+    this.INSTRUMENTS_preDrugList = [];
   }
   splitList(list) {
+    
     this.CHINESE_preDrugList = list.filter(item => {
       return item.preDrugType == "CHINESE_MEDICINE";
     });
@@ -1054,17 +1125,19 @@ export default class AddGoods extends Vue {
     this.WESTERN_preDrugList = list.filter(item => {
       return item.preDrugType == "WESTERN_MEDICINE";
     });
-    
-   
-    (<any>this.$refs.express).wait_drugType = this.drugType  = (<any>this.$refs.express).handleValue(
-          this.CHINESE_preDrugList,
-           this.WESTERN_preDrugList,
-        this.PASTE_preDrugList 
-          );
+
+    this.INSTRUMENTS_preDrugList = list.filter(item => {
+      return item.preDrugType == "INSTRUMENTS";
+    });
 
 
-
-
+    (<any>this.$refs.express).wait_drugType = this.drugType = (<any>this.$refs
+      .express).handleValue(
+      this.CHINESE_preDrugList,
+      this.WESTERN_preDrugList,
+      this.PASTE_preDrugList,
+      this.INSTRUMENTS_preDrugList
+    );
   }
 
   getExpressPackage(presId, send) {

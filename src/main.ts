@@ -14,7 +14,11 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'typeface-roboto'
 import './common/js/bouncing'
+import './common/js/directives'//v-dialogDrag 拖动模态窗
 import * as indexApi from './api/indexApi'
+
+
+
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false
@@ -112,3 +116,5 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+

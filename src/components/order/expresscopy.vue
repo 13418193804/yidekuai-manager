@@ -12,7 +12,7 @@
 
   <el-table border
     :data="order.YdkOrderDetailList[0].YdkPrescriptiondrugList"
-    stripe 
+    stripe
     style="width: 100%">
 
   <el-table-column fixed="left"

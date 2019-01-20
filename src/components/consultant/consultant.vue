@@ -16,8 +16,6 @@
 <span style="margin-right:20px;">实收订单数：{{payOrderNum}} </span>         
 <span style="margin-right:20px;">药品销售数量：{{drugQuantityTotal}} </span>   
 <span style="margin-right:20px;">失败订单数量：{{giveupOrderNum}} </span>               
-
-
             </div>
         </div>
 <div style="margin-bottom:20px;">
@@ -29,6 +27,8 @@
 </el-input>
   </el-col>
     <el-col :xs="8" :sm="8" :md="5" :lg="4" :xl="3">
+
+    
   <el-select v-model="userStatus" placeholder="请选择状态" style="margin-top:20px;" >
                          <el-option label="全部"
                             value="">
@@ -75,9 +75,27 @@
   </el-col>
 </el-row>
 </div>
+<el-row :gutter="10">
+
+  <el-col :xs="24" :sm="24" :md="24" :lg="6" :xl="6">
+
+<div style="border:1px teal solid;overflow-y:auto;padding:10px;height:75vh">
+    <el-tree :data="optionsTree"  default-expand-all :props="{
+children:'children',
+          label: 'adviserName'
+    }" :expand-on-click-node="false" 
+            node-key="adviserId" ref="tree" highlight-current @node-click="doNodeClick" >
+            
+          
+            </el-tree>
+</div>
+  </el-col>
+
+  <el-col :xs="24" :sm="24" :md="24" :lg="18" :xl="18">
+
 <!-- type="card" -->
-  <el-tabs v-model="adviserType"  @tab-click="handleClick">
-    <el-tab-pane v-for=" n in tabPaneList"  :label="n.label+'('+n.count+')'" :name="n.name" >
+  <!-- <el-tabs v-model="adviserType"  @tab-click="handleClick">
+    <el-tab-pane v-for=" n in tabPaneList"  :label="n.label+'('+n.count+')'" :name="n.name" > -->
 <el-table border @sort-change="sortChange"
     :data="YdkAdviser"
     stripe height="600"
@@ -126,15 +144,15 @@
  <el-table-column
       label="顾问类型">
       <template slot-scope="scope">
-           {{scope.row.adviser_type=='OUTSIDE'?'外部顾问':''}}
-           {{scope.row.adviser_type=='INSIDE'?'内部顾问':''}}
+           {{scope.row.adviserType=='OUTSIDE'?'外部顾问':''}}
+           {{scope.row.adviserType=='INSIDE'?'内部顾问':''}}
       </template> 
    </el-table-column>
  <el-table-column
       label="顾问职位">
       <template slot-scope="scope">
-           {{scope.row.director_state=='1'?'主管顾问':''}}
-           {{scope.row.director_state=='0'?'普通顾问':''}}
+           {{scope.row.directorState=='1'?'主管顾问':''}}
+           {{scope.row.directorState=='0'?'普通顾问':''}}
       </template>
    </el-table-column>
    
@@ -183,7 +201,7 @@
 
 
 
- <el-table-column label="操作" fixed="right"  :width="handleWidth(n.name)">
+ <el-table-column label="操作" fixed="right"  :width="430">
       <template slot-scope="scope">
              <el-button
           size="mini"
@@ -199,15 +217,15 @@
           size="mini"
           type="text"
           @click="changeModel('edit',scope.row)" v-if="$route.path === '/consultant-manager'">编辑</el-button>
-        <el-button type="text"  style="margin-top:20px;" @click="viewBigIcon(scope.row.qrcode,scope.row.adviserName ,scope.row.userName)">二维码</el-button>
+        <el-button type="text"  @click="viewBigIcon(scope.row,scope.row.adviserName ,scope.row.userName)">二维码</el-button>
          <el-button @click="doDelete(scope.row)"
           size="mini"
           type="text" v-if="$route.path === '/consultant-manager'"
         >删除</el-button>
-              <el-button @click="getAdviserLeverObj(scope.row)"
+              <!-- <el-button @click="getAdviserLeverObj(scope.row)"
           size="mini"
           type="text" v-if="n.name === 'DIRECTOR'"
-        >查看顾问</el-button>
+        >查看顾问</el-button> -->
 
 
 
@@ -215,19 +233,24 @@
       </template>
     </el-table-column>
 </el-table>
+
+
+
 <el-col :span="24" class="toolbar">
 			<el-pagination layout="prev, pager, next"  :current-page="page+1" :page-size="pageSize" :total="total" @current-change="onPageChange">
 			</el-pagination>
 		</el-col>
-    </el-tab-pane>
-</el-tabs>
+    <!-- </el-tab-pane>
+</el-tabs> -->
+  </el-col>
 
+</el-row>
 
 <!--    ========================                    弹窗                ======================     -->
 		<el-dialog class="min_box" width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="adviserModel"  :title="type=='add'?'新增顾问':'编辑顾问'">
 
 
-   <el-form label-width="100px" ref="ruleForm" :model="adviserObj"  :rules="rules">
+   <el-form label-width="120px" ref="ruleForm" :model="adviserObj"  :rules="rules">
 				<el-form-item label="顾问姓名" prop="adviserName" >
               					<el-input v-model="adviserObj.adviserName"  placeholder="请输入顾问姓名" style="max-width:400px;min-width:200px" ></el-input>
 				</el-form-item>
@@ -252,23 +275,48 @@
              <el-radio v-model="adviserTypeEnums" label="INSIDE">内部顾问</el-radio>
   <el-radio v-model="adviserTypeEnums" label="OUTSIDE">外部顾问</el-radio>
               					<!-- <el-input v-model="adviserObj.adviserAge"  placeholder="请输入年龄" style="max-width:400px;min-width:200px" ></el-input> -->
-			        	</el-form-item>	
-		<el-form-item label="顾问职位" prop="adviserTypeEnums" >
+			      </el-form-item>	
+	  	<!-- 	<el-form-item label="顾问职位" prop="adviserTypeEnums" >
   <el-radio v-model="adviserObj.directorState1" :label="true">主管顾问</el-radio>
   <el-radio v-model="adviserObj.directorState1" :label="false">普通顾问</el-radio>
-			        	</el-form-item>	
-		<el-form-item label="上级顾问" v-if="!adviserObj.directorState1" >
-  <el-select v-model="adviserObj.adviserDirectorId"    filterable clearable placeholder="请选择上级顾问" >
-    <el-option
-      v-for="item in selectdirectorList"
-      :key="item.adviserId"
-      :label="item.adviserName+'/'+item.phone"
-      :value="item.adviserId">
-    </el-option>
-  </el-select>
+			        	</el-form-item>	 -->
+                		<el-form-item label="顾问归属" prop="adviserTypeEnums">
+  <div  v-if="type == 'edit'">
+    
+    <span style="marign-right:10px;">{{adviserObj.ydkFlag=='1' ?'医德快':''}}</span>
+    <span >{{adviserObj.zdkFlag == '1' ?'痔德快':''}}</span>
+    </div>
+  <div  v-if="type == 'add'">
+    
+   <el-radio v-model="adviserObj.zdkFlag" :label="'0'">医德快</el-radio>
+  <el-radio v-model="adviserObj.zdkFlag" :label="'1'">痔德快</el-radio> 
+    </div>
+			        	
+                </el-form-item>
 
+ <el-form-item label="医德快上级顾问" v-if="type == 'edit'" >
+<el-cascader
+  :options="ydkTree" v-model="selectAdviserId" :props="{
+      children :'SONLIST',
+      label:'adviserName',
+      value:'adviserId'
+    }"
+  change-on-select
+></el-cascader>
 			        	</el-form-item>	
-                
+
+
+			<el-form-item label="痔德快上级顾问"  v-if="type == 'edit'" >
+<el-cascader
+  :options="zdkTree" v-model="zdkUpId" :props="{
+      children :'SONLIST',
+      label:'adviserName',
+      value:'adviserId'
+    }"
+  change-on-select
+></el-cascader>
+			        	</el-form-item>	 
+
                      		<el-form-item label="备注" >
               					<el-input type="textarea" v-model="adviserObj.remark"  placeholder="备注"  :rows="4" style="max-width:400px;min-width:200px" ></el-input>
 			        	</el-form-item>	
@@ -841,15 +889,18 @@ import * as indexApi from "../../api/indexApi";
 })
 export default class AddGoods extends Vue {
   loading = false;
-  adviserObj1 :any={
-
-  }
-  viewBigIcon(qrcode,adviserName,userName) {
-    this.bigIcon = qrcode;
+  adviserObj1: any = {};
+  viewBigIcon(row, adviserName, userName) {
+    if (row.zdkFlag == 1) {
+      this.bigIcon = row.zdkQrcode;
+    } else {
+      this.bigIcon = row.qrcode;
+    }
     this.viewBig = true;
-this.adviserObj1 = {
-  adviserName:adviserName,userName:userName
-}
+    this.adviserObj1 = {
+      adviserName: adviserName,
+      userName: userName
+    };
   }
   bigIcon = "";
   viewBig = false;
@@ -945,22 +996,25 @@ this.adviserObj1 = {
         }
       });
   }
-
+  defaultProps: {
+    children: "SONLIST";
+    label: "adviserName";
+  };
   tabPaneList = [
     {
       label: "内部顾问",
       name: "INSIDE",
-      count:0
+      count: 0
     },
     {
       label: "外部顾问",
       name: "OUTSIDE",
-      count:0
+      count: 0
     },
     {
       label: "主管顾问",
       name: "DIRECTOR",
-      count:0
+      count: 0
     }
   ];
   handleClick(e) {
@@ -983,23 +1037,25 @@ this.adviserObj1 = {
   YdkAdviser = [];
 
   date = [];
-outsideNum = 0;
-insideNum = 0
-directorNum = 0
-
-
+  outsideNum = 0;
+  insideNum = 0;
+  directorNum = 0;
+  optionType = {
+    医德快: "0",
+    痔德快: "1"
+  };
   getConsultantList(filter = null) {
     if (filter) {
       this.page = 0;
     }
-
     let data = {
       page: this.page,
       pageSize: this.pageSize,
-      adviserType: this.adviserType,
+      // adviserType: this.adviserType ,
       userStatus: this.userStatus,
       name: this.name,
       drug: this.drug,
+      zdkFlag: this.optionType[this.adviserDirectorId],
       startcreateDate:
         this.date && this.date.length > 0
           ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
@@ -1010,15 +1066,29 @@ directorNum = 0
           : "",
       orderByStr: this.orderByStr
     };
+
+    if (
+      this.adviserDirectorId !== "医德快" &&
+      this.adviserDirectorId !== "痔德快"
+    ) {
+      data["adviserDirectorId"] = this.adviserDirectorId;
+    }
+
     this.loading = true;
 
     indexApi.getConsultantList1(data).then(res => {
       if (res["retCode"]) {
         this.YdkAdviser = res.data.AdviserInfo;
         this.total = res.data.page.total;
-         this.tabPaneList[1].count = res.data.AdviserTypeTotalInfo.outsideNum? res.data.AdviserTypeTotalInfo.outsideNum:0
-        this.tabPaneList[0].count = res.data.AdviserTypeTotalInfo.insideNum? res.data.AdviserTypeTotalInfo.insideNum:0
-          this.tabPaneList[2].count = res.data.AdviserTypeTotalInfo.directorNum? res.data.AdviserTypeTotalInfo.directorNum:0
+        this.tabPaneList[1].count = res.data.AdviserTypeTotalInfo.outsideNum
+          ? res.data.AdviserTypeTotalInfo.outsideNum
+          : 0;
+        this.tabPaneList[0].count = res.data.AdviserTypeTotalInfo.insideNum
+          ? res.data.AdviserTypeTotalInfo.insideNum
+          : 0;
+        this.tabPaneList[2].count = res.data.AdviserTypeTotalInfo.directorNum
+          ? res.data.AdviserTypeTotalInfo.directorNum
+          : 0;
 
         this.loading = false;
         if (res.data.TotalInfo.length > 0) {
@@ -1074,40 +1144,86 @@ directorNum = 0
   adviserModel = false;
 
   changeModel(type, row) {
-    this.getConsultantList1();
     this.adviserTypeEnums = "";
+    this.selectAdviserId = [];
+    this.zdkUpId = []
     this.type = type;
     if (type == "add") {
       this.adviserObj = {};
     } else {
       let a = {};
-      if (!row.directorState1) {
-        row.adviserDirectorId = row.upId;
-      }
+
+      // if (!row.directorState1) {
+      //   row.adviserDirectorId = row.upId;
+      // }
+
+      this.getConsultantList1(row.adviserId, row.zdkFlag);
 
       row.directorState1 = row.director_state == "1" ? true : false;
+
       Object.assign(a, row);
+
       this.adviserObj = a;
       this.userStatus1 = this.adviserObj.userStatus == "1" ? true : false;
       this.adviserTypeEnums = row.adviser_type;
+
+      if (this.adviserObj.zdkUpId) {
+        console.log()
+        // 查出智得快的id
+        this.getAdviserAndUpFWebList(row.zdkUpId, "1", res => {
+          console.log(res);
+this.zdkUpId = res.data.zdkList
+
+        });
+      }
+
+      if (this.adviserObj.upId) {
+        this.getAdviserAndUpFWebList(row.upId, "0", res => {
+          this.selectAdviserId = res.data.ydkList
+          // this.adviserObj.adviserDirectorId = res.data.ydkList
+        });
+      }
     }
 
     this.adviserModel = true;
   }
-
-  selectdirectorList = [];
-  getConsultantList1() {
+  getAdviserAndUpFWebList(adviserId, zdkFlag, callback) {
     indexApi
-      .getConsultantList1({
-        adviserType: "DIRECTOR",
-        page: 0,
-        pageSize: 1000
+      .getAdviserAndUpFWebList({
+        // zdkFlag:zdkFlag,
+        adviserId: adviserId
       })
       .then(res => {
         if (res["retCode"]) {
+          callback(res);
           //列表
+        }
+      });
+  }
 
-          this.selectdirectorList = res.data.AdviserInfo;
+  zdkUpId = [];
+  selectAdviserId = [];
+  ydkTree = [];
+  zdkTree = [];
+
+  //选一次变一次
+  getConsultantList1(AdviserId, zdkFlag) {
+    indexApi
+      .getAdviserLevel({
+        // zdkFlag:zdkFlag,
+        AdviserId: AdviserId
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          if (res.data.ydkTree) {
+            this.zdkTree = res.data.ydkTree.SONLIST;
+          }
+
+          if (res.data.zdkTree) {
+            this.ydkTree = res.data.zdkTree.SONLIST;
+          }
+
+          //列表
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -1134,17 +1250,24 @@ directorNum = 0
     }
 
     this.adviserObj.userStatus = this.userStatus1 ? "1" : "0";
+
+    // if ((this.adviserObj.adviserDirectorId || "") === "") {
+    //   this.$message("请选择上级顾问");
+    //   return;
+    // }
+
     if (this.adviserObj.directorState1 === false) {
-      if ((this.adviserObj.adviserDirectorId || "") === "") {
-        this.$message("请选择上级顾问");
-        return;
-      }
       this.adviserObj.directorState = "0";
     } else {
       this.adviserObj.directorState = "1";
     }
 
     this.adviserObj.adviserTypeEnums = this.adviserTypeEnums;
+    if (this.selectAdviserId.length > 0) {
+      this.adviserObj.adviserDirectorId = this.selectAdviserId[
+        this.selectAdviserId.length - 1
+      ];
+    }
 
     this.loading = true;
     if (this.type == "add") {
@@ -1166,6 +1289,7 @@ directorNum = 0
       });
     }
     if (this.type == "edit") {
+      this.adviserObj.zdkUpId = this.zdkUpId;
       indexApi.updateConsultantItem(this.adviserObj).then(res => {
         this.loading = false;
         if (res["retCode"]) {
@@ -1308,12 +1432,10 @@ directorNum = 0
     row: {}
   };
   cleanConsultantItemShelf(row) {
-
-
-if(this.date&&this.date.length>0){
-    this.shelfObj.startcreateDate = this.date[0];
-    this.shelfObj.endcreateDate = this.date[1];
-}
+    if (this.date && this.date.length > 0) {
+      this.shelfObj.startcreateDate = this.date[0];
+      this.shelfObj.endcreateDate = this.date[1];
+    }
 
     this.shelfObj.name = "";
     this.consultantItemShelf(row, true);
@@ -1402,7 +1524,7 @@ if(this.date&&this.date.length>0){
    *
    */
   notBandAdviserObj = {
-    model:false,
+    model: false,
     loading: false,
     list: [],
     page: 0,
@@ -1416,7 +1538,7 @@ if(this.date&&this.date.length>0){
   };
 
   getnotBandAdviserChangeModel() {
-      this.notBandAdviserObj.model = true
+    this.notBandAdviserObj.model = true;
     this.getnotBandAdviserList(true);
   }
 
@@ -1446,8 +1568,7 @@ if(this.date&&this.date.length>0){
       });
   }
 
-adviserBindAdviser(row){
-
+  adviserBindAdviser(row) {
     this.$confirm("是否绑定该顾问?", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -1458,14 +1579,14 @@ adviserBindAdviser(row){
         indexApi
           .updateConsultantItem({
             adviserId: row["adviserId"],
-            adviserDirectorId: this.adviserLeverObj.row["adviserId"],
+            adviserDirectorId: this.adviserLeverObj.row["adviserId"]
           })
           .then(res => {
             this.notBandAdviserObj.loading = false;
             if (res["retCode"]) {
               this.$message("绑定成功");
               this.getnotBandAdviserList();
-              this.getAdviserLeverObjList(this.adviserLeverObj.row)
+              this.getAdviserLeverObjList(this.adviserLeverObj.row);
               this.getConsultantList();
             } else {
               if (!res["islogin"]) {
@@ -1481,9 +1602,7 @@ adviserBindAdviser(row){
           message: "已取消操作"
         });
       });
-
-
-}
+  }
 
   adviserNotBindAdviser(row) {
     this.$confirm("该操作取消绑定顾问上下级关系, 是否继续?", "提示", {
@@ -1661,10 +1780,10 @@ adviserBindAdviser(row){
 
   adviserGetDrugDoRow(row) {
     this.fontType = "";
-if(this.date&&this.date.length>0){
-    this.drugObj.startcreateDate = this.date[0];
-    this.drugObj.endcreateDate = this.date[1];
-}
+    if (this.date && this.date.length > 0) {
+      this.drugObj.startcreateDate = this.date[0];
+      this.drugObj.endcreateDate = this.date[1];
+    }
     this.fontType = "month";
     this.adviserGetDrug(row);
   }
@@ -1829,19 +1948,54 @@ if(this.date&&this.date.length>0){
     this.getConsultantList(true);
   }
 
+  optionsTree = [
+    {
+      adviserName: "医德快",
+      adviserId: "医德快",
+      children: []
+    },
+    {
+      adviserName: "痔德快",
+      adviserId: "痔德快",
+      children: []
+    }
+  ];
+
+  getAdviserLevelTree() {
+    indexApi
+      .getAdviserLevelTree({
+        // zdkFlag: "0"
+      })
+      .then(res => {
+        if (res["retCode"]) {
+          this.optionsTree[0].children = res.data.ydk.children;
+          this.optionsTree[1].children = res.data.zdk.children;
+          // res.data.SONLIST
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+          console.error("数据查询错误");
+        }
+      });
+  }
+  adviserDirectorId: any = null;
+  doNodeClick(object, node, control) {
+    this.adviserDirectorId = object.adviserId;
+    this.getConsultantList(true);
+  }
   mounted() {
-
-if(this.$route.path === '/consultant'){
-    this.date = [
-      this.getMonth1(),
-      moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"
-    ];
-}
-
+    if (this.$route.path === "/consultant") {
+      this.date = [
+        this.getMonth1(),
+        moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"
+      ];
+    }
 
     window["mmvue"] = this;
     this.getAdviserCount();
     this.getConsultantList();
+    this.getAdviserLevelTree();
   }
 }
 </script>

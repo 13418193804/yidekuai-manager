@@ -154,8 +154,6 @@
           type="primary"
           @click="audit(scope.$index, scope.row)" v-if=" $route.path == '/audit' && (scope.row.presState == 'ALREADY_TRANSLATED_PRESCRIPTION' || scope.row.presState == 'FAIL_AUDIT_PRESCRIPTION')">{{ scope.row.presState == 'FAIL_AUDIT_PRESCRIPTION'?'重新审方':'审方'}}</el-button>
   
- 
-      
   <!-- <el-button
           size="mini"
           type="primary"
@@ -858,7 +856,7 @@ export default class AddGoods extends Vue {
         return "已审方";
       case "FAIL_AUDIT_PRESCRIPTION":
         return "审方失败";
-               case "GIVEUP_PRESCRIPTION":
+      case "GIVEUP_PRESCRIPTION":
         return "弃单";
       case "REJECT_AUDIT_PRESCRIPTION":
         if (this.$route.path == "/audit") {
@@ -870,8 +868,8 @@ export default class AddGoods extends Vue {
         return "";
     }
   }
- 
-   handlepreDrugType(preDrugType) {
+
+  handlepreDrugType(preDrugType) {
     switch (preDrugType) {
       case "CHINESE_MEDICINE":
         return {
@@ -888,6 +886,11 @@ export default class AddGoods extends Vue {
           name: "膏方",
           type: ""
         };
+          case "INSTRUMENTS":
+        return {
+          name: "器械",
+          type: "danger"
+        };
       default:
         return {
           name: "",
@@ -895,14 +898,14 @@ export default class AddGoods extends Vue {
         };
     }
   }
- handleprescriptionType(prescriptionType) {
+  handleprescriptionType(prescriptionType) {
     switch (prescriptionType) {
       case "BACK_HANDWORK":
         return {
           name: "线下订单",
           type: "success"
         };
-          case "ONLINE":
+      case "ONLINE":
         return {
           name: "在线处方",
           type: "warning"
@@ -962,10 +965,9 @@ export default class AddGoods extends Vue {
   provinceList = [];
   cityList = [];
   countryList = [];
- updated(){
-
-  }
+  updated() {}
   mounted() {
+
     this.queryProvinceList();
     this.fileUploadUrl = Config.g_upload_url;
   }

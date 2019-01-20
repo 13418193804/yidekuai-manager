@@ -908,6 +908,11 @@ export default class AddGoods extends Vue {
           name: "膏方",
           type: ""
         };
+          case "INSTRUMENTS":
+        return {
+          name: "器械",
+          type: "danger"
+        };
       default:
         return {
           name: "",

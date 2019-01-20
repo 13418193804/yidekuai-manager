@@ -152,7 +152,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import axios from "axios";
 import * as indexApi from "../../api/indexApi";
-import  transmittable from "../transmit/transmittable";
+import transmittable from "../transmit/transmittable";
 import moment from "moment";
 
 @Component({
@@ -163,126 +163,128 @@ import moment from "moment";
   }
 })
 export default class AddGoods extends Vue {
-  allprescription = 0
-  allPrescription (){
- indexApi.allPrescription().then(res => {
+  allprescription = 0;
+  allPrescription() {
+    indexApi.allPrescription().then(res => {
       if (res["retCode"]) {
         console.log(res.data);
-        this.allprescription =res.data.All
+        this.allprescription = res.data.All;
       } else {
-        if(!res['islogin']){this.$alert(res["message"]);}
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
         console.error("数据查询错误");
       }
     });
   }
-  
-  get notCount(){
-    return this.countPreByStatuObj['data2']?this.countPreByStatuObj['data2'].count:0
+
+  get notCount() {
+    return this.countPreByStatuObj["data2"]
+      ? this.countPreByStatuObj["data2"].count
+      : 0;
   }
 
-    get online() {
+  get online() {
     return this.countPreByStatuObj["data6"]
       ? this.countPreByStatuObj["data6"].count
       : 0;
   }
-  countPreByStatuObj = {}
-countPreByStatu() {
+  countPreByStatuObj = {};
+  countPreByStatu() {
     indexApi.countPreByStatu({}).then(res => {
       if (res["retCode"]) {
         this.countPreByStatuObj = res.data;
       } else {
-        if(!res['islogin']){this.$alert(res["message"]);}
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
         console.error("数据查询错误");
       }
     });
   }
 
+  prescriptionEnums1 = "name1";
 
-
-
-prescriptionEnums1 = 'name1'
-
-
-page=0
+  page = 0;
   pageSize = 10;
   total = 100;
   onPageChange(page) {
     this.page = page - 1;
     this.getprescriptionList();
   }
-  handleClick (e){
-    this.page = 0
-    this.date= ["",""]
-    this.key = ""
+  handleClick(e) {
     this.page = 0;
-        if(this.prescriptionEnums1 == 'name2'){
-       this.prescriptionEnums = ''
+    this.date = ["", ""];
+    this.key = "";
+    this.page = 0;
+    if (this.prescriptionEnums1 == "name2") {
+      this.prescriptionEnums = "";
     }
     this.getprescriptionList();
   }
-    prescriptionList = []
-    prescriptionEnums = ''
-date= []
+  prescriptionList = [];
+  prescriptionEnums = "";
+  date = [];
   key = "";
-  operationType ="Auditor"
-  loading = false
-  getprescriptionList(filter=null) {
-    if(filter){
-      this.page = 0
+  operationType = "Auditor";
+  loading = false;
+  getprescriptionList(filter = null) {
+    if (filter) {
+      this.page = 0;
     }
 
+    let data = {
+      startCreatTime:
+        this.date && this.date.length > 0
+          ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
+          : "",
+      endCreatTime:
+        this.date && this.date.length > 0
+          ? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59"
+          : "",
+      key: this.key
+    };
 
-
-
-  let data= {
-        startCreatTime:this.date && this.date.length>0? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00":"",
-    endCreatTime:this.date && this.date.length>0? moment(this.date[1]).format("YYYY-MM-DD") + " 23:59:59":"",
-        key: this.key,
-  }
-  
-     if(this.prescriptionEnums1 == 'name1'){
-       this.prescriptionEnums = 'ALREADY_TRANSLATED_PRESCRIPTION'
-  Object.assign(data,{
-        operationType:this.operationType,
-      })
+    if (this.prescriptionEnums1 == "name1") {
+      this.prescriptionEnums = "ALREADY_TRANSLATED_PRESCRIPTION";
+      Object.assign(data, {
+        operationType: this.operationType
+      });
     }
 
-        if (this.prescriptionEnums1 == "name3") {
+    if (this.prescriptionEnums1 == "name3") {
       Object.assign(data, { onlineFlag: 1 });
     }
 
-      Object.assign(data,{
-     prescriptionEnums: this.prescriptionEnums,
-      })
-     
-    sessionStorage.auditObject = JSON.stringify(data)
-      Object.assign(data,{   page: this.page,
-        pageSize: this.pageSize})
-        this.loading =true
-    indexApi
-      .findPrescriptionByType(data).then(res => {
-        this.loading =false
-        // this.$emit('updateYdkPrescriptionStatusNum','NEW_PRESCRIPTION');
-            this.countPreByStatu();
+    Object.assign(data, {
+      prescriptionEnums: this.prescriptionEnums
+    });
+
+    sessionStorage.auditObject = JSON.stringify(data);
+    Object.assign(data, {
+      page: this.page,
+      pageSize: this.pageSize
+    });
+    this.loading = true;
+    indexApi.findPrescriptionByType(data).then(res => {
+      this.loading = false;
+      // this.$emit('updateYdkPrescriptionStatusNum','NEW_PRESCRIPTION');
+      this.countPreByStatu();
       if (res["retCode"]) {
         console.log(res.data);
-        this.prescriptionList = res.data.list        
-        this.total = res.data.page.total
-
+        this.prescriptionList = res.data.list;
+        this.total = res.data.page.total;
       } else {
-        if(!res['islogin']){this.$alert(res["message"]);}
+        if (!res["islogin"]) {
+          this.$alert(res["message"]);
+        }
         console.error("数据查询错误");
       }
     });
   }
   mounted() {
-
-this.allPrescription()
-    this.getprescriptionList()
-
-
-
-
+    this.allPrescription();
+    this.getprescriptionList();
   }
 }
 </script>
@@ -305,5 +307,4 @@ this.allPrescription()
   background: #fff;
   border: 1px solid #eaeaea;
 }
-
 </style>

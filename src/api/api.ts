@@ -54,7 +54,7 @@ export const requestForm = (urlPath, params) => {
 
 
 export const preViewApi = (presId)=>{
-    window.open(`${node_base}/getpicture?presId=${presId}`)
+    window.open(`${node_base}/getpicture?host=${base}&presId=${presId}`)
 }
 
 

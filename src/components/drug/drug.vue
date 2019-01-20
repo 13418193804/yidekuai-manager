@@ -4,9 +4,8 @@
         <div >
           <h3>药品库管理
           </h3>
-          
  <div style="10px;">
-药品数量统计：{{alldrug}}
+药品总数量统计：{{alldrug}}　 西药数量统计：{{WESTERNcount}} 　中药数量统计：{{CHINESEcount}} 
             </div>
         </div>
 
@@ -74,6 +73,27 @@
   <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList1="drugList1"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
     </el-tab-pane>
    
+   
+    <el-tab-pane  label="器械" name="INSTRUMENTS">
+  
+     <div style="padding-bottom:20px;">
+<el-row :gutter="10">
+  <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
+   <el-input
+  placeholder="请输入商品名称" style="margin-top:20px;" v-model="key"
+  clearable>
+</el-input>
+  </el-col>
+
+  <el-col :xs="5" :sm="5" :md="3" :lg="3" :xl="2" style="min-width: 250px;">
+<el-button type="primary" icon="el-icon-search"  style="margin-top:20px;" @click="getGrugList(true)">查询</el-button>
+<!-- <el-button type="primary"  style="margin-top:20px;" @click="change_CHINESE_Model('add',false)">新增药品</el-button> -->
+  </el-col>
+</el-row>
+</div>
+  <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList3="drugList3"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
+    </el-tab-pane>
+   
   </el-tabs>
 
 <el-col :span="24" class="toolbar">
@@ -101,18 +121,19 @@ export default class AddGoods extends Vue {
   alldrug = 0;
 
   handleClick() {
+    this.getGrugList(true);
+  }
 
-
-      this.getGrugList(true);
-
- }
-  
   drugType = "WESTERN";
-  
+  WESTERNcount = 0;
+  CHINESEcount = 0;
   allDrug() {
     indexApi.allDrug({}).then(res => {
       if (res["retCode"]) {
-        this.alldrug = res.data;
+        this.alldrug = res.data.all;
+
+        this.WESTERNcount = res.data.WESTERN;
+        this.CHINESEcount = res.data.CHINESE;
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -121,17 +142,15 @@ export default class AddGoods extends Vue {
       }
     });
   }
-changeModel(type, row){
-  (<any>this.$refs.filterdrug).changeModel(type, row)
-}
-change_CHINESE_Model(type, row){
-  (<any>this.$refs.filterdrug).change_CHINESE_Model(type, row)
-  
-}
-change_WESTERN_Model(type, row){
-  (<any>this.$refs.filterdrug).change_WESTERN_Model(type, row)
-  
-}
+  changeModel(type, row) {
+    (<any>this.$refs.filterdrug).changeModel(type, row);
+  }
+  change_CHINESE_Model(type, row) {
+    (<any>this.$refs.filterdrug).change_CHINESE_Model(type, row);
+  }
+  change_WESTERN_Model(type, row) {
+    (<any>this.$refs.filterdrug).change_WESTERN_Model(type, row);
+  }
 
   key = "";
   loading = false;
@@ -141,6 +160,7 @@ change_WESTERN_Model(type, row){
   drugList = [];
   drugList1 = [];
   drugList2 = [];
+  drugList3 = [];
   onPageChange(page) {
     this.currentPage = page - 1;
     this.getGrugList();
@@ -165,8 +185,7 @@ change_WESTERN_Model(type, row){
     indexApi.getGrugList1(data).then(res => {
       this.loading = false;
       if (res["retCode"]) {
-
-            this.$nextTick(() => {
+        this.$nextTick(() => {
           if (this.drugType == "drug") {
             this.drugList = res.data.list;
           }
@@ -176,8 +195,10 @@ change_WESTERN_Model(type, row){
           if (this.drugType == "WESTERN") {
             this.drugList2 = res.data.list;
           }
+          if (this.drugType == "INSTRUMENTS") {
+            this.drugList3 = res.data.list;
+          }
         });
-
 
         this.total = res.data.page.total;
       } else {
@@ -191,7 +212,7 @@ change_WESTERN_Model(type, row){
 
   mounted() {
     this.allDrug();
-    this.getGrugList(true)
+    this.getGrugList(true);
   }
 }
 </script>

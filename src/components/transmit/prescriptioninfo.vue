@@ -229,7 +229,7 @@
 </el-table>
 
       <div style="text-align:right;">代煎费：<span style="color:red" >￥{{row.replaceDecoctingMoney}}</span></div>
-          <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
+          <div style="text-align:right;" v-if="row.presState!='REJECT_AUDIT_PRESCRIPTION'">中药药品合计：<span style="color:red" >￥{{SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
 
 
     </el-tab-pane>
@@ -324,7 +324,7 @@
       label="提交时间">
    </el-table-column>
    </el-table>
-    <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
+    <div style="text-align:right;" v-if="row.presState!='REJECT_AUDIT_PRESCRIPTION'">西药药品合计：<span style="color:red" >￥{{SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
 
    </el-tab-pane>
     <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION" v-if="PASTE_preDrugList.length>0">
@@ -406,8 +406,67 @@
 </el-table>
 
    <div style="text-align:right;">制作费：<span style="color:red" >￥{{row.makeMoney}}</span></div>
-      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
+      <div style="text-align:right;" v-if="row.presState!='REJECT_AUDIT_PRESCRIPTION'">膏方药品合计：<span style="color:red" >￥{{SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
     </el-tab-pane>
+
+    <el-tab-pane  label="器械" name="INSTRUMENTS" v-if="INSTRUMENTS_preDrugList.length>0">
+
+
+
+<el-table border
+    :data="INSTRUMENTS_preDrugList"
+    stripe
+    style="width: 100%">
+     <el-table-column  fixed="left"
+      prop="codeId"
+      label="药品编码">
+   </el-table-column>
+  <el-table-column 
+      prop="drugName"
+      label="药材名称">
+   </el-table-column>
+  <el-table-column
+      prop="productName"
+      label="别名">
+   </el-table-column>
+  <el-table-column
+      prop="manufacturer"
+      label="供应商">
+   </el-table-column>
+     <el-table-column
+      prop="specification"
+      label="药品规格">
+   </el-table-column>
+  <el-table-column
+      prop="packingUnit"
+      label="单位">
+   </el-table-column>
+  <el-table-column
+      prop="instructions"
+      label="使用说明">
+   </el-table-column>
+  <el-table-column
+      prop="quantity"
+      label="数量">
+   </el-table-column>
+  <el-table-column
+      prop="price"
+      label="药品价格">
+   </el-table-column>
+   
+  <el-table-column
+      prop="shouldpay"
+      label="药品合计">
+   </el-table-column>
+  <el-table-column
+      prop="createDate"
+      label="提交时间">
+   </el-table-column>
+</el-table>
+
+
+    </el-tab-pane>
+    
   </el-tabs>
 
 <div style="text-align:right; margin-top:20px;    padding-top: 10px;">
@@ -429,7 +488,7 @@
 <el-button size="mini" type="warning" @click="preViewApi()" >下载</el-button>
 
 </div>
-<iframe width='480' scrolling='no' height='750' frameborder='0' allowtransparency='true' :src="`http://203.195.236.254:3000/?presId=${row.presId}`"></iframe>
+<iframe width='480' height='750' frameborder='0' allowtransparency='true' :src="previewUrl+row.presId"></iframe>
 </div>
 
 
@@ -446,6 +505,7 @@ import axios from "axios";
 import { Prop } from "vue-property-decorator";
 import * as indexApi from "../../api/indexApi";
 import corpperlabel from "./corpperlabel";
+import { g_node_url, g_base_url } from "../../api/conf";
 
 @Component({
   props: {},
@@ -520,6 +580,8 @@ export default class AddGoods extends Vue {
         return "西药";
       case "PASTE_PRESCRIPTION":
         return "膏方";
+      case "INSTRUMENTS":
+        return "器械";
       default:
         return "";
     }
@@ -540,6 +602,11 @@ export default class AddGoods extends Vue {
         return {
           name: "膏方",
           type: ""
+        };
+      case "INSTRUMENTS":
+        return {
+          name: "器械",
+          type: "danger"
         };
       default:
         return {
@@ -600,7 +667,7 @@ export default class AddGoods extends Vue {
   CHINESE_preDrugList = [];
   PASTE_preDrugList = [];
   WESTERN_preDrugList = [];
-
+  INSTRUMENTS_preDrugList = [];
   queryPresDrugback(presId) {
     if (
       this.row.presState == "REJECT_AUDIT_PRESCRIPTION" ||
@@ -622,10 +689,15 @@ export default class AddGoods extends Vue {
             return item.preDrugType == "WESTERN_MEDICINE";
           });
 
+          this.INSTRUMENTS_preDrugList = res.data.data.filter(item => {
+            return item.preDrugType == "INSTRUMENTS";
+          });
+
           this.drugType = this.handleValue(
             this.CHINESE_preDrugList,
             this.WESTERN_preDrugList,
-            this.PASTE_preDrugList
+            this.PASTE_preDrugList,
+            this.INSTRUMENTS_preDrugList
           );
         } else {
           if (!res["islogin"]) {
@@ -655,11 +727,15 @@ export default class AddGoods extends Vue {
             this.WESTERN_preDrugList = res.data.filter(item => {
               return item.preDrugType == "WESTERN_MEDICINE";
             });
+            this.INSTRUMENTS_preDrugList = res.data.filter(item => {
+              return item.preDrugType == "INSTRUMENTS";
+            });
 
             this.drugType = this.handleValue(
               this.CHINESE_preDrugList,
               this.WESTERN_preDrugList,
-              this.PASTE_preDrugList
+              this.PASTE_preDrugList,
+              this.INSTRUMENTS_preDrugList
             );
           } else {
             if (!res["islogin"]) {
@@ -671,7 +747,7 @@ export default class AddGoods extends Vue {
     }
   }
 
-  handleValue(CHINESE_preDrugList, WESTERN_preDrugList, PASTE_preDrugList) {
+  handleValue(CHINESE_preDrugList, WESTERN_preDrugList, PASTE_preDrugList,INSTRUMENTS_preDrugList) {
     if (CHINESE_preDrugList.length > 0) {
       return "CHINESE";
     }
@@ -684,6 +760,9 @@ export default class AddGoods extends Vue {
       return "PASTE_PRESCRIPTION";
     }
 
+    if (INSTRUMENTS_preDrugList.length > 0) {
+      return "INSTRUMENTS";
+    }
     return "";
   }
 
@@ -719,6 +798,7 @@ export default class AddGoods extends Vue {
   }
   drugType = "CHINESE";
   SplitPrescription = {};
+  previewUrl = `${g_node_url}/?host=${g_base_url}&presId=`;
   mounted() {}
 }
 </script>

@@ -83,7 +83,6 @@
 </el-row>
 
 
-
     </div>
  </template>
 
@@ -103,6 +102,12 @@ import * as indexApi from "../../api/indexApi";
 export default class AddGoods extends Vue {
   date = [];
   model = false;
+  item = 0
+  handleInput2(e) {
+            // 通过正则过滤小数点后两位
+            e.target.value = (e.target.value.match(/^\d*(\.?\d{0,1})/g)[0]) || null
+    
+        }
   pickerOptions2 = {
     shortcuts: [
       {
