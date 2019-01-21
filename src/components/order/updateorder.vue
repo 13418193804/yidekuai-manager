@@ -232,26 +232,25 @@
     <!-- 共1剂，每日1剂，1剂分1服用 -->
     <!-- 膏方 -->
   <!-- 每日 1 次，每次 1 克，约服1天 -->
-
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="order.preDrugType == 'CHINESE_MEDICINE'">
+<!-- 
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="CHINESE_preDrugList.length>0">
     <div style="     font-size: 15px;     margin-right:10px;">
     用法用量： 共{{order.prescription.allDosage}}剂，每日{{order.prescription.everydayDosage}}剂，1剂分{{order.prescription.everytimeDosage}}服用
     </div>
    </div>
 
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'">
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="PASTE_preDrugList.length>0">
     <div style="     font-size: 15px;     margin-right:10px;">
     用法用量：每日{{order.prescription.everydayTimes}}次，每次{{order.prescription.everytimesG}}克，约服{{order.prescription.howManyDay}}天
     </div>
    </div>
-
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="order.preDrugType == 'PASTE_PRESCRIPTION'">
+<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="PASTE_preDrugList.length>0">
     <div style="     font-size: 15px;     margin-right:10px;">
     辅料：<span style="font-size:16px;">{{list2string(order.otherAccessories,order.aspartame,order.sugarType)}}</span>
     </div>
    <div>
    </div>
-    </div>
+    </div> -->
     
 
 <!-- 膏方  辅料 -->
@@ -404,7 +403,7 @@
 <el-table border
     :data="CHINESE_preDrugList"
     stripe
-    style="width: 100%">
+    style="width: 100%;margin-bottom:10px;">
 
     <el-table-column  fixed="left"
       prop="codeId"
@@ -461,6 +460,10 @@
    </el-table-column>
 
   <el-table-column
+      prop="showQuantity"
+      label="单剂数量">
+   </el-table-column>
+  <el-table-column
       prop="quantity"
       label="数量">
    </el-table-column>
@@ -480,6 +483,10 @@
       label="提交时间">
    </el-table-column>
 </el-table>
+
+<div style="float:left">
+  <div> 用法用量： 共{{order.prescription.allDosage}}剂，每日{{order.prescription.everydayDosage}}剂，1剂分{{order.prescription.everytimeDosage}}服用</div>
+  </div>
       <div style="text-align:right;">代煎费：<span style="color:red" >￥{{order.prescription.isReplaceDecocting===1?order.prescription.replaceDecoctingMoney:0}}</span></div>
           <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{order.SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
 
@@ -586,7 +593,7 @@
 <el-table border
     :data="PASTE_preDrugList"
     stripe
-    style="width: 100%">
+    style="width: 100%;margin-bottom:10px;">
 
    
     <el-table-column  fixed="left"
@@ -658,6 +665,10 @@
    </el-table-column>
 </el-table>
 
+<div style="float:left">
+  <div>用法用量：每日{{order.prescription.everydayTimes}}次，每次{{order.prescription.everytimesG}}克，约服{{order.prescription.howManyDay}}天</div>
+  <div>辅料：<span style="font-size:16px;">{{list2string(order.otherAccessories,order.aspartame,order.sugarType)}}</span></div>
+  </div>
    <div style="text-align:right;">制作费：<span style="color:red" >￥{{order.makeMoney}}</span></div>
       <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{order.SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
     </el-tab-pane>
@@ -875,15 +886,16 @@ export default class AddGoods extends Vue {
 
   loading = false;
   list2string(...list) {
-    let a = [];
-    for (let n in list) {
-      if (list[n]) {
-        for (let j in JSON.parse(list[n])) {
-          a.push(JSON.parse(list[n])[j]);
-        }
-      }
-    }
-    return a.join(",");
+
+    // let a = [];
+    // for (let n in list) {
+    //   if (list[n]) {
+    //     for (let j in JSON.parse(list[n])) {
+    //       a.push(JSON.parse(list[n])[j]);
+    //     }
+    //   }
+    // }
+    return list.join(",");
   }
   doChangePayModeEnum() {
     this.loading = true;

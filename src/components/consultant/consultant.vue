@@ -217,7 +217,9 @@ children:'children',
           size="mini"
           type="text"
           @click="changeModel('edit',scope.row)" v-if="$route.path === '/consultant-manager'">编辑</el-button>
+
         <el-button type="text"  @click="viewBigIcon(scope.row,scope.row.adviserName ,scope.row.userName)">二维码</el-button>
+
          <el-button @click="doDelete(scope.row)"
           size="mini"
           type="text" v-if="$route.path === '/consultant-manager'"
@@ -863,7 +865,16 @@ children:'children',
 
  <el-dialog  :visible.sync="viewBig"  title="顾问二维码">
    <div style="text-align:center;">
+     <div class="flex flex-pack-center">
+    <div style="width:300px;text-align:center;">医德快二维码</div>
+    <div style="width:300px;text-align:center;" v-if="adviserObj1.zdkQrcode">痔德快二维码</div>
+    </div>
    <img :src="bigIcon" style="width:300px;height:300px;" >
+
+   <img v-if="adviserObj1.zdkQrcode" :src="adviserObj1.zdkQrcode" style="width:300px;height:300px;" >
+
+
+
       <div style="    margin: 20px;font-size: 16px;">{{adviserObj1.adviserName}} {{adviserObj1.userName}}</div>
 
    </div>
@@ -891,16 +902,17 @@ export default class AddGoods extends Vue {
   loading = false;
   adviserObj1: any = {};
   viewBigIcon(row, adviserName, userName) {
-    if (row.zdkFlag == 1) {
-      this.bigIcon = row.zdkQrcode;
-    } else {
-      this.bigIcon = row.qrcode;
-    }
+    this.bigIcon = row.qrcode;
+
+    this.adviserObj1 = {};
     this.viewBig = true;
     this.adviserObj1 = {
       adviserName: adviserName,
       userName: userName
     };
+    if (row.zdkFlag == "1") {
+      Object.assign(this.adviserObj1, { zdkQrcode: row.zdkQrcode });
+    }
   }
   bigIcon = "";
   viewBig = false;
@@ -1146,7 +1158,7 @@ export default class AddGoods extends Vue {
   changeModel(type, row) {
     this.adviserTypeEnums = "";
     this.selectAdviserId = [];
-    this.zdkUpId = []
+    this.zdkUpId = [];
     this.type = type;
     if (type == "add") {
       this.adviserObj = {};
@@ -1168,18 +1180,17 @@ export default class AddGoods extends Vue {
       this.adviserTypeEnums = row.adviser_type;
 
       if (this.adviserObj.zdkUpId) {
-        console.log()
+        console.log();
         // 查出智得快的id
         this.getAdviserAndUpFWebList(row.zdkUpId, "1", res => {
           console.log(res);
-this.zdkUpId = res.data.zdkList
-
+          this.zdkUpId = res.data.zdkList;
         });
       }
 
       if (this.adviserObj.upId) {
         this.getAdviserAndUpFWebList(row.upId, "0", res => {
-          this.selectAdviserId = res.data.ydkList
+          this.selectAdviserId = res.data.ydkList;
           // this.adviserObj.adviserDirectorId = res.data.ydkList
         });
       }

@@ -312,6 +312,11 @@
    </el-table-column>
 
   <el-table-column
+      prop="showQuantity"
+      label="单剂数量">
+   </el-table-column>
+
+  <el-table-column
       prop="quantity"
       label="数量">
    </el-table-column>
