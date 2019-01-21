@@ -411,13 +411,14 @@
 </div>
 <div class="flex flex-pack-justify flex-align-center">
  <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
- <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.quantity}}</span></span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;font-weight:800;"><span>×</span>{{item.quantity}}</span></span>
 </div>
 
 
 <div class="flex flex-pack-justify flex-align-center">
  <span style="color: #999;">{{item.specification}}</span>
  <span style="">{{item.packingUnit}}</span>
+ <span style="">{{item.dosageforms}}</span>
  <span style="">{{item.usages}}</span>
  <span style="">{{item.dosage}}</span>
  <span style="">{{item.frequency}}</span>
@@ -836,23 +837,23 @@
 </el-form>
 
  <div style="padding-left:36px;font-size:13.8px">选择要添加的辅料：</div>
-<el-form label-width="120px">
+<el-form label-width="100px">
   	<el-form-item label="糖类：">
-      <div class="flex">
+      <div class="flex flex-warp-justify">
         <div class="lanbelBox"  v-for="(n,index) in sugarTypeList" :class="sugarType[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'sugarType')">{{n}}</div>
 </div>
   	</el-form-item>
 
 
       	<el-form-item label="代糖：">
-      <div class="flex">
+      <div class="flex flex-warp-justify">
         <div class="lanbelBox"  v-for="(n,index) in aspartameList" :class="aspartame[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'aspartame')">{{n}}</div>
 </div>
   	</el-form-item>
 
 
       	<el-form-item label="其他：">
-      <div class="flex">
+      <div class="flex flex-warp-justify">
         <div class="lanbelBox"  v-for="(n,index) in otherAccessoriesList" :class="otherAccessories[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'otherAccessories')">{{n}}</div>
 </div>
   	</el-form-item>
@@ -3126,11 +3127,12 @@ hr {
   line-height: 25px;
 }
 .voice_2 .unfold {
-  width: 500px;
+  width: 400px;
   height: 100%;
   position: absolute;
   top: 0px;
   left: 0px;
+  overflow-y :auto;
 }
 .voice_2 .unfold dl {
   /* margin: 50px 60px 0px 60px; */
