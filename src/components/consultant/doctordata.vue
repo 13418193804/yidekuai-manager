@@ -86,44 +86,44 @@
                     <!-- <el-tag v-if="scope.row.doctorStatus=='HIDE'" type="info">隐藏</el-tag> -->
                 </template>
             </el-table-column>
-               <el-table-column prop="prescriptionNum" label="医生处方数量" sortable="custom" width="150">
+               <el-table-column prop="prescriptionNum" label="处方数量" sortable="custom" width="150">
                 <template slot-scope="scope">
                     {{scope.row.prescriptionNum?scope.row.prescriptionNum:0}}
                 </template>
                </el-table-column>
-            <el-table-column prop="orderNum" label="医生订单数量" sortable="custom" width="150">
+            <el-table-column prop="orderNum" label="订单数量" sortable="custom" width="150">
             <template slot-scope="scope">
                 {{scope.row.orderNum?scope.row.orderNum:0}}
               </template>
             </el-table-column>
-            <el-table-column prop="orderMoney" label="医生订单金额" sortable="custom" width="150">
+            <el-table-column prop="orderMoney" label="订单金额" sortable="custom" width="150">
             <template slot-scope="scope">
                  {{scope.row.orderMoney?scope.row.orderMoney:0}}
               </template>
             </el-table-column>
-            <el-table-column prop="memberNum" label="医生患者数量" sortable="custom" width="150">
+            <el-table-column prop="memberNum" label="患者数量" sortable="custom" width="150">
                <template slot-scope="scope">
               {{scope.row.memberNum?scope.row.memberNum:0}}
              </template>
             </el-table-column>
  
-  <el-table-column
+  <!-- <el-table-column
       prop="creater_name"
       label="外部顾问"  width="120">
    </el-table-column>
      <el-table-column
       prop="creater_phone"
       label="外部顾问手机号" width="150">
-   </el-table-column>
+   </el-table-column> -->
 
-  <el-table-column
+  <!-- <el-table-column
       prop="up_adviser_name"
       label="内部顾问"  width="120">
    </el-table-column>
      <el-table-column
       prop="up_adviser_phone"
       label="内部顾问手机号" width="150">
-   </el-table-column>
+   </el-table-column> -->
 
   <el-table-column
       prop="hospitalName"
@@ -133,7 +133,7 @@
       prop="hospitalDepartment"
       label="科室" width="180">
    </el-table-column>
-  <el-table-column
+  <!-- <el-table-column
       prop="phone"
       label="联系电话" width="150">
    </el-table-column>
@@ -145,8 +145,8 @@
 {{handledoctorTitle(scope.row.doctorTitle)}}
       </template>
 
-   </el-table-column>
-     <el-table-column
+   </el-table-column> -->
+     <!-- <el-table-column
       prop="resource_adviser_name"
       label="来源顾问"  width="120">
    </el-table-column>
@@ -154,14 +154,14 @@
      <el-table-column
       prop="resource_adviser_phone"
       label="来源顾问手机号"  width="120">
-   </el-table-column>
+   </el-table-column> -->
 
-  <el-table-column
+  <!-- <el-table-column
       prop="createrTime"
       label="注册日期" width="180">
-   </el-table-column>
+   </el-table-column> -->
     <el-table-column
-      label="操作" fixed="right"  width="100">
+      label="操作" fixed="right"  width="140">
 
      <template slot-scope="scope" >
         <!-- <el-button
@@ -174,6 +174,15 @@
           size="mini"
           type="text" @click="doctorGetDoctor(scope.row)"
          >查看药品</el-button>
+
+         <!-- 查看顾问 -->
+             <el-button
+          size="mini"
+          type="text" @click="doctorGetAdivser(scope.row)"
+         >查看顾问</el-button>
+
+
+
        <!-- <el-button
           size="mini"
           type="text" @click="doctorGetAdviser(scope.row)"
@@ -284,7 +293,35 @@
 </div>
 </el-dialog>
 
+		<el-dialog width= "70vw" :close-on-click-modal="false"  :append-to-body="true" :visible.sync="AdviserListModel"  title="查看顾问">
 
+
+
+<el-table border
+    :data="AdviserList"
+    stripe height="600"
+    style="width: 100%;">
+
+  <el-table-column  fixed="left"
+      prop="Name"
+      label="顾问名" >
+   </el-table-column>
+    <el-table-column
+          prop="phone"
+          label="顾问手机号">
+      </el-table-column>
+<el-table-column
+      prop="platform"
+      label="归属">
+   </el-table-column>
+     <el-table-column
+      prop="type"
+      label="类型">
+   </el-table-column>
+
+</el-table> 
+
+</el-dialog>
 
 <updatedoctor ref="updatedoctor" @getdoctorList="getDoctorList" :tableTree="tableTree" :hospitallist="hospitallist"></updatedoctor>
 
@@ -754,6 +791,26 @@ new Promise(resolve=>{
 
     return dateString;
   }
+  AdviserList = []
+AdviserListModel = false
+doctorGetAdivser(row){
+    this.AdviserList = []
+this.AdviserListModel = true
+        indexApi.getAdviserArrByDoctorId({doctorId:row.doctorId}).then(res => {
+          if (res["retCode"]) {
+            console.log(res.data)
+    this.AdviserList = res.data
+          } else {
+            if (!res["islogin"]) {
+              this.$alert(res["message"]);
+            }
+          }
+        });
+
+
+
+}
+
   mounted() {
 this.date = [this.getMonth1(),moment(new Date()).format("YYYY-MM-DD") + " 23:59:59"]
   window['mmvue'] = this

@@ -42,17 +42,30 @@
 
 
 <!-- v-if="patModel != 'PENDING'" -->
- <el-table-column 
-      label="支付方式" width="120">
-<template slot-scope="scope">
- <el-tag v-if="handlePaymentMode(scope.row.paymentMode).type !==''"
-  :type="scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ? handlePayStatus(scope.row.payStatus).type  :handlePaymentMode(scope.row.paymentMode).type">
-  {{ scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ?handlePayStatus(scope.row.payStatus).title :  handlePaymentMode(scope.row.paymentMode).title}}
-  </el-tag>
-</template>
+
+       <el-table-column  
+      label="处方类型" width="200">
+      <template slot-scope="scope">
+    <div v-if="scope.row.preDrugType">
+  <el-tag v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
+  :type="handlepreDrugType(n).type">
+        {{handlepreDrugType(n).name}}
+</el-tag>
+    </div>
+      </template>
    </el-table-column>
 
 
+
+        <el-table-column  
+      label="订单类型" width="150">
+      <template slot-scope="scope">
+    <el-tag v-if="scope.row.prescriptionType"
+  :type="handleprescriptionType(scope.row.prescriptionType).type">
+        {{handleprescriptionType(scope.row.prescriptionType).name}}
+</el-tag>
+      </template>
+   </el-table-column>
   <el-table-column
       prop="auditingDate"
       label="创建时间" width="180">
@@ -62,6 +75,12 @@
       prop="memberName"
       label="患者姓名" width="150">
    </el-table-column>
+
+ <el-table-column
+      prop="consigneeName"
+      label="收货人" width="180">
+   </el-table-column>
+
 
    <el-table-column
       prop="docterName"
@@ -97,10 +116,7 @@
       label="患者身份证" width="180">
    </el-table-column>
 
-         <el-table-column
-      prop="consigneeName"
-      label="收货人" width="180">
-   </el-table-column>
+        
    <el-table-column
       prop="consigneePhone"
       label="收货手机号"  width="150">
@@ -140,29 +156,16 @@
      </template>
    </el-table-column>
    
-        <el-table-column  
-      label="处方类型" width="200">
-      <template slot-scope="scope">
-    <div v-if="scope.row.preDrugType">
-  <el-tag v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
-  :type="handlepreDrugType(n).type">
-        {{handlepreDrugType(n).name}}
-</el-tag>
-    </div>
-      </template>
+  <el-table-column 
+      label="支付方式" width="120">
+<template slot-scope="scope">
+ <el-tag v-if="handlePaymentMode(scope.row.paymentMode).type !==''"
+  :type="scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ? handlePayStatus(scope.row.payStatus).type  :handlePaymentMode(scope.row.paymentMode).type">
+  {{ scope.row.prescriptionType==='BACK_HANDWORK' ||scope.row.prescriptionType=== 'DOC_HANDWORK' ?handlePayStatus(scope.row.payStatus).title :  handlePaymentMode(scope.row.paymentMode).title}}
+  </el-tag>
+</template>
    </el-table-column>
 
-
-
-        <el-table-column  
-      label="订单类型" width="150">
-      <template slot-scope="scope">
-    <el-tag v-if="scope.row.prescriptionType"
-  :type="handleprescriptionType(scope.row.prescriptionType).type">
-        {{handleprescriptionType(scope.row.prescriptionType).name}}
-</el-tag>
-      </template>
-   </el-table-column>
    
        <el-table-column
       prop="remark"
@@ -179,25 +182,19 @@
       label="处方编号" width="200">
    </el-table-column>
 
-   <el-table-column label="操作" fixed="right"  :min-width="cowWidth" >
+   <el-table-column label="操作" fixed="right"  width="120" >
       <template slot-scope="scope">
 
-        <el-button
+        <!-- <el-button
           size="mini"
           type="text" @click="getorderInfo(scope.row)">订单详情</el-button>
           
-        <!-- <el-button
-          size="mini"
-          type="text" @click="getInvoiceRecords(scope.$index, scope.row)" v-if="pagetype =='rework' ">发票信息</el-button> -->
 
         <el-button
           size="mini"
           type="text" @click="getTransmitInfo(scope.$index, scope.row)" >处方详情</el-button>
 
-        <!-- <el-button
-          size="mini"
-          type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button> -->
-                 
+        
         <el-button
           size="mini"
           type="text"
@@ -209,12 +206,51 @@
          
 
 
-               <!-- <el-button size="mini" 
-          :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button> -->
          <el-button size="mini" 
           :type="scope.row.presState == 'GIVEUP_PRESCRIPTION'?'':'primary'" @click="doGiveup(scope.row)" v-if="pagetype =='reminder'" :disabled="scope.row.presState == 'GIVEUP_PRESCRIPTION'"  >{{  scope.row.presState == 'GIVEUP_PRESCRIPTION'?'已弃单':'弃单'}}</el-button>
-<el-button type="warning" size="mini"   @click="getOrderExport(scope.row.presId)"  >下载业务单</el-button>
-  
+<el-button type="warning" size="mini"   @click="getOrderExport(scope.row.presId)"  >下载业务单</el-button> -->
+
+<el-dropdown trigger="click" style="cursor: pointer;color:#409EFF">
+  <span class="el-dropdown-link">
+    更多<i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+  <el-dropdown-menu slot="dropdown">
+    <el-dropdown-item>
+      <div  @click.stop="getorderInfo(scope.row)">订单详情</div>
+    </el-dropdown-item>
+        <el-dropdown-item>
+      <div  @click.stop="getTransmitInfo(scope.$index, scope.row)">处方详情</div>
+    </el-dropdown-item>
+         <el-dropdown-item v-promiss.edit>
+      <div  @click.stop="changeModel('edit', scope.row)">完善</div>
+    </el-dropdown-item>
+         <el-dropdown-item v-if=" (pagetype =='rework'||pagetype =='afterorder'  ) && (scope.row.orderStatue == 'ORDER_WAIT_SENDGOODS' ||scope.row.orderStatue == 'SENDGOODS_UNFINISHED'||scope.row.orderStatue =='ORDER_PAY_ONDEV')" v-promiss.edit>
+      <div  @click.stop="sendGoods(scope.row)">发货</div>
+    </el-dropdown-item>
+
+       <el-dropdown-item >
+      <div  @click.stop="getOrderExport(scope.row.presId)">下载业务单</div>
+    </el-dropdown-item>
+
+  <el-dropdown-item v-if="pagetype =='reminder' " :disabled="scope.row.presState == 'GIVEUP_PRESCRIPTION'">
+      <div  @click.stop="doGiveup(scope.row)">{{  scope.row.presState == 'GIVEUP_PRESCRIPTION'?'已弃单':'弃单'}}</div>
+    </el-dropdown-item>
+
+
+
+  </el-dropdown-menu>
+</el-dropdown>
+
+  <!-- <el-button
+          size="mini"
+          type="text" @click="updateInfo(scope.row)"  v-if="pagetype =='afterorder' ||pagetype =='reminder'" >编辑</el-button> -->
+                 
+        <!-- <el-button
+          size="mini"
+          type="text" @click="getInvoiceRecords(scope.$index, scope.row)" v-if="pagetype =='rework' ">发票信息</el-button> -->
+       
+               <!-- <el-button size="mini" 
+          :type="scope.row.reminderFlag == 1?'primary':''" @click="doReminder(scope.row)" v-if="pagetype =='reminder' && scope.row.orderStatue =='ORDER_WAIT_PAY' && scope.row.presState !== 'GIVEUP_PRESCRIPTION'" :disabled="scope.row.reminderFlag !== 1"  >{{  scope.row.reminderFlag == 1?'催单':'已催单'}}</el-button> -->
 
      </template>
     </el-table-column>
@@ -315,6 +351,29 @@
       </template>
    </el-table-column>
 
+       <el-table-column  
+      label="处方类型" width="200">
+      <template slot-scope="scope">
+    <div v-if="scope.row.preDrugType">
+  <el-tag v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
+  :type="handlepreDrugType(n).type">
+        {{handlepreDrugType(n).name}}
+</el-tag>
+    </div>
+      </template>
+   </el-table-column>
+
+
+   <el-table-column  
+      label="订单类型" width="150">
+      <template slot-scope="scope">
+    <el-tag v-if="scope.row.prescriptionType"
+  :type="handleprescriptionType(scope.row.prescriptionType).type">
+        {{handleprescriptionType(scope.row.prescriptionType).name}}
+</el-tag>
+      </template>
+   </el-table-column>
+
   <el-table-column
       prop="auditingDate"
       label="创建时间" width="180">
@@ -324,6 +383,22 @@
       prop="memberName"
       label="患者姓名" width="150">
    </el-table-column>
+        <el-table-column
+      prop="consigneeName"
+      label="收货人" width="180">
+   </el-table-column>
+
+
+   <el-table-column
+      prop="docterName"
+      label="开方医生" width="150">
+   </el-table-column>
+ 
+    <el-table-column
+      prop="orderMoney"
+      label="订单金额"  width="150">
+   </el-table-column>
+
     <el-table-column
       prop="memberPhone"
       label="患者手机号" width="150">
@@ -332,10 +407,7 @@
       prop="memberIdcard"
       label="患者身份证" width="180">
    </el-table-column>
-        <el-table-column
-      prop="consigneeName"
-      label="收货人" width="180">
-   </el-table-column>
+   
    <el-table-column
       prop="consigneePhone"
       label="收货手机号"  width="150">
@@ -347,10 +419,6 @@
      </template>
    </el-table-column>
 
-    <el-table-column
-      prop="orderMoney"
-      label="订单金额"  width="150">
-   </el-table-column>
 
 
     <el-table-column 
@@ -365,11 +433,6 @@
       label="患者性别"  width="150">
    </el-table-column>
 
-   <el-table-column
-      prop="docterName"
-      label="开方医生" width="150">
-   </el-table-column>
- 
       <el-table-column
       prop="doctorMobile"
       label="医生手机号"  width="150">
@@ -392,28 +455,7 @@
       label="药品金额" width="180">
    </el-table-column>
 
-           <el-table-column  
-      label="处方类型" width="200">
-      <template slot-scope="scope">
-    <div v-if="scope.row.preDrugType">
-  <el-tag v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
-  :type="handlepreDrugType(n).type">
-        {{handlepreDrugType(n).name}}
-</el-tag>
-    </div>
-      </template>
-   </el-table-column>
-
-
-   <el-table-column  
-      label="订单类型" width="150">
-      <template slot-scope="scope">
-    <el-tag v-if="scope.row.prescriptionType"
-  :type="handleprescriptionType(scope.row.prescriptionType).type">
-        {{handleprescriptionType(scope.row.prescriptionType).name}}
-</el-tag>
-      </template>
-   </el-table-column>
+    
        <el-table-column
       prop="remark"
       label="开方医生备注"  width="180">
@@ -482,7 +524,7 @@
     margin: 15px;
     "  class="flex">
 <div class=" dashed_box" :class="(!createForm.docterId || filter_doctor) && add_model_type =='add'?'opactiy':''" v-on:mouseover="filter_doctor = true" v-on:mouseout="filter_doctor =false">
-  <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 6px;left: 0;"></i>
+  <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 0px;left: 0;"></i>
 
   <div class="filter_min_box flex  flex-align-center flex-pack-center" v-if="(!createForm.docterId || filter_doctor) && add_model_type =='add'" @click="changefilter_box('doctor')">
    <i class="el-icon-plus" style="font-size:27px;" ></i>
@@ -699,14 +741,8 @@
 </div>
 </div>
 </div>
-
 </div>
 </div>
-
-
-
-
-        
             </el-dialog>
 	
 
@@ -818,6 +854,8 @@ export default class AddGoods extends Vue {
     }
   }
   after_vaild() {
+
+       
     if (this.fileList.length > 0) {
       this.createForm.pictureIds = this.fileList
         .map(item => {
@@ -825,8 +863,12 @@ export default class AddGoods extends Vue {
         })
         .join(",");
     } else {
-      this.$message("请上传处方图片");
+
+      if(this.createForm.prescriptionType != "ONLINE"){
+   this.$message("请上传处方图片");
       return;
+      }
+   
     }
 
     let showLoading = () => {
@@ -908,7 +950,7 @@ export default class AddGoods extends Vue {
           name: "膏方",
           type: ""
         };
-          case "INSTRUMENTS":
+      case "INSTRUMENTS":
         return {
           name: "器械",
           type: "danger"

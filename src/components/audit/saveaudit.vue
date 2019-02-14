@@ -255,6 +255,48 @@
           <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{SplitPrescription.CHINESE_MEDICINE.presscriptionMoney}}</span></div>
 <div style="height:25px;"></div>
 
+
+
+
+
+<div style="font-size:12px;max-height: 500px;
+    height: auto;
+    overflow: auto;">
+ 
+<div v-for="item in CHINESE_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+<div class="flex flex-pack-justify flex-align-center" style="color: #999;">
+<div>{{item.codeId}} </div>
+<div>{{item.createDate}} </div>
+</div>
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.showQuantity}}(单剂)</span></span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="color: #999;">{{item.typeName}}</span>
+ <span style="">{{item.decoctingType}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
+ <span style="">{{item.producingArea}}</span>
+ <span style="color: red;font-size: 16px;">￥{{item.price * (item.showQuantity||item.quantity)?(item.price * (item.showQuantity||item.quantity)).toFixed(2):0}}</span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">{{item.manufacturer}}</div>
+ <div class="flex-1" style="text-align:center">{{item.partnerName}}</div>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
+</div>
+</div>
+
+
+<!-- 
 <el-table border
     :data="CHINESE_preDrugList"
     stripe
@@ -336,14 +378,56 @@
       label="提交时间">
    </el-table-column>
 
-</el-table>
+</el-table> -->
 
     </el-tab-pane>
     <el-tab-pane  label="西药" name="WESTERN" v-if="WESTERN_preDrugList.length>0">
     <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{SplitPrescription.WESTERN_MEDICINE.presscriptionMoney}}</span></div>
 <div style="height:25px;"></div>
 
-<el-table border
+
+
+<div style="font-size:12px;max-height: 500px;
+    height: auto;
+    overflow: auto;">
+
+<div v-for="item in WESTERN_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+<div class="flex flex-pack-justify flex-align-center" style="color: #999;">
+<div>{{item.codeId}} </div>
+<div>{{item.createDate}} </div>
+</div>
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;font-weight:800;"><span>×</span>{{item.quantity}}</span></span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="color: #999;font-weight: 600;">{{item.specification}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span>
+ <span style="">{{item.dosageforms}}</span> -->
+ <span style="">{{item.usages}}</span>
+ <span style="">{{item.dosage}}</span>
+ <span style="">{{item.frequency}}</span>
+ <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">{{item.manufacturer}}</div>
+ <div class="flex-1" style="text-align:center">{{item.partnerName}}</div>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
+</div>
+</div>
+
+
+
+<!-- <el-table border
     :data="WESTERN_preDrugList"
     stripe 
     style="width: 100%">
@@ -423,7 +507,7 @@
       prop="createDate"
       label="提交时间">
    </el-table-column>
-</el-table>
+</el-table> -->
 
 
 
@@ -457,7 +541,45 @@
       <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{SplitPrescription.PASTE_PRESCRIPTION.presscriptionMoney}}</span></div>
 <div style="height:25px;"></div>
 
-<el-table border
+
+<div style="font-size:12px;max-height: 500px;
+    height: auto;
+    overflow: auto;">
+
+
+<div v-for="item in PASTE_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+<div class="flex flex-pack-justify flex-align-center" style="color: #999;">
+<div>{{item.codeId}} </div>
+<div>{{item.createDate}} </div>
+</div>
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.quantity}}</span></span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="color: #999;">{{item.typeName}}</span>
+ <span style="">{{item.decoctingType}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
+ <span style="">{{item.producingArea}}</span>
+ <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">{{item.manufacturer}}</div>
+ <div class="flex-1" style="text-align:center">{{item.partnerName}}</div>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
+</div>
+</div>
+
+<!-- <el-table border
     :data="PASTE_preDrugList"
     stripe
     style="width: 100%">
@@ -530,11 +652,56 @@
       prop="createDate"
       label="提交时间">
    </el-table-column>
-</el-table>
+</el-table> -->
     </el-tab-pane>
     <el-tab-pane  label="器械" name="INSTRUMENTS" v-if="INSTRUMENTS_preDrugList.length>0">
 
-<el-table border
+    <div style="text-align:right;">器械合计：<span style="color:red" >￥{{INSTRUMENTS_preDrugListtotal}}</span></div>
+
+<div style="height:25px;"></div>
+
+<div style="font-size:12px;max-height: 500px;
+    height: auto;
+    overflow: auto;">
+
+
+
+
+<div v-for="item in INSTRUMENTS_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+<div class="flex flex-pack-justify flex-align-center" style="color: #999;">
+<div>{{item.codeId}} </div>
+<div>{{item.createDate}} </div>
+</div>
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.quantity}}</span></span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="color: #999;font-weight: 600;">{{item.specification}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
+ <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">{{item.manufacturer}}</div>
+ <div class="flex-1" style="text-align:center">{{item.partnerName}}</div>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+<!-- <el-table border
     :data="INSTRUMENTS_preDrugList"
     stripe
     style="width: 100%">
@@ -583,7 +750,7 @@
       prop="createDate"
       label="提交时间">
    </el-table-column>
-</el-table>
+</el-table> -->
     </el-tab-pane>
 
   </el-tabs>
@@ -1400,7 +1567,19 @@ export default class AddGoods extends Vue {
   }
 
 
+  get INSTRUMENTS_preDrugListtotal() {
+    let INSTRUMENTS_preDrugList = this.INSTRUMENTS_preDrugList.map(item => {
+      return item.shouldpay;
+    });
 
+    if (INSTRUMENTS_preDrugList.length > 0) {
+      return INSTRUMENTS_preDrugList.reduce((total, num) => {
+        return total + num;
+      });
+    } else {
+      return 0;
+    }
+  }
   mounted() {
     this.fileUploadUrl = Config.g_upload_url;
 

@@ -79,7 +79,7 @@
 
   <el-col :xs="24" :sm="24" :md="24" :lg="6" :xl="6">
 
-<div style="border:1px teal solid;overflow-y:auto;padding:10px;height:75vh">
+<div style="border:1px teal solid;overflow-y:auto;padding:10px;height:70vh">
     <el-tree :data="optionsTree"  default-expand-all :props="{
 children:'children',
           label: 'adviserName'
@@ -98,7 +98,7 @@ children:'children',
     <el-tab-pane v-for=" n in tabPaneList"  :label="n.label+'('+n.count+')'" :name="n.name" > -->
 <el-table border @sort-change="sortChange"
     :data="YdkAdviser"
-    stripe height="600"
+    stripe 
     style="width: 100%;">
 
   <el-table-column  fixed="left"
@@ -134,14 +134,14 @@ children:'children',
       </template>
    </el-table-column>
    
- <el-table-column
+ <!-- <el-table-column
       prop="drugNum" sortable="custom"
       label="药品种类数量"  width="150">
               <template slot-scope="scope">
            {{scope.row.drugNum?scope.row.drugNum:0}}
       </template>
-   </el-table-column>
- <el-table-column
+   </el-table-column> -->
+ <!-- <el-table-column
       label="顾问类型">
       <template slot-scope="scope">
            {{scope.row.adviserType=='OUTSIDE'?'外部顾问':''}}
@@ -154,21 +154,34 @@ children:'children',
            {{scope.row.directorState=='1'?'主管顾问':''}}
            {{scope.row.directorState=='0'?'普通顾问':''}}
       </template>
-   </el-table-column>
+   </el-table-column> -->
    
-     <el-table-column
+     <!-- <el-table-column
       prop="up_adviser_name"
       label="上级顾问" width="150">
    </el-table-column>
       <el-table-column
       prop="up_adviser_phone"
       label="上级顾问手机号" width="150">
+   </el-table-column> -->
+
+   
+  <el-table-column
+      label="身份" width="150">
+          <template slot-scope="scope">
+
+
+    <span style="marign-right:10px;">{{scope.row.ydkFlag=='1' ?'医德快':''}}</span>
+    <span >{{scope.row.zdkFlag == '1' ?'痔得快':''}}</span>
+
+      </template>
    </el-table-column>
+   
   <el-table-column
       prop="userName"
       label="手机号" width="150">
    </el-table-column>
-
+<!-- 
  <el-table-column
       prop="adviserAge"
       label="年龄">
@@ -178,7 +191,7 @@ children:'children',
       prop="adviserSex"
       label="性别">
    </el-table-column>
- 
+  -->
 
  <el-table-column
       label="使用状态">
@@ -201,9 +214,41 @@ children:'children',
 
 
 
- <el-table-column label="操作" fixed="right"  :width="430">
+ <el-table-column label="操作" fixed="right"  :width="120">
       <template slot-scope="scope">
-             <el-button
+
+<el-dropdown trigger="click" style="cursor: pointer;color:#409EFF">
+  <span class="el-dropdown-link">
+    更多<i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+  <el-dropdown-menu slot="dropdown">
+    <el-dropdown-item>
+      <div  @click.stop="cleanConsultantItemShelf(scope.row)">医生统计</div>
+    </el-dropdown-item>
+        <el-dropdown-item v-if="$route.path === '/consultant-manager'">
+      <div  @click="openNotBindDoctorModel(scope.row)" >分配医生</div>
+    </el-dropdown-item>
+       <el-dropdown-item>
+      <div  @click.stop="adviserGetDrugDoRow(scope.row)">药品统计</div>
+    </el-dropdown-item>
+
+       <el-dropdown-item v-if="$route.path === '/consultant-manager'">
+      <div  @click.stop="changeModel('edit',scope.row)">编辑</div>
+    </el-dropdown-item>
+
+       <el-dropdown-item v-if="$route.path === '/consultant-manager'">
+      <div  @click="viewBigIcon(scope.row,scope.row.adviserName ,scope.row.userName)">二维码</div>
+    </el-dropdown-item>
+
+       <el-dropdown-item v-if="$route.path === '/consultant-manager'">
+      <div  @click="doDelete(scope.row)">删除</div>
+    </el-dropdown-item>
+
+  </el-dropdown-menu>
+</el-dropdown>
+
+
+             <!-- <el-button
           size="mini"
           type="text" @click="cleanConsultantItemShelf(scope.row)"
       >医生统计</el-button>
@@ -223,7 +268,7 @@ children:'children',
          <el-button @click="doDelete(scope.row)"
           size="mini"
           type="text" v-if="$route.path === '/consultant-manager'"
-        >删除</el-button>
+        >删除</el-button> -->
               <!-- <el-button @click="getAdviserLeverObj(scope.row)"
           size="mini"
           type="text" v-if="n.name === 'DIRECTOR'"
@@ -273,30 +318,29 @@ children:'children',
 			        	</el-form-item>	
 
 
-		<el-form-item label="类型" prop="adviserTypeEnums" >
+		<!-- <el-form-item label="类型" prop="adviserTypeEnums" >
              <el-radio v-model="adviserTypeEnums" label="INSIDE">内部顾问</el-radio>
   <el-radio v-model="adviserTypeEnums" label="OUTSIDE">外部顾问</el-radio>
-              					<!-- <el-input v-model="adviserObj.adviserAge"  placeholder="请输入年龄" style="max-width:400px;min-width:200px" ></el-input> -->
-			      </el-form-item>	
+			      </el-form-item>	 -->
 	  	<!-- 	<el-form-item label="顾问职位" prop="adviserTypeEnums" >
   <el-radio v-model="adviserObj.directorState1" :label="true">主管顾问</el-radio>
   <el-radio v-model="adviserObj.directorState1" :label="false">普通顾问</el-radio>
 			        	</el-form-item>	 -->
-                		<el-form-item label="顾问归属" prop="adviserTypeEnums">
+                		<!-- <el-form-item label="顾问归属" prop="adviserTypeEnums">
   <div  v-if="type == 'edit'">
-    
     <span style="marign-right:10px;">{{adviserObj.ydkFlag=='1' ?'医德快':''}}</span>
-    <span >{{adviserObj.zdkFlag == '1' ?'痔德快':''}}</span>
+    <span >{{adviserObj.zdkFlag == '1' ?'痔得快':''}}</span>
     </div>
   <div  v-if="type == 'add'">
     
    <el-radio v-model="adviserObj.zdkFlag" :label="'0'">医德快</el-radio>
-  <el-radio v-model="adviserObj.zdkFlag" :label="'1'">痔德快</el-radio> 
+  <el-radio v-model="adviserObj.zdkFlag" :label="'1'">痔得快</el-radio> 
     </div>
-			        	
-                </el-form-item>
+                </el-form-item> -->
 
- <el-form-item label="医德快上级顾问" v-if="type == 'edit'" >
+        <div style="font-weight:600;font-size:14.8px;padding-left:120px;padding-bottom:10px;"><el-checkbox v-model="ydkFlag" :disabled="type== 'edit' && adviserObj.ydkFlag == '1'">医德快</el-checkbox></div>
+
+ <el-form-item label="医德快上级顾问" v-if="ydkFlag" >
 <el-cascader
   :options="ydkTree" v-model="selectAdviserId" :props="{
       children :'SONLIST',
@@ -306,9 +350,8 @@ children:'children',
   change-on-select
 ></el-cascader>
 			        	</el-form-item>	
-
-
-			<el-form-item label="痔德快上级顾问"  v-if="type == 'edit'" >
+        <div style="font-weight:600;font-size:14.8px;padding-left:120px;padding-bottom:10px;"><el-checkbox v-model="zdkFlag" :disabled="type== 'edit' && adviserObj.zdkFlag == '1'">痔得快</el-checkbox></div>
+			<el-form-item label="痔得快上级顾问"  v-if="zdkFlag" >
 <el-cascader
   :options="zdkTree" v-model="zdkUpId" :props="{
       children :'SONLIST',
@@ -371,6 +414,8 @@ children:'children',
 </el-row>
 
 
+<el-tabs type="border-card"  v-model="activeName" @tab-click="handleClickReport">
+  <el-tab-pane label="医德快" name="0" v-if="shelfObj.row.ydkFlag =='1'">
 
 <el-table border
     :data="shelfObj.DocterInfo"
@@ -444,6 +489,85 @@ children:'children',
 
 
 </el-table>
+  </el-tab-pane>
+  <el-tab-pane label="痔得快" name="1" v-if="shelfObj.row.zdkFlag=='1'">
+
+<el-table border
+    :data="shelfObj.DocterInfo"
+    stripe height="600"
+    style="width: 100%;">
+
+  <el-table-column  fixed="left"
+      prop="name"
+      label="医生姓名">
+   </el-table-column>
+
+  <el-table-column
+      prop="orderMoney"
+      label="订单金额" width="150">
+   </el-table-column>
+  <el-table-column
+      prop="prescriptionNum"
+      label="处方数">
+   </el-table-column>
+  <el-table-column
+      prop="drugNum"
+      label="药品种类">
+   </el-table-column>
+  <el-table-column
+      prop="memberNum"
+      label="总患者数">
+   </el-table-column>
+
+     <el-table-column
+      prop="shelfNumber"
+      label="货架号">
+   </el-table-column>
+
+  <el-table-column
+      prop="phone"
+      label="电话号码" width="150">
+   </el-table-column>
+  <el-table-column
+      prop="hspCode"
+      label="医疗机构代码">
+   </el-table-column>
+     <el-table-column
+      prop="hospitalName"
+      label="医院" width="150">
+   </el-table-column>
+  <el-table-column
+      prop="hospitalDepartment"
+      label="科室">
+   </el-table-column>
+
+
+
+     <el-table-column
+      prop="createrTime"
+      label="创建时间" width="150">
+   </el-table-column>
+
+
+
+    <el-table-column
+      label="操作" fixed="right"  width="100">
+
+     <template slot-scope="scope" >
+        <el-button @click="adviserNotBindDoctor(scope.row)"
+          size="mini"
+          type="text"
+         >取消绑定</el-button>
+    
+      </template>
+   </el-table-column>
+
+
+</el-table>
+  </el-tab-pane>
+</el-tabs>
+
+
 
 		<el-col :span="24" class="toolbar">
 			<el-pagination layout="prev, pager, next"  :current-page="shelfObj.page+1" :page-size="shelfObj.pageSize" :total="shelfObj.total" @current-change="shelfObj.onPageChange">
@@ -469,6 +593,12 @@ children:'children',
 <el-button type="primary" icon="el-icon-search"  style="" @click="openNotBindDoctorModel(notBindDoctorObj.row,true)">查询</el-button>
   </el-col>
 </el-row>
+
+
+
+<el-tabs type="border-card"  v-model="activeName1" @tab-click="handleClicDoctor">
+  <el-tab-pane label="医德快" name="0" v-if="notBindDoctorObj.row.ydkFlag =='1'">
+
 
 <div style="min-height:500px;" >
 
@@ -513,6 +643,7 @@ children:'children',
       label="操作" fixed="right" width="100">
 
      <template slot-scope="scope" >
+
         <el-button @click="addDoctorbind(scope.row)"
           size="mini"
           type="text"
@@ -522,6 +653,60 @@ children:'children',
    </el-table-column>
 </el-table>
 </div>
+  </el-tab-pane>
+  <el-tab-pane label="痔得快" name="1" v-if="notBindDoctorObj.row.zdkFlag=='1'">
+<div style="min-height:500px;" >
+<el-table border
+    :data="notBindDoctorObj.YdkDoctor"
+    stripe height="600"
+    style="width: 100%;">
+
+  <el-table-column  fixed="left"
+      prop="name"
+      label="医生姓名">
+   </el-table-column>
+ 
+   <el-table-column
+      prop="phone"
+      label="电话号码">
+   </el-table-column>
+ 
+  
+   <el-table-column
+      prop="hspCode"
+      label="医疗机构代码">
+   </el-table-column>
+ 
+
+   <el-table-column
+      prop="hospitalName"
+      label="医院">
+   </el-table-column>
+   
+   <el-table-column
+      prop="hospitalDepartment"
+      label="科室">
+   </el-table-column>
+      <el-table-column
+      prop="resourceAdviserName"
+      label="来源顾问">
+   </el-table-column>
+    <el-table-column
+      label="操作" fixed="right" width="100">
+
+     <template slot-scope="scope" >
+
+        <el-button @click="addDoctorbind(scope.row)"
+          size="mini"
+          type="text"
+         >绑定</el-button>
+    
+      </template>
+   </el-table-column>
+</el-table>
+</div>
+  </el-tab-pane>
+</el-tabs>
 		<el-col :span="24" class="toolbar">
 			<el-pagination layout="prev, pager, next" :current-page="notBindDoctorObj.page+1" :page-size="notBindDoctorObj.pageSize" :total="notBindDoctorObj.total" @current-change="notBindDoctorObj.onPageChange">
 			</el-pagination>
@@ -577,13 +762,13 @@ children:'children',
            {{scope.row.drugNum?scope.row.drugNum:0}}
       </template>
    </el-table-column>
- <el-table-column
+ <!-- <el-table-column
       label="顾问类型">
       <template slot-scope="scope">
-           {{scope.row.adviser_type=='OUTSIDE'?'外部顾问':''}}
-           {{scope.row.adviser_type=='INSIDE'?'内部顾问':''}}
+           {{scope.row.adviserType=='OUTSIDE'?'外部顾问':''}}
+           {{scope.row.adviserType=='INSIDE'?'内部顾问':''}}
       </template> 
-   </el-table-column>
+   </el-table-column> -->
 
   <el-table-column
       prop="userName"
@@ -689,13 +874,13 @@ children:'children',
            {{scope.row.drugNum?scope.row.drugNum:0}}
       </template>
    </el-table-column>
- <el-table-column
+ <!-- <el-table-column
       label="顾问类型">
       <template slot-scope="scope">
-           {{scope.row.adviser_type=='OUTSIDE'?'外部顾问':''}}
-           {{scope.row.adviser_type=='INSIDE'?'内部顾问':''}}
+           {{scope.row.adviserType=='OUTSIDE'?'外部顾问':''}}
+           {{scope.row.adviserType=='INSIDE'?'内部顾问':''}}
       </template> 
-   </el-table-column>
+   </el-table-column> -->
 
   <el-table-column
       prop="userName"
@@ -867,7 +1052,7 @@ children:'children',
    <div style="text-align:center;">
      <div class="flex flex-pack-center">
     <div style="width:300px;text-align:center;">医德快二维码</div>
-    <div style="width:300px;text-align:center;" v-if="adviserObj1.zdkQrcode">痔德快二维码</div>
+    <div style="width:300px;text-align:center;" v-if="adviserObj1.zdkQrcode">痔得快二维码</div>
     </div>
    <img :src="bigIcon" style="width:300px;height:300px;" >
 
@@ -878,7 +1063,6 @@ children:'children',
       <div style="    margin: 20px;font-size: 16px;">{{adviserObj1.adviserName}} {{adviserObj1.userName}}</div>
 
    </div>
-
 
 
     </el-dialog>
@@ -1052,10 +1236,7 @@ export default class AddGoods extends Vue {
   outsideNum = 0;
   insideNum = 0;
   directorNum = 0;
-  optionType = {
-    医德快: "0",
-    痔德快: "1"
-  };
+
   getConsultantList(filter = null) {
     if (filter) {
       this.page = 0;
@@ -1067,7 +1248,7 @@ export default class AddGoods extends Vue {
       userStatus: this.userStatus,
       name: this.name,
       drug: this.drug,
-      zdkFlag: this.optionType[this.adviserDirectorId],
+      zdkFlag: this.adviserDirectorFlag,
       startcreateDate:
         this.date && this.date.length > 0
           ? moment(this.date[0]).format("YYYY-MM-DD") + " 00:00:00"
@@ -1081,11 +1262,10 @@ export default class AddGoods extends Vue {
 
     if (
       this.adviserDirectorId !== "医德快" &&
-      this.adviserDirectorId !== "痔德快"
+      this.adviserDirectorId !== "痔得快"
     ) {
       data["adviserDirectorId"] = this.adviserDirectorId;
     }
-
     this.loading = true;
 
     indexApi.getConsultantList1(data).then(res => {
@@ -1159,35 +1339,34 @@ export default class AddGoods extends Vue {
     this.adviserTypeEnums = "";
     this.selectAdviserId = [];
     this.zdkUpId = [];
+     this.ydkFlag = false
+     this.zdkFlag = false
     this.type = type;
+    
     if (type == "add") {
       this.adviserObj = {};
+      this.getConsultantList1();
     } else {
       let a = {};
-
       // if (!row.directorState1) {
       //   row.adviserDirectorId = row.upId;
       // }
-
-      this.getConsultantList1(row.adviserId, row.zdkFlag);
-
+      this.getConsultantList1(row.adviserId);
       row.directorState1 = row.director_state == "1" ? true : false;
-
       Object.assign(a, row);
-
       this.adviserObj = a;
+      this.ydkFlag = this.adviserObj.ydkFlag == "1" ? true : false;
+      this.zdkFlag = this.adviserObj.zdkFlag == "1" ? true : false;
       this.userStatus1 = this.adviserObj.userStatus == "1" ? true : false;
-      this.adviserTypeEnums = row.adviser_type;
+      this.adviserTypeEnums = row.adviserType;
 
       if (this.adviserObj.zdkUpId) {
-        console.log();
         // 查出智得快的id
         this.getAdviserAndUpFWebList(row.zdkUpId, "1", res => {
           console.log(res);
           this.zdkUpId = res.data.zdkList;
         });
       }
-
       if (this.adviserObj.upId) {
         this.getAdviserAndUpFWebList(row.upId, "0", res => {
           this.selectAdviserId = res.data.ydkList;
@@ -1218,20 +1397,20 @@ export default class AddGoods extends Vue {
   zdkTree = [];
 
   //选一次变一次
-  getConsultantList1(AdviserId, zdkFlag) {
+  getConsultantList1(AdviserId= null) {
     indexApi
       .getAdviserLevel({
         // zdkFlag:zdkFlag,
-        AdviserId: AdviserId
+        adviserId: AdviserId
       })
       .then(res => {
         if (res["retCode"]) {
           if (res.data.ydkTree) {
-            this.zdkTree = res.data.ydkTree.SONLIST;
+            this.zdkTree = res.data.zdkTree.SONLIST;
           }
 
           if (res.data.zdkTree) {
-            this.ydkTree = res.data.zdkTree.SONLIST;
+            this.ydkTree = res.data.ydkTree.SONLIST;
           }
 
           //列表
@@ -1255,17 +1434,22 @@ export default class AddGoods extends Vue {
       this.$message("请填写顾问手机号码");
       return;
     }
-    if ((this.adviserTypeEnums || "") == "") {
-      this.$message("请选择顾问类型");
-      return;
-    }
+    // if ((this.adviserTypeEnums || "") == "") {
+    //   this.$message("请选择顾问类型");
+    //   return;
+    // }
 
     this.adviserObj.userStatus = this.userStatus1 ? "1" : "0";
 
-    // if ((this.adviserObj.adviserDirectorId || "") === "") {
-    //   this.$message("请选择上级顾问");
-    //   return;
-    // }
+    if (this.ydkFlag && this.selectAdviserId.length == 0) {
+      this.$message("请选择医德快上级顾问");
+      return;
+    }
+
+    if (this.zdkFlag && this.zdkUpId.length == 0) {
+      this.$message("请选择痔得快上级顾问");
+      return;
+    }
 
     if (this.adviserObj.directorState1 === false) {
       this.adviserObj.directorState = "0";
@@ -1273,13 +1457,24 @@ export default class AddGoods extends Vue {
       this.adviserObj.directorState = "1";
     }
 
-    this.adviserObj.adviserTypeEnums = this.adviserTypeEnums;
-    if (this.selectAdviserId.length > 0) {
+    this.adviserObj.adviserTypeEnums = "OUTSIDE";
+
+    if (
+      this.ydkFlag &&
+      this.selectAdviserId.length > 0
+    ) {
       this.adviserObj.adviserDirectorId = this.selectAdviserId[
         this.selectAdviserId.length - 1
       ];
     }
-
+    if (
+      this.zdkFlag &&
+      this.zdkUpId.length > 0 
+    ) {
+      this.adviserObj.zdkUpId = this.zdkUpId[this.zdkUpId.length - 1];
+    }
+    this.adviserObj.ydkFlag = this.ydkFlag ? "1" : "0";
+    this.adviserObj.zdkFlag = this.zdkFlag ? "1" : "0";
     this.loading = true;
     if (this.type == "add") {
       this.adviserObj["userPassword"] = "123456";
@@ -1291,6 +1486,7 @@ export default class AddGoods extends Vue {
           this.adviserModel = false;
           this.$message("新增成功");
           this.getConsultantList();
+          this.getAdviserLevelTree();
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -1300,13 +1496,13 @@ export default class AddGoods extends Vue {
       });
     }
     if (this.type == "edit") {
-      this.adviserObj.zdkUpId = this.zdkUpId;
       indexApi.updateConsultantItem(this.adviserObj).then(res => {
         this.loading = false;
         if (res["retCode"]) {
           this.adviserModel = false;
           this.$message("保存成功");
           this.getConsultantList();
+          this.getAdviserLevelTree();
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -1442,6 +1638,7 @@ export default class AddGoods extends Vue {
     },
     row: {}
   };
+
   cleanConsultantItemShelf(row) {
     if (this.date && this.date.length > 0) {
       this.shelfObj.startcreateDate = this.date[0];
@@ -1451,12 +1648,18 @@ export default class AddGoods extends Vue {
     this.shelfObj.name = "";
     this.consultantItemShelf(row, true);
   }
+
+  handleClickReport() {
+    this.consultantItemShelf(this.shelfObj.row, true);
+  }
+
   consultantItemShelf(row, filter = null) {
     this.shelfObj.loading = true;
     this.shelfObj.row = row;
     if (filter) {
       this.shelfObj.page = 0;
     }
+
     let startCreatTime = "";
     let endCreatTime = "";
     if ((this.shelfObj.startcreateDate || "") != "") {
@@ -1469,6 +1672,10 @@ export default class AddGoods extends Vue {
         moment(this.shelfObj.endcreateDate).format("YYYY-MM-DD") + " 23:59:59";
     }
 
+    if (this.shelfObj.row["ydkFlag"] != "1") {
+      this.activeName = "1";
+    }
+
     indexApi
       .adviserGetDoctor({
         adviserId: row.adviserId,
@@ -1476,7 +1683,8 @@ export default class AddGoods extends Vue {
         page: this.shelfObj.page,
         pageSize: this.shelfObj.pageSize,
         startcreateDate: startCreatTime,
-        endcreateDate: endCreatTime
+        endcreateDate: endCreatTime,
+        zdkFlag: this.activeName
       })
       .then(res => {
         this.shelfObj.loading = false;
@@ -1505,7 +1713,7 @@ export default class AddGoods extends Vue {
         indexApi
           .adviserNotBindDoctor({
             doctorId: row.doctorId,
-            adviserTypeEnums: this.shelfObj.row["adviser_type"]
+            adviserTypeEnums: this.shelfObj.row["adviserType"]
           })
           .then(res => {
             this.shelfObj.loading = false;
@@ -1649,6 +1857,9 @@ export default class AddGoods extends Vue {
       });
   }
 
+  activeName = "0";
+  activeName1 = "0";
+
   /**
    * notBindDoctorModel
    *  未绑定医生 搜索 与 绑定
@@ -1697,6 +1908,9 @@ export default class AddGoods extends Vue {
     this.notBindDoctorObj["phone"] = "";
     this.openNotBindDoctorModel(row);
   }
+  handleClicDoctor() {
+    this.openNotBindDoctorModel(this.notBindDoctorObj.row);
+  }
   openNotBindDoctorModel(row, filter = null) {
     if (filter) {
       this.notBindDoctorObj.page = 0;
@@ -1704,10 +1918,16 @@ export default class AddGoods extends Vue {
     this.notBindDoctorObj.row = row;
     this.notBindDoctorObj.model = true;
     this.notBindDoctorObj.loading = true;
+
+    if (this.notBindDoctorObj.row["ydkFlag"] != "1") {
+      this.activeName1 = "1";
+    }
+
     indexApi
       .notBindDoctor({
         phone: this.notBindDoctorObj["phone"],
-        adviserTypeEnums: row.adviser_type,
+        adviserTypeEnums: row.adviserType,
+        zdkFlag: this.activeName1,
         page: this.notBindDoctorObj.page,
         pageSize: this.notBindDoctorObj.pageSize
       })
@@ -1730,39 +1950,82 @@ export default class AddGoods extends Vue {
    */
 
   addDoctorbind(row) {
-    this.$confirm("是否绑定该医生?", "提示", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning"
-    })
-      .then(() => {
-        this.notBindDoctorObj.addloading = true;
-        indexApi
-          .adviserBindDoctor({
-            adviserid: this.notBindDoctorObj.row["adviserId"],
-            doctorid: row["doctorId"],
-            adviserTypeEnums: this.notBindDoctorObj.row["adviser_type"]
-          })
-          .then(res => {
-            this.notBindDoctorObj.addloading = false;
-            if (res["retCode"]) {
-              this.$message("绑定成功");
-              this.openNotBindDoctorModel(this.notBindDoctorObj.row);
-              this.getConsultantList();
-            } else {
-              if (!res["islogin"]) {
-                this.$alert(res["message"]);
-              }
-              console.error("数据查询错误");
-            }
-          });
+    let message = "";
+    if (this.activeName1 == "0") {
+      message = "是否绑定成为医德快医生？";
+      this.$confirm(message, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-      .catch(() => {
-        this.$message({
-          type: "info",
-          message: "已取消操作"
+        .then(() => {
+          this.notBindDoctorObj.addloading = true;
+          indexApi
+            .adviserBindDoctor({
+              adviserid: this.notBindDoctorObj.row["adviserId"],
+              doctorid: row["doctorId"],
+              zdkFlag: "0",
+              adviserTypeEnums: this.notBindDoctorObj.row["adviserType"]
+            })
+            .then(res => {
+              this.notBindDoctorObj.addloading = false;
+              if (res["retCode"]) {
+                this.$message("绑定成功");
+                this.openNotBindDoctorModel(this.notBindDoctorObj.row);
+                this.getConsultantList();
+              } else {
+                if (!res["islogin"]) {
+                  this.$alert(res["message"]);
+                }
+                console.error("数据查询错误");
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
         });
-      });
+    }
+
+    if (this.activeName1 == "1") {
+      message = "是否绑定成为痔得快医生？";
+      this.$confirm(message, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.notBindDoctorObj.addloading = true;
+          indexApi
+            .adviserBindDoctor({
+              adviserid: this.notBindDoctorObj.row["adviserId"],
+              zdkFlag: "1",
+              doctorid: row["doctorId"],
+              adviserTypeEnums: this.notBindDoctorObj.row["adviserType"]
+            })
+            .then(res => {
+              this.notBindDoctorObj.addloading = false;
+              if (res["retCode"]) {
+                this.$message("绑定成功");
+                this.openNotBindDoctorModel(this.notBindDoctorObj.row);
+                this.getConsultantList();
+              } else {
+                if (!res["islogin"]) {
+                  this.$alert(res["message"]);
+                }
+                console.error("数据查询错误");
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
+    }
   }
 
   /**
@@ -1963,15 +2226,18 @@ export default class AddGoods extends Vue {
     {
       adviserName: "医德快",
       adviserId: "医德快",
-      children: []
+      children: [],
+      zdkFlag:'0'
     },
     {
-      adviserName: "痔德快",
-      adviserId: "痔德快",
-      children: []
+      adviserName: "痔得快",
+      adviserId: "痔得快",
+      children: [],
+      zdkFlag:'1'
     }
   ];
-
+  ydkFlag = false;
+  zdkFlag = false;
   getAdviserLevelTree() {
     indexApi
       .getAdviserLevelTree({
@@ -1990,9 +2256,14 @@ export default class AddGoods extends Vue {
         }
       });
   }
+  adviserDirectorFlag: any = null;
   adviserDirectorId: any = null;
+  
   doNodeClick(object, node, control) {
+
+    this.adviserDirectorFlag = object.zdkFlag;
     this.adviserDirectorId = object.adviserId;
+    
     this.getConsultantList(true);
   }
   mounted() {

@@ -1,0 +1,38 @@
+$imagePreview: (
+    null: 100%,
+    300px: 100%,
+    768px: 100%,
+    1024px: 100%,
+    1280px: 450px,
+    1450px: 567px,
+    1680px: 45%
+  );
+
+  $handleDrugview: (
+    null: 100%,
+    300px: 100%,
+    768px: 100%,
+    1024px: 100%,
+    1280px: 530px,
+    1450px: 580px,
+    1680px: 52%
+  );
+  
+  $handlebigwidth: (
+    null: 420px,
+    300px: 420px,
+    768px: 420px,
+    1024px: 600px,
+    1280px: 450px,
+    1450px: 470px,
+    1680px: 500px
+  );
+  
+  $handlesmallwidth: (
+    null: 100px,
+    300px: 100px,
+    768px: 100px,
+    1024px: 100px,
+    1280px: 100px,
+    1680px: 100px
+  );

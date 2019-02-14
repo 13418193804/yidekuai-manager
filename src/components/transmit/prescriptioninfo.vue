@@ -8,14 +8,13 @@
 医患信息
 </div> -->
 <!-- v-model="activeNames" @change="handleChange" -->
-<el-button type="success" size="mini" @click="previewModel=true" style="float: right;" v-if="row.preDrugType == 'CHINESE_MEDICINE' || row.preDrugType == 'WESTERN_MEDICINE' || row.preDrugType == 'PASTE_PRESCRIPTION'">预览</el-button>
-
+<el-button type="success" size="mini" @click="previewModel=true" style="float: right;" v-if="row.preDrugType && (row.preDrugType.indexOf('CHINESE_MEDICINE') !=-1 || row.preDrugType.indexOf('WESTERN_MEDICINE') !=-1 || row.preDrugType.indexOf('PASTE_PRESCRIPTION') !=-1  || row.preDrugType.indexOf('INSTRUMENTS') !=-1  )">预览</el-button>
 <div style="font-size:15px;">
 
 <div class="flex flex-warp-justify" style="      line-height: 32px;  margin-bottom: 5px;">
   <h4 style="margin:0">处方状态：</h4>
 <div style="margin-right:10px;">
-    {{ handleStatus(row.presState)  }}
+    {{ handleStatus(row.presState)}}
 </div>
 
 
@@ -94,26 +93,22 @@
     </div>
     </div>
 
-
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="row.preDrugType == 'CHINESE_MEDICINE'">
-    <div style="     font-size: 15px;     margin-right:10px;">
+<div  class="textLine">
+      <div style=" margin-right:10px;" v-if="row.preDrugType == 'CHINESE_MEDICINE'">
     用法用量： 共{{row.allDosage}}剂，每日{{row.everydayDosage}}剂，1剂分{{row.everytimeDosage}}服用
     </div>
-   </div>
-
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="row.preDrugType == 'PASTE_PRESCRIPTION'">
-    <div style="     font-size: 15px;     margin-right:10px;">
+    </div>
+<div  class="textLine">
+      <div style=" margin-right:10px;" v-if="row.preDrugType == 'PASTE_PRESCRIPTION'">
     用法用量：每日{{row.everydayTimes}}次，每次{{row.everytimesG}}克，约服{{row.howManyDay}}天
     </div>
-   </div>
-
-<div  style=" font-size: 14.8px;display:flex;    flex-wrap: wrap;" v-if="row.preDrugType == 'PASTE_PRESCRIPTION'">
-    <div style="     font-size: 15px;     margin-right:10px;">
+    </div>
+<div  class="textLine">
+      <div style=" margin-right:10px;" v-if="row.preDrugType == 'PASTE_PRESCRIPTION'">
     辅料：{{list2string(row.otherAccessories,row.aspartame,row.sugarType)}}
     </div>
-   <div>
-   </div>
     </div>
+
 
  <!-- class="diy_collapse" -->
 

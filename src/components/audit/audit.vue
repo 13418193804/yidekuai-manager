@@ -138,7 +138,7 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 
 
 		<el-col :span="24" class="toolbar">
-			<el-pagination layout="prev, pager, next" :current-page="page+1" :page-size="pageSize" :total="total" @current-change="onPageChange">
+			<el-pagination layout="prev, pager, next" background :current-page="page+1" :page-size="pageSize" :total="total" @current-change="onPageChange">
 			</el-pagination>
 		</el-col>
 

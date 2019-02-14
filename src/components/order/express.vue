@@ -275,7 +275,7 @@
     </el-tab-pane>
 
 
-    <el-tab-pane  label="器械" name="INSTRUMENTS" v-if="order.SplitPrescription.INSTRUMENTS.drugs.length>0">
+    <el-tab-pane  label="器械" name="INSTRUMENTS" v-if="order.SplitPrescription.INSTRUMENTS && order.SplitPrescription.INSTRUMENTS.drugs.length>0">
 
 <el-table border
     :data="order.SplitPrescription.INSTRUMENTS.drugs"
@@ -345,6 +345,7 @@
 
 
     <el-tab-pane   label="未发货"  name="send_goods" v-if="type =='send'">
+     
         <div style="margin-top: 10px;">
  <div>
     <el-radio-group v-model="send_obj.splitFlag"  size="small" @change="splitFlagChange">
@@ -386,8 +387,7 @@
       <div>
 
 
-
-  <el-tabs v-model="drugType" >
+  <el-tabs v-model="drugType" v-if="ExpressDrugDetailSumQuantityList.length> 0">
     <el-tab-pane  label="中药" name="CHINESE" v-if="CHINESE_preDrugList.length>0">
 
 <el-table border @selection-change="handleSelectionChange"
@@ -487,6 +487,7 @@
 
 
     </el-tab-pane>
+    
     <el-tab-pane  label="西药" name="WESTERN" v-if="WESTERN_preDrugList.length>0">
 
 
@@ -1259,10 +1260,6 @@
 
 
 
-
-
-
-
       
   <el-tabs v-model="send_drugType" >
     <el-tab-pane  label="中药" name="CHINESE" v-if="send_CHINESE_preDrugList.length>0">
@@ -1818,6 +1815,12 @@ INSTRUMENTS_preDrugList= []
               this.$emit("getExpressPackage", this.order.presId, true);
             }
             this.$emit("doUpdate");
+            this.CHINESE_selection = []
+            this.PASTE_selection = []
+
+     
+            
+
           } else {
             if (!res["islogin"]) {
               this.$alert(res["message"]);

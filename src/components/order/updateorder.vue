@@ -343,7 +343,7 @@
   <span>{{order.invoiceRecords[0].deliveryTime}}</span>
 </div>
 <div style="    font-size: 15px;     margin-right:10px;">
-				<el-button type="text" size="mini" @click="showShipInfo({waybillNumber:order.invoiceRecords[0].waybillNumber,logistics:order.invoiceRecords[0].logistics})">物流跟踪</el-button>
+				<el-button type="text" size="mini" @click="showShipInfo({waybillNumber:order.invoiceRecords[0].waybillNumber,logistics:order.invoiceRecords[0].logistics,consigneePhone:order.invoiceRecords[0].consigneePhone})">物流跟踪</el-button>
 </div>
 </div>
       </div>
@@ -376,7 +376,8 @@
 <div style="    font-size: 15px;     margin-right:10px;">
 				<el-button type="text" size="mini" @click="showShipInfo({
           waybillNumber:expressPackageList[0].waybillNumber,
-          logistics:expressPackageList[0].logistics
+          logistics:expressPackageList[0].logistics,
+          consigneePhone:expressPackageList[0].consigneePhone
         })">物流跟踪</el-button>
 </div>
 
@@ -887,15 +888,16 @@ export default class AddGoods extends Vue {
   loading = false;
   list2string(...list) {
 
-    // let a = [];
-    // for (let n in list) {
-    //   if (list[n]) {
-    //     for (let j in JSON.parse(list[n])) {
-    //       a.push(JSON.parse(list[n])[j]);
-    //     }
-    //   }
-    // }
-    return list.join(",");
+    console.log(list)
+    let a = [];
+    for (let n in list) {
+      if (list[n]) {
+        for (let j in list[n].split(',')) {
+          a.push(list[n].split(',')[j]);
+        }
+      }
+    }
+    return a.join(",");
   }
   doChangePayModeEnum() {
     this.loading = true;
@@ -1125,7 +1127,6 @@ export default class AddGoods extends Vue {
     this.INSTRUMENTS_preDrugList = [];
   }
   splitList(list) {
-    
     this.CHINESE_preDrugList = list.filter(item => {
       return item.preDrugType == "CHINESE_MEDICINE";
     });
@@ -1281,11 +1282,11 @@ export default class AddGoods extends Vue {
     this.shipInfo = [];
     this.shipInfoModel = true;
     this.shipInfoLoading = true;
-
     indexApi
       .showShipInfo({
         id: item.waybillNumber,
-        comName: item.logistics
+        comName: item.logistics,
+        consigneePhone:item.consigneePhone
       })
       .then(res => {
         this.shipInfoLoading = false;

@@ -1,19 +1,30 @@
 <template>
-	<el-row class="container1">
-		<el-col :span="24" :class="ydkManager =='test'?'header1':'header'" >
-			<el-col @click.prevent="doCollapse" :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
+  <div class="">
+
+			<aside  :class="collapsed?'menu-collapsed':'menu-expanded'">
+				<menu-component ref="menuCom"></menu-component>
+			</aside>
+
+
+
+    <div class="main ">
+
+        	<div :class="ydkManager =='test'?'header1':'header'" >
+			<!-- <el-col @click.prevent="doCollapse" :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
 				{{collapsed?'':sysName}}
-			</el-col>
+			</el-col> -->
 			<el-col :span="10">
+
+        
+
 				<div class="tools" @click.prevent="doCollapse">
-					<i class="el-icon-menu"></i>
+					<i class="iconfont icon-caidan1 hamburger" :class="{'is-active':!collapsed}" style="    font-size: 25px;"></i>
 				</div>
+
 			</el-col>
+      
 			<el-col :span="4" class="userinfo" style="white-space: nowrap;">
       		<span >{{sysUserName}}</span>
-          <!-- <el-tag type="warning" size="mini">
-            {{roleName}}
-          </el-tag> -->
 				<el-dropdown trigger="hover">
           <img  class="el-dropdown-link userinfo-inner" src="../assets/menu/设置 (1).png" style="height:24px;width:24px;margin:0 10px;"/>
 					<el-dropdown-menu slot="dropdown">
@@ -22,28 +33,28 @@
 					</el-dropdown-menu>
 				</el-dropdown>
 			</el-col>
-		</el-col>
-		<el-col :span="24" class="main">
-			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
-				<!--导航菜单-->
-				<menu-component ref="menuCom"></menu-component>
-			</aside>
+		</div>
+
+
+
 			<section class="content-container">
-					<el-col :span="24" class="breadcrumb-container">
-						<!-- <strong class="title">标题</strong> -->
-						<el-breadcrumb separator="/" class="breadcrumb-inner">
-							</el-breadcrumb>
-					</el-col>
 					<el-col :span="24" class="content-wrapper" >
 <div>{{getDateFun}} </div>
 						<transition name="fade" mode="out-in">
 							<router-view  @updateYdkPrescriptionStatusNum="updateYdkPrescriptionStatusNum"></router-view>
-
 						</transition>
 					</el-col>
 			</section>
-		</el-col>
-	</el-row>
+      </div>
+
+
+
+
+
+
+
+
+  </div>
 </template>
 
 <script lang="ts">
@@ -52,13 +63,14 @@ import Component from "vue-class-component";
 import Axios from "axios";
 import moment from "moment";
 import * as indexApi from "../api/indexApi";
-
+import Breadcrumb from "../common/Breadcrumb/index.vue";
 import MenuComponent from "./Menu.vue";
 
 @Component({
   props: {},
   components: {
-    "menu-component": MenuComponent
+    "menu-component": MenuComponent,
+    Breadcrumb
   }
 })
 export default class Home extends Vue {
@@ -88,9 +100,8 @@ export default class Home extends Vue {
       //type: 'warning'
     })
       .then(() => {
-
         sessionStorage.clear();
-        clearInterval(  (<any>this.$refs.menuCom).PrescriptionStatusNumtimer)
+        clearInterval((<any>this.$refs.menuCom).PrescriptionStatusNumtimer);
         // sessionStorage.removeItem("user");
         this.$router.replace("/login");
       })
@@ -109,16 +120,17 @@ export default class Home extends Vue {
   getYdkPrescriptionStatusNum() {
     (<any>this.$refs.menuCom).getYdkPrescriptionStatusNum();
   }
-updateYdkPrescriptionStatusNum(blueSignal){
-// NEW_PRESCRIPTION
-// NEW_ORDER
-indexApi.updateYdkPrescriptionStatusNum({blueSignal:blueSignal}).then(res => {
-  this.getYdkPrescriptionStatusNum()
-});
-
-
-}
+  updateYdkPrescriptionStatusNum(blueSignal) {
+    // NEW_PRESCRIPTION
+    // NEW_ORDER
+    indexApi
+      .updateYdkPrescriptionStatusNum({ blueSignal: blueSignal })
+      .then(res => {
+        this.getYdkPrescriptionStatusNum();
+      });
+  }
   mounted() {
+    console.info( this.$route.matched)
     var user = sessionStorage.getItem("user");
   }
 }
@@ -132,15 +144,15 @@ indexApi.updateYdkPrescriptionStatusNum({blueSignal:blueSignal}).then(res => {
   width: 100%;
 }
 .header {
-  height: 60px;
-  line-height: 60px;
+  height: 56px;
+  line-height: 56px;
   background: #c30d23;
   color: #fff;
 }
 
 .header1 {
-  height: 60px;
-  line-height: 60px;
+  height: 56px;
+  line-height: 56px;
   background: #409eff;
   color: #fff;
 }
@@ -190,7 +202,7 @@ img {
   width: 60px;
 }
 .tools {
-  padding: 0px 23px;
+  padding: 0px 18px;
   width: 14px;
   height: 60px;
   line-height: 60px;
@@ -198,16 +210,16 @@ img {
 }
 
 .main {
-  display: flex;
-  position: absolute;
-  top: 60px;
-  bottom: 0px;
-  overflow: hidden;
+  background: #f1f2f7;
+  height: -webkit-fill-available;
+  overflow: auto;
 }
 aside {
+  float: left;
+  height: -webkit-fill-available;
   flex: 0 0 230px;
   width: 230px;
-  overflow: hidden;
+  overflow-x: hidden;
   text-align: left;
 }
 .el-menu {
@@ -244,14 +256,13 @@ aside {
   display: none;
 }
 .content-container {
-  background: #f1f2f7;
   flex: 1;
-  overflow-y: auto;
-  padding: 20px;
+  /* overflow-y: auto; */
+  padding: 10px;
 }
-.content-container::-webkit-scrollbar {
+/* .content-container::-webkit-scrollbar {
   display: none;
-}
+} */
 .breadcrumb-container {
 }
 .title {
@@ -265,8 +276,19 @@ aside {
 .content-wrapper {
   background-color: #fff;
   min-height: 100%;
+  margin-bottom: 10px;
   text-align: left;
   box-sizing: border-box;
   padding: 20px;
+}
+.hamburger {
+	display: inline-block;
+	cursor: pointer;
+	transform: rotate(90deg);
+	transition: .38s;
+	transform-origin: 50% 50%;
+}
+.hamburger.is-active {
+	transform: rotate(0deg);
 }
 </style>

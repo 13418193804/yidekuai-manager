@@ -21,6 +21,10 @@ export default class App extends Vue {
 
 
 <style>
+.toolbar{
+      margin-top: 10px;
+    text-align: right;
+}
 #app {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
@@ -29,11 +33,11 @@ export default class App extends Vue {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  
 }
 * {
 }
 aside {
-  overflow: auto !important;
 }
 .menu-expanded {
   overflow: auto !important;
@@ -49,7 +53,7 @@ aside {
 }
 
 .el-menu {
-  background-color: #c30d23;
+  background-color: #c30d23!important;
 }
 .el-menu-item {
   color: #fff;

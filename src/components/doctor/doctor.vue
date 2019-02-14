@@ -221,7 +221,7 @@
             <div class="min_title">医生详情</div>
                 <div style="display:flex;margin:15px;">
                     <div style="min-width:220px;text-align:center;height: 100%;overflow: hidden;min-height: 385px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
-                        <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 6px;left: 0;"></i>
+                        <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 0px;left: 0;"></i>
                         <img v-if="formLabeldetails.picture" :src="formLabeldetails.picture" style="height:110px;width: 110px;margin: 5px 10px;">
                         <img v-else  src="../../assets/876218396590085506.png" style="height:110px;width: 110px;margin: 5px 10px;">
                         <div>{{formLabeldetails.name}}</div>
@@ -284,7 +284,7 @@
             <div class="min_title">医生详情</div>
                 <div style="display:flex;margin:15px;">
                     <div style="min-width:220px;text-align:center;height: 100%;overflow: hidden;min-height: 385px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
-                        <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 6px;left: 0;"></i>
+                        <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 0px;left: 0;"></i>
                         <img v-if="formLabeldetails1.picture" :src="formLabeldetails1.picture" style="height:110px;width: 110px;margin: 5px 10px;">
                         <img v-else  src="../../assets/876218396590085506.png" style="height:110px;width: 110px;margin: 5px 10px;">
                         <div>{{formLabeldetails1.name}}</div>

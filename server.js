@@ -37,40 +37,46 @@ new Promise(resolve => {
             fileApi.execCmdSSH(
                 `ls ${remotFileUrl}`,
                 result => {
-                    if (result.indexOf('index.html') !== -1 && result.indexOf('static') !== -1) {
-                        console.log('当前版本未备份，进行备份中')
-                        fileApi.execCmdSSH(
-                            `mkdir ${remotFileUrl}${date}`,
-                            res => {
-                                console.log(`已创建文件夹：${remotFileUrl}${date}`)
-                                fileApi.execCmdSSH(
-                                    `cp -rf ${remotFileUrl}index.html ${remotFileUrl}${date}/index.html | cp -rf ${remotFileUrl}static ${remotFileUrl}${date}/static`,
-                                    res1 => {
-                                        fileApi.execCmdSSH(
-                                            `ls ${remotFileUrl}`,
-                                            list => {
-                                                if (list.indexOf(date) != -1) {
-                                                    console.log('开始上传新文件:')
+
+                    console.log('开始上传新文件:')
 
 
-                                                    fileApi.filesqueryNameList(localFileUrl, remotFileUrl, response => {
-                                                        console.log('response', response)
-                                                    });
+                    fileApi.filesqueryNameList(localFileUrl, remotFileUrl, response => {
+                        console.log('response', response)
+                    });
 
 
-                                                } else {
-                                                    console.log('备份失败：', res1)
-                                                    process.exit()
-                                                }
-                                            }
-                                        )
+                    // if (result.indexOf('index.html') !== -1 && result.indexOf('static') !== -1) {
+                    //     console.log('当前版本未备份，进行备份中')
+                    //     fileApi.execCmdSSH(
+                    //         `mkdir ${remotFileUrl}${date}`,
+                    //         res => {
+                    //             console.log(`已创建文件夹：${remotFileUrl}${date}`)
+                    //             fileApi.execCmdSSH(
+                    //                 `cp -rf ${remotFileUrl}index.html ${remotFileUrl}${date}/index.html | cp -rf ${remotFileUrl}static ${remotFileUrl}${date}/static`,
+                    //                 res1 => {
+                    //                     fileApi.execCmdSSH(
+                    //                         `ls ${remotFileUrl}`,
+                    //                         list => {
+                    //                             if (list.indexOf(date) != -1) {
+                    //                                 console.log('开始上传新文件:')
 
-                                    }
-                                )
-                            }
-                        )
 
-                    }
+                    //                             } else {
+                    //                                 console.log('备份失败：', res1)
+                    //                                 process.exit()
+                    //                             }
+                    //                         }
+                    //                     )
+
+                    //                 }
+                    //             )
+                    //         }
+                    //     )
+
+                    // }
+
+
                 }
             )
         })

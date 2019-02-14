@@ -3,43 +3,131 @@
 
 <el-table border
     :data="table"
-    stripe height="500"
-    style="width: 100%;">
+    stripe>
 
 
-   <el-table-column  fixed="left"
-      label="状态" width="150">
+   <el-table-column  min-width="200"
+      label="状态" >
       <template slot-scope="scope">
-      {{handleStatus(scope.row.presState)}}
+
+
+        <div>处方编号：{{scope.row.presId}}</div>
+          <div>
+     处方状态： {{handleStatus(scope.row.presState)}}
+          </div>
+
+          <div>
+            订单类型：
+               <el-tag v-if="scope.row.prescriptionType" size="mini"
+  :type="handleprescriptionType(scope.row.prescriptionType).type">
+        {{handleprescriptionType(scope.row.prescriptionType).name}}
+</el-tag>
+          </div>
+
+    <div v-if="scope.row.preDrugType">
+      处方类型：
+  <el-tag size="mini" v-for="n in scope.row.preDrugType.split(',')" style="margin-right:10px;"
+  :type="handlepreDrugType(n).type">
+        {{handlepreDrugType(n).name}}
+</el-tag>
+    </div>
+
+
+
       </template>
    </el-table-column>
 
   <el-table-column
-      prop="createDate"
-      label="开方时间"  width="170">
+      label="操作时间"  width="230">
+  <template slot-scope="scope">
+          <div>
+     开方时间： {{scope.row.createDate}}
+          </div>
+          <div>
+转方医生：{{scope.row.transDocName}}
+          </div>
+          <div>
+转方时间：{{scope.row.transDate}}
+          </div>
+                  <div>
+审方时间：{{scope.row.auditingDate}}
+          </div>
+  <!-- <el-table-column
+      prop="auditingName"
+      label="审方医生" width="150">
+   </el-table-column> -->
+      </template>
    </el-table-column>
 
 
    <el-table-column
-      prop="docterName"
-      label="开方医生" width="150">
+      label="医生" width="250">
+  <template slot-scope="scope">
+          <div>
+     开方医生： {{scope.row.docterName}}
+          </div>
+          <div>
+     手机号： {{scope.row.doctorMobile}}
+          </div>   
+                <div>
+     医院： {{scope.row.hospitalName}}
+          </div>   
+           <div>
+     科室： {{scope.row.docterDept}}
+          </div>   
+      </template>
    </el-table-column>
 
-   <el-table-column
+   <!-- <el-table-column
       prop="doctorMobile"
       label="开方医生手机号" width="170">
-   </el-table-column>
+   </el-table-column> -->
 
    
-      <el-table-column
+      <!-- <el-table-column
       prop="hospitalName"
       label="医院" width="190">
-   </el-table-column>
+   </el-table-column> -->
 
-      <el-table-column
+      <!-- <el-table-column
       prop="docterDept"
       label="科室" width="130">
+   </el-table-column> -->
+
+      <!-- prop="diagnose" -->
+
+  <el-table-column width="250"
+      label="备注" >
+            <template slot-scope="scope">
+
+<div>诊断：{{scope.row.diagnose}}</div>
+<div>医生给患者备注：{{scope.row.patientRemake}}</div>
+<div>医生给转方备注：{{scope.row.remark}}</div>
+<div>转方备注：{{scope.row.transRemark}}</div>
+      </template>
    </el-table-column>
+
+
+   
+   <el-table-column
+      label="患者" width="250">
+  <template slot-scope="scope">
+          <div>
+     患者姓名： {{scope.row.memberName}}
+          </div>
+          <div>
+     性别： {{scope.row.patientSex}}  年龄： {{scope.row.memberAge}}
+          </div>   
+                <div>
+     手机号： {{scope.row.memberPhone}}
+          </div>   
+           <div>
+     患者地址： {{scope.row.consigneeAddress}}
+             
+          </div>   
+      </template>
+   </el-table-column>
+<!-- 
    <el-table-column
       prop="memberName"
       label="患者姓名" width="150">
@@ -55,32 +143,26 @@
   <el-table-column
       prop="memberPhone"
       label="患者手机号" width="170">
-   </el-table-column>
+   </el-table-column> 
      <el-table-column
       prop="consigneeAddress"
       label="患者地址" width="200">
-   </el-table-column>
-  <el-table-column
-      prop="patientRemake"
-      label="医生给患者备注"  width="170">
-   </el-table-column>
-
-   <el-table-column
-      prop="remark"
-      label="医生给转方备注"  width="170">
-   </el-table-column>
+   </el-table-column>-->
 
 
-   <el-table-column
+   
+
+
+   <!-- <el-table-column
       prop="transDocName"
       label="转方医生" width="150">
-   </el-table-column>
-   <el-table-column
+   </el-table-column> -->
+   <!-- <el-table-column
       prop="transDate"
       label="转方时间" width="170">
-   </el-table-column>
+   </el-table-column> -->
    
-        <el-table-column
+        <!-- <el-table-column
       label="处方类型" width="200">
       <template slot-scope="scope">
     <div v-if="scope.row.preDrugType">
@@ -90,10 +172,10 @@
 </el-tag>
     </div>
       </template>
-   </el-table-column>
+   </el-table-column> -->
 
 
-   <el-table-column  
+   <!-- <el-table-column  
       label="订单类型" width="150">
       <template slot-scope="scope">
     <el-tag v-if="scope.row.prescriptionType"
@@ -101,40 +183,38 @@
         {{handleprescriptionType(scope.row.prescriptionType).name}}
 </el-tag>
       </template>
+   </el-table-column> -->
+
+
+<!-- 
+
+  <el-table-column
+      prop="patientRemake"
+      label="医生给患者备注"  width="170">
    </el-table-column>
 
+   <el-table-column
+      prop="remark"
+      label="医生给转方备注"  width="170">
+   </el-table-column>
   <el-table-column
       prop="transRemark"
       label="转方备注" width="220">
-   </el-table-column>
-  <el-table-column
-      prop="auditingName"
-      label="审方医生" width="150">
-   </el-table-column>
-  <el-table-column 
-      prop="auditingDate"
-      label="审方时间" width="170">
-   </el-table-column>
-
-  <el-table-column
-      prop="diagnose"
-      label="诊断" width="220">
    </el-table-column>
 
 
   <el-table-column
       prop="presId"
       label="处方编号" width="210">
-   </el-table-column>
+   </el-table-column> -->
 
 
-   <el-table-column label="操作" fixed="right"  width="250">
+   <el-table-column label="操作"   width="220">
       <template slot-scope="scope">
 
  
         <el-button
           size="mini"
-          type="text"
           @click="changeModel(scope.$index, scope.row)" >处方详情</el-button>
         
    <!-- <el-button
@@ -183,7 +263,7 @@
     margin: 15px;
     "  class="flex">
 <div class=" dashed_box" :class="(!createForm.docterId || filter_doctor) && add_model_type =='add'?'opactiy':''" v-on:mouseover="filter_doctor = true" v-on:mouseout="filter_doctor =false">
-  <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 6px;left: 0;"></i>
+  <i class="iconfont icon-yisheng" style="font-size: 36px;position: absolute;top: 0px;left: 0;"></i>
 
   <div class="filter_min_box flex  flex-align-center flex-pack-center" v-if="(!createForm.docterId || filter_doctor) && add_model_type =='add'" @click="changefilter_box('doctor')">
    <i class="el-icon-plus" style="font-size:27px;" ></i>
@@ -431,7 +511,7 @@ import * as ApiOrder from "../../api/orderapi";
 })
 export default class AddGoods extends Vue {
   @Prop({ required: true })
-  table: any;
+  table: any ;
   @Prop({ required: false })
   prescriptionEnums: any;
   @Prop({ required: false })
@@ -967,7 +1047,7 @@ export default class AddGoods extends Vue {
   countryList = [];
   updated() {}
   mounted() {
-
+    console.log(this.table)
     this.queryProvinceList();
     this.fileUploadUrl = Config.g_upload_url;
   }

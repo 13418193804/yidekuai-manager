@@ -165,7 +165,7 @@
 
   </el-tabs>
 		<el-col :span="24" class="toolbar">
-			<el-pagination layout="prev, pager, next" :current-page="page+1" :page-size="pageSize" :total="total" @current-change="onPageChange">
+			<el-pagination   background layout="prev, pager, next" :current-page="page+1" :page-size="pageSize" :total="total" @current-change="onPageChange">
 			</el-pagination>
 		</el-col>
 

@@ -1,8 +1,7 @@
 <template>
     <div >
 
-<div class="wrapper" style="min-width:500px;    min-width: 500px;
-    position: relative;">
+<div class="wrapper" style="position: relative;">
 <vuecropper style="height: 60vh;min-width:100%;"
 	ref="cropper" 
 	:img="option.img"
@@ -40,8 +39,8 @@
 <div class="iconcropper" @click="rotateRight">
 <i class="iconfont icon-youxuanzhuan"  style="font-size:28px;" ></i>
   </div>
-
-  <div class="iconcropper" @click="rotateDetele()" v-if="haveDetele && !notHaveAdd" v-promiss.edit>
+<!-- v-promiss.edit -->
+  <div class="iconcropper" @click="rotateDetele()"    :style="haveDetele && !notHaveAdd?'display:initial':'display:none'">
 <i class="iconfont icon-iconfontshanchu3"  style="font-size:24px;" :style="(temporary &&  !preImageList[preIndex].temporary) || preImageList.length==0 ?'opacity: 0.2;':''"></i>
   </div>
 
@@ -312,4 +311,22 @@ export default class AddGoods extends Vue {
 .iconcropper:active {
   opacity: 0.5;
 }
+
+</style>
+
+<style lang="scss" scoped>
+@import '../../common/sass/mixinmap.scss';
+
+$wrapper: (
+  null: 100%,
+  300px: 100%,
+  768px: 100%,
+  1024px: 100%,
+  1280px: 100%,
+  1680px: 500px
+);
+.wrapper{
+  @include handleMinWidth($wrapper);
+}
+
 </style>

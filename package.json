@@ -16,6 +16,7 @@
     "fundebug-javascript": "^1.2.0",
     "html2canvas": "^1.0.0-alpha.12",
     "moment": "^2.22.1",
+    "node-sass": "^4.11.0",
     "node-ssh": "^5.1.2",
     "reflect-metadata": "^0.1.12",
     "serve-favicon": "^2.5.0",

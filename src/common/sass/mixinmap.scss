@@ -1,0 +1,25 @@
+
+@mixin handleWidth($widthMap) {
+    @each $key, $widthItem in $widthMap {
+      @if $key == null {
+        width: $widthItem;
+      } @else {
+        @media screen and (min-width: $key) {
+          width: $widthItem;
+        }
+      }
+    }
+  }
+  
+@mixin handleMinWidth($widthMap) {
+    @each $key, $widthItem in $widthMap {
+      @if $key == null {
+        min-width: $widthItem;
+      } @else {
+        @media screen and (min-width: $key) {
+          min-width: $widthItem;
+        }
+      }
+    }
+  }
+  

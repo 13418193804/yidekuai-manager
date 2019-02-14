@@ -27,7 +27,6 @@
   <span v-else> 线下订单</span>
 </div>
 
-
 <div class="flex flex-warp-justify" v-if="pres_type === 'BACK_HANDWORK' || pres_type ==='DOC_HANDWORK'" >
   <h4 style="margin:0;padding-left:10px;">支付状态：</h4>
 <div>
@@ -207,16 +206,18 @@
 
 
 <div style="height:20px;"></div>
-<el-row :gutter="24"  style="padding:0 0 20px;">
-  <el-col :xs="24" :sm="24" :md="12" :lg="11" :xl="12">
+
+<div class="flex flex-warp-justify" style="padding:0 0 20px;">
+  <div class="imagePreview">
+
+
+
     <div style="position: relative;">
 <corpperlabel style="margin-top: 40px;"  ref="cropper" :preImageList="preImageList"  :haveDetele="true"></corpperlabel>
 </div>
-  </el-col>
-  <el-col :xs="24" :sm="24" :md="12" :lg="13" :xl="12">
 
-
-
+</div>
+  <div class="handleDrugview">
 
   <el-tabs v-model="drugType"  @tab-click="handleClick">
  
@@ -404,7 +405,15 @@
 
 </div>
 
-<div v-for="item in WESTERN_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
+<div v-for="(item,index) in WESTERN_preDrugList" class="flex  flex-align-center">
+
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
 <div class="flex flex-pack-justify flex-align-center" style="color: #999;">
 <div>{{item.codeId}} </div>
 <div>{{item.createDate}} </div>
@@ -416,9 +425,9 @@
 
 
 <div class="flex flex-pack-justify flex-align-center">
- <span style="color: #999;">{{item.specification}}</span>
- <span style="">{{item.packingUnit}}</span>
- <span style="">{{item.dosageforms}}</span>
+ <span style="color: #999;font-weight: 600;">{{item.specification}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span>
+ <span style="">{{item.dosageforms}}</span> -->
  <span style="">{{item.usages}}</span>
  <span style="">{{item.dosage}}</span>
  <span style="">{{item.frequency}}</span>
@@ -434,6 +443,7 @@
 
 <div class="flex flex-pack-justify flex-align-center">
  <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
 </div>
 </div>
 </div>
@@ -610,21 +620,25 @@
 
 </div>
 
-<el-form label-width="120px" inline="true">
-  	<el-form-item label="是否代煎：" style="width:100%">
-      <div class="flex flex-align-center ">
-        <div>
+  <div class="flex flex-align-center " style="line-height: 28px;">
+<div style="font-size: 14px;">
+是否代煎：
+</div>
+  <div>
   <el-radio  :label="0" v-model="isReplaceDecocting">不代煎</el-radio>
   <el-radio  :label="1"   v-model="isReplaceDecocting">代煎</el-radio>
 		 </div>
+      
       <div style="text-align:right;margin-left:15px;" class="flex flex-align-center flex-end-justify">
         <span><el-input size="mini" type="text" placeholder="输入代煎费" v-model="replaceDecoctingMoneyOne" style="max-width:100px;"/></span>/剂
         <span style="color:red" >￥
           {{replaceDecoctingMoney}}
         </span></div> 
 </div>
-    		</el-form-item>	
-  	<el-form-item label="用法用量：" style="font-size:14px;">
+  <div class="flex flex-align-center " style="line-height: 28px;margin: 10px 0;">
+<div style="font-size: 14px;">
+用法用量：
+</div>
 <div class="flex everyNum" style="font-size:12px;">
 <div>共</div>
 <div><el-input style="max-width:50px;" size="mini" type="text" placeholder="输入数量" v-model="allDosage"/></div>
@@ -634,28 +648,36 @@
 <div><el-input style="max-width:50px;" size="mini" type="text" placeholder="输入数量" v-model="everytimeDosage"/></div>
 <div>次服用</div>
 </div>
-	  </el-form-item>	
-</el-form>
+</div>
+
 
  
-<div v-for="item in CHINESE_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+<div v-for="(item,index) in CHINESE_preDrugList" class="flex  flex-align-center">
+
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
 <div class="flex flex-pack-justify flex-align-center" style="color: #999;">
 <div>{{item.codeId}} </div>
 <div>{{item.createDate}} </div>
 </div>
 <div class="flex flex-pack-justify flex-align-center">
  <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
- <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.quantity}}</span></span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.showQuantity||item.quantity}}(单剂)</span></span>
 </div>
-
 
 <div class="flex flex-pack-justify flex-align-center">
  <span style="color: #999;">{{item.typeName}}</span>
  <span style="">{{item.decoctingType}}</span>
- <span style="">{{item.packingUnit}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
  <span style="">{{item.producingArea}}</span>
- <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
+ <span style="color: red;font-size: 16px;">￥{{item.price * (item.showQuantity||item.quantity)?(item.price * (item.showQuantity||item.quantity)).toFixed(2):0}}</span>
 </div>
+
 
 
 <div class="flex flex-pack-justify flex-align-center">
@@ -666,6 +688,7 @@
 
 <div class="flex flex-pack-justify flex-align-center">
  <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
 </div>
 </div>
 </div>
@@ -821,22 +844,25 @@
 	<div class=" everyNum" style="font-size: 12px;text-align: right;">
    制作费：<span style="color:red" >￥{{makeMoney}}</span>
 </div>
-<el-form label-width="120px" inline="true">
-  
-  	<el-form-item label="用法用量：" style="font-size:14px;">
+
+  <div class="flex flex-align-center " style="line-height: 28px;margin: 10px 0;">
+<div style="font-size: 14px;">
+用法用量：
+</div>
 <div class="flex everyNum" style="font-size:12px;">
 <div>每日</div>
-<div><el-input style="max-width:50px;" size="mini" type="text" placeholder="输入数量" v-model="everydayTime"/></div>
+<div><el-input style="max-width:65px;" size="mini" type="text" placeholder="输入数量" v-model="everydayTime"/></div>
 <div>次，1次</div>
-<div><el-input style="max-width:50px;" size="mini" type="text" placeholder="输入数量" v-model="everytimes"/></div>
+<div><el-input style="max-width:65px;" size="mini" type="text" placeholder="输入数量" v-model="everytimes"/></div>
 <div>克，约服</div>
-<div><el-input style="max-width:50px;" size="mini" type="text" placeholder="输入数量" v-model="howManyDay"/></div>
+<div><el-input style="max-width:65px;" size="mini" type="text" placeholder="输入数量" v-model="howManyDay"/></div>
 <div>天</div>
 </div>
-	  </el-form-item>	
-</el-form>
+</div>
 
- <div style="padding-left:36px;font-size:13.8px">选择要添加的辅料：</div>
+
+
+ <div style="font-size:13.8px">选择要添加的辅料：</div>
 <el-form label-width="100px">
   	<el-form-item label="糖类：">
       <div class="flex flex-warp-justify">
@@ -861,8 +887,17 @@
 
 
 
+ 
+<div v-for="(item,index) in PASTE_preDrugList" class="flex  flex-align-center">
 
-<div v-for="item in PASTE_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
+
 <div class="flex flex-pack-justify flex-align-center" style="color: #999;">
 <div>{{item.codeId}} </div>
 <div>{{item.createDate}} </div>
@@ -876,7 +911,7 @@
 <div class="flex flex-pack-justify flex-align-center">
  <span style="color: #999;">{{item.typeName}}</span>
  <span style="">{{item.decoctingType}}</span>
- <span style="">{{item.packingUnit}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
  <span style="">{{item.producingArea}}</span>
  <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
 </div>
@@ -890,6 +925,7 @@
 
 <div class="flex flex-pack-justify flex-align-center">
  <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
 </div>
 </div>
 </div>
@@ -1027,9 +1063,18 @@
 </div>
 
 
+ 
+<div v-for="(item,index) in INSTRUMENTS_preDrugList" class="flex  flex-align-center">
+
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
 
 
-<div v-for="item in INSTRUMENTS_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
 <div class="flex flex-pack-justify flex-align-center" style="color: #999;">
 <div>{{item.codeId}} </div>
 <div>{{item.createDate}} </div>
@@ -1041,8 +1086,8 @@
 
 
 <div class="flex flex-pack-justify flex-align-center">
- <span style="color: #999;">{{item.specification}}</span>
- <span style="">{{item.packingUnit}}</span>
+ <span style="color: #999;font-weight: 600;">{{item.specification}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
  <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
 </div>
 
@@ -1059,6 +1104,7 @@
 </div>
 </div>
 </div>
+</div>
 								</dl>
 							</div>
 						</li>
@@ -1071,8 +1117,14 @@
 
     </el-tab-pane>
   </el-tabs>
-  </el-col>
-  </el-row>
+
+
+</div>
+</div>
+
+
+
+
 <div>
 </div>
 
@@ -1757,22 +1809,32 @@ export default class AddGoods extends Vue {
     }
 
     this.loading = true;
-    indexApi.docreateDrug(this.drug).then(res => {
-      this.loading = false;
-      if (res["retCode"]) {
-        if (this.pres_type == "BACK_HANDWORK") {
-          this.presId = res.data.prescriptionId;
+    // prescribeDoctorId
+
+    indexApi
+      .docreateDrug(
+        Object.assign(this.drug, {
+          prescribeDoctorId: this.presId
+            ? this.prodetail["docterId"]
+            : this.createForm.docterId
+        })
+      )
+      .then(res => {
+        this.loading = false;
+        if (res["retCode"]) {
+          if (this.pres_type == "BACK_HANDWORK") {
+            this.presId = res.data.prescriptionId;
+          }
+          this.drug = {};
+          this.instructions = "";
+          this.queryPresDrug();
+        } else {
+          if (!res["islogin"]) {
+            this.$alert(res["message"]);
+          }
+          console.error("数据查询错误");
         }
-        this.drug = {};
-        this.instructions = "";
-        this.queryPresDrug();
-      } else {
-        if (!res["islogin"]) {
-          this.$alert(res["message"]);
-        }
-        console.error("数据查询错误");
-      }
-    });
+      });
   }
   presscriptionMoney = 0;
   orderMoney = 0;
@@ -2022,7 +2084,7 @@ export default class AddGoods extends Vue {
       count++;
       PreDrugType.push("PASTE_PRESCRIPTION");
     }
-        if (this.INSTRUMENTS_preDrugList.length > 0) {
+    if (this.INSTRUMENTS_preDrugList.length > 0) {
       count++;
       PreDrugType.push("INSTRUMENTS");
     }
@@ -2642,9 +2704,9 @@ export default class AddGoods extends Vue {
 
   get CHINESE_preDrugListtotal() {
     let CHINESE_preDrugList = this.CHINESE_preDrugList.map(item => {
-      return item.shouldpay;
+      return item.price * (item.showQuantity || item.quantity);
     });
-    if (CHINESE_preDrugList.length > 0) {
+    if (CHINESE_preDrugList.length > 0 && this.allDosage) {
       return (
         CHINESE_preDrugList.reduce((total, num) => {
           return total + num;
@@ -2900,29 +2962,14 @@ export default class AddGoods extends Vue {
   border: #e51c23 1px solid;
 }
 
-@keyframes myframes {
-  from {
-    width: 100px;
-  }
-  to {
-    width: 500px;
-  }
+.shanchukuai {
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  margin-right: 10px;
 }
-.bigwidth {
-  width: 500px;
-  animation: myframes 0.2s;
-}
-@keyframes myframes1 {
-  from {
-    width: 500px;
-  }
-  to {
-    width: 100px;
-  }
-}
-.smallwidth {
-  width: 100px;
-  animation: myframes1 0.2s;
+.shanchukuai:hover {
+  background-color: #fafafa;
 }
 </style>
 <style >
@@ -3013,10 +3060,7 @@ hr {
   padding: 0px 0px 82px 0px;
   overflow: hidden;
 }
-.item_box_wp {
-  width: 1180px;
-  margin: 0 auto;
-}
+
 .item_box_wp .title {
   width: 1180px;
   min-height: 87px;
@@ -3042,12 +3086,16 @@ hr {
   margin: 65px 0px 25px 0px;
   text-align: center;
 }
-
+.voice_2 ul {
+  margin-top: 5px;
+  margin-bottom: 0;
+  padding: 0;
+}
 .voice_2 ul li {
   font-size: 12px;
   float: left;
   display: inline;
-  min-height: 790px;
+  min-height: 700px;
   cursor: pointer;
   position: relative;
 }
@@ -3127,12 +3175,12 @@ hr {
   line-height: 25px;
 }
 .voice_2 .unfold {
-  width: 400px;
+  width: 100%;
   height: 100%;
   position: absolute;
   top: 0px;
   left: 0px;
-  overflow-y :auto;
+  overflow-y: auto;
 }
 .voice_2 .unfold dl {
   /* margin: 50px 60px 0px 60px; */
@@ -3155,5 +3203,63 @@ hr {
   display: inline-block;
   color: #fff;
   margin-left: 40px;
+}
+</style>
+<style lang="scss" scoped>
+@import "../../common/sass/mixinmap.scss";
+@import "./handleransmit_variable.scss";
+
+.less_test {
+  @include handleWidth($imagePreview);
+}
+.imagePreview {
+  overflow: hidden;
+  @include handleWidth($imagePreview);
+  .wrapper {
+    font-size: 20px;
+  }
+}
+
+.handleDrugview {
+  padding-left: 5px;
+  overflow: hidden;
+  @include handleWidth($handleDrugview);
+  @media screen and (min-width: 1680px) {
+    padding-left: 20px;
+  }
+}
+.item_box_wp {
+  width: 1180px;
+  margin: 0;
+
+  @media screen and (min-width: 1680px) {
+    margin-left: 30px;
+  }
+}
+
+@keyframes myframes {
+  from {
+    @include handleWidth($handlesmallwidth);
+  }
+  to {
+    @include handleWidth($handlebigwidth);
+  }
+}
+.bigwidth {
+  @include handleWidth($handlebigwidth);
+  animation: myframes 0.2s;
+}
+@keyframes myframes1 {
+  from {
+    @include handleWidth($handlebigwidth);
+  }
+  to {
+    @include handleWidth($handlesmallwidth);
+  }
+}
+
+.smallwidth {
+  @include handleWidth($handlesmallwidth);
+  animation: myframes1 0.2s;
 }
 </style>

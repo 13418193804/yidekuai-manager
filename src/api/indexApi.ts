@@ -1842,5 +1842,19 @@ export const addDrugPartner = (model) => {
                     .then(res => res);
             }
     
+                          /**
+     * 医生查各种顾问
+     */
+    export const getAdviserArrByDoctorId = (model) => {
+        
+                let params = {
+                    token: sessionStorage.getItem("token"),
+                    userid: sessionStorage.getItem("userId"),
+                    userId: sessionStorage.getItem("userId"),
+                }
+                Object.assign(params, model)
+                return Api.requestForm2('/api/adviser/getAdviserArrByDoctorId', params)
+                    .then(res => res);
+            }
             
             

@@ -5,7 +5,7 @@
       default-active="2"
        :style="styleString"
       :collapse="collapsed"
-      :router="true" style="border-right: 1px solid #c30d23;"
+      :router="true" style="border-right: 1px solid #c30d23;min-height: 100vh;"
       >
       <div v-for="menu in menuOption" :key="menu.name"  v-if="menu.position=='menu'">
       <div v-for="(item,index) in menu.children" :key="item.name" v-if="(menu.menu_grade == 1 && dohavePermission(item.promissId)) || item.path == '/'">
@@ -127,8 +127,8 @@ export default class Menu extends Vue {
     this.getYdkPrescriptionStatusNum();
 
     this.PrescriptionStatusNumtimer = setInterval(() => {
-        this.getYdkPrescriptionStatusNum();
-      }, 60000);
+      this.getYdkPrescriptionStatusNum();
+    }, 60000);
   }
 
   PrescriptionStatusNumtimer: any = {};

@@ -27,7 +27,6 @@
   <span v-else> 线下订单</span>
 </div>
 
-
 <div class="flex flex-warp-justify" v-if="pres_type === 'BACK_HANDWORK' || pres_type ==='DOC_HANDWORK'" >
   <h4 style="margin:0;padding-left:10px;">支付状态：</h4>
 <div>
@@ -207,15 +206,19 @@
 
 
 <div style="height:20px;"></div>
+
+
 <el-row :gutter="24"  style="padding:0 0 20px;">
   <el-col :xs="24" :sm="24" :md="12" :lg="11" :xl="12">
+
+
+
+
     <div style="position: relative;">
 <corpperlabel style="margin-top: 40px;"  ref="cropper" :preImageList="preImageList"  :haveDetele="true"></corpperlabel>
 </div>
   </el-col>
   <el-col :xs="24" :sm="24" :md="12" :lg="13" :xl="12">
-
-
 
 
   <el-tabs v-model="drugType"  @tab-click="handleClick">
@@ -404,20 +407,29 @@
 
 </div>
 
-<div v-for="item in WESTERN_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
+<div v-for="(item,index) in WESTERN_preDrugList" class="flex  flex-align-center">
+
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
 <div class="flex flex-pack-justify flex-align-center" style="color: #999;">
 <div>{{item.codeId}} </div>
 <div>{{item.createDate}} </div>
 </div>
 <div class="flex flex-pack-justify flex-align-center">
  <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
- <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.quantity}}</span></span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;font-weight:800;"><span>×</span>{{item.quantity}}</span></span>
 </div>
 
 
 <div class="flex flex-pack-justify flex-align-center">
- <span style="color: #999;">{{item.specification}}</span>
- <span style="">{{item.packingUnit}}</span>
+ <span style="color: #999;font-weight: 600;">{{item.specification}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span>
+ <span style="">{{item.dosageforms}}</span> -->
  <span style="">{{item.usages}}</span>
  <span style="">{{item.dosage}}</span>
  <span style="">{{item.frequency}}</span>
@@ -433,6 +445,7 @@
 
 <div class="flex flex-pack-justify flex-align-center">
  <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
 </div>
 </div>
 </div>
@@ -579,12 +592,13 @@
 	</el-form-item>
 
      <el-form-item label="药品价格：" >
-                      {{drug_total}}
+                           <el-input v-model="drug.price" style="width:85%;"
+  placeholder="请输入药品价格" />
 	</el-form-item>
 
 
     <el-form-item label="使用说明：" >
-                      <el-input    type="textarea" v-model="instructions"  :rows="4"
+                      <el-input    type="text" v-model="instructions"  :rows="4"
   placeholder="请输入使用说明"    style="width:85%;" 
   >
 </el-input>
@@ -636,23 +650,30 @@
 </el-form>
 
  
-<div v-for="item in CHINESE_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+<div v-for="(item,index) in CHINESE_preDrugList" class="flex  flex-align-center">
+
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
 <div class="flex flex-pack-justify flex-align-center" style="color: #999;">
 <div>{{item.codeId}} </div>
 <div>{{item.createDate}} </div>
 </div>
 <div class="flex flex-pack-justify flex-align-center">
  <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
- <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.quantity}}</span></span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.showQuantity||item.quantity}}(单剂)</span></span>
 </div>
-
 
 <div class="flex flex-pack-justify flex-align-center">
  <span style="color: #999;">{{item.typeName}}</span>
  <span style="">{{item.decoctingType}}</span>
- <span style="">{{item.packingUnit}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
  <span style="">{{item.producingArea}}</span>
- <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
+ <span style="color: red;font-size: 16px;">￥{{item.price * (item.showQuantity||item.quantity)?(item.price * (item.showQuantity||item.quantity)).toFixed(2):0}}</span>
 </div>
 
 
@@ -664,6 +685,7 @@
 
 <div class="flex flex-pack-justify flex-align-center">
  <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
 </div>
 </div>
 </div>
@@ -790,7 +812,7 @@
 
 
     <el-form-item label="使用说明：" >
-                      <el-input    type="textarea" v-model="instructions"  :rows="4"
+                      <el-input    type="text" v-model="instructions"  :rows="4"
   placeholder="请输入使用说明"   style="width:85%;" 
   >
 </el-input>
@@ -816,6 +838,9 @@
 	<div class=" everyNum" style="font-size: 12px;text-align: right;">
       膏方制作费：5kg内410元；以上80元/kg
 </div>
+	<div class=" everyNum" style="font-size: 12px;text-align: right;">
+   制作费：<span style="color:red" >￥{{makeMoney}}</span>
+</div>
 <el-form label-width="120px" inline="true">
   
   	<el-form-item label="用法用量：" style="font-size:14px;">
@@ -832,23 +857,23 @@
 </el-form>
 
  <div style="padding-left:36px;font-size:13.8px">选择要添加的辅料：</div>
-<el-form label-width="120px">
+<el-form label-width="100px">
   	<el-form-item label="糖类：">
-      <div class="flex">
+      <div class="flex flex-warp-justify">
         <div class="lanbelBox"  v-for="(n,index) in sugarTypeList" :class="sugarType[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'sugarType')">{{n}}</div>
 </div>
   	</el-form-item>
 
 
       	<el-form-item label="代糖：">
-      <div class="flex">
+      <div class="flex flex-warp-justify">
         <div class="lanbelBox"  v-for="(n,index) in aspartameList" :class="aspartame[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'aspartame')">{{n}}</div>
 </div>
   	</el-form-item>
 
 
       	<el-form-item label="其他：">
-      <div class="flex">
+      <div class="flex flex-warp-justify">
         <div class="lanbelBox"  v-for="(n,index) in otherAccessoriesList" :class="otherAccessories[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'otherAccessories')">{{n}}</div>
 </div>
   	</el-form-item>
@@ -856,8 +881,17 @@
 
 
 
+ 
+<div v-for="(item,index) in PASTE_preDrugList" class="flex  flex-align-center">
 
-<div v-for="item in PASTE_preDrugList" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
+
 <div class="flex flex-pack-justify flex-align-center" style="color: #999;">
 <div>{{item.codeId}} </div>
 <div>{{item.createDate}} </div>
@@ -871,7 +905,7 @@
 <div class="flex flex-pack-justify flex-align-center">
  <span style="color: #999;">{{item.typeName}}</span>
  <span style="">{{item.decoctingType}}</span>
- <span style="">{{item.packingUnit}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
  <span style="">{{item.producingArea}}</span>
  <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
 </div>
@@ -889,6 +923,182 @@
 </div>
 </div>
 </div>
+</div>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+    </el-tab-pane>
+
+    <el-tab-pane  label="器械" name="INSTRUMENTS">
+
+
+
+
+		<div class="item_box_wp">
+				<div class="voice_2">
+					<ul>
+						<li v-for="(item,index) in 2" :class="['li'+(index+1) ,index == selectlabel ?'bigwidth':'smallwidth']"  @click="selectlabel = index">
+							<div class="fold" v-if="index !== selectlabel">
+								<span class="img">
+                  <img src="./images/img10.png" v-if="index==0" style=" width: 100%;"/>
+                  <img src="./images/img11.png" v-else style=" width: 100%;"/>
+                  </span>
+							</div>
+							<div class="unfold"  v-if="index === selectlabel">
+								<dl>
+            
+<div v-if="index == 0" style="width:100%;padding-top:30px;">
+
+	 <el-form label-width="120px" size="mini">
+
+				<el-form-item label="器械名称：" >
+ <el-select  style="width:85%;" 
+    v-model="drug.drugId"
+    filterable clearable
+    remote
+    placeholder="请输入药品"
+    :remote-method="remoteMethod"
+    :loading="loading" @change="selectDrug">
+    <el-option
+      v-for="item in options4"
+      :key="item.drugId"
+      :label="handleLabel([item.commonName,item.productName,item.producingArea,item.specification])"
+      :value="item.drugId">
+    </el-option>
+  </el-select>
+				</el-form-item>		
+
+
+
+
+ <el-form-item label="供应商：" >
+                      <el-input v-model="drug.manufacturer"  style="width:85%;" 
+  placeholder="请输入供应商"  >
+</el-input>
+	</el-form-item>
+
+
+
+               <el-form-item label="单位：" >
+                  
+                    <el-input v-model="drug.packing_unit"  style="width:85%;" 
+  placeholder="请输入单位"  />
+<!--   
+                    <el-select style="width:100%;"
+    v-model="drug.packing_unit"
+    placeholder="请输入单位"
+    :loading="loading"
+    >
+    <el-option
+      v-for="item in packingUnitList"
+      :key="item"
+      :label="item"
+      :value="item">
+    </el-option>
+    
+  </el-select> -->
+
+				</el-form-item>		
+
+
+               <!-- <el-form-item label="煎煮方式：" >
+                    <el-select style="width:100%;"
+    v-model="drug.decoctingType"
+    placeholder="请选择煎煮方式"
+    :loading="loading"
+    >
+  <el-option value="包煎" label="包煎"></el-option>
+<el-option value="水煎" label="水煎"></el-option>
+  </el-select>
+
+				</el-form-item>		 -->
+
+  <el-form-item label="单价：" >
+                    <el-input v-model="drug.price"  style="width:85%;" 
+  placeholder="请输入单价" />
+				</el-form-item>		
+                    <el-form-item label="数量：" >
+                      <el-input v-model="drug.quantity"  style="width:85%;" 
+  placeholder="请输入数量"  >
+</el-input>
+	</el-form-item>
+
+     <el-form-item label="药品价格：" >
+                      {{drug_total}}
+	</el-form-item>
+
+
+    <el-form-item label="使用说明：" >
+                      <el-input    type="text" v-model="instructions"  :rows="4"
+  placeholder="请输入使用说明"   style="width:85%;" 
+  >
+</el-input>
+				</el-form-item>	
+
+
+                    <el-form-item >
+                 <el-button size="mini" type="primary" @click="docreateDrug()" :disabled="loading">提交</el-button>
+				</el-form-item>	
+
+
+	 </el-form>
+</div>
+<div v-if="index == 1">
+<div style="padding: 10px;">
+<div> 
+<div class="flex flex-pack-justify flex-align-center" style="height:28px;">
+    <div style="font-size:16px;">共{{INSTRUMENTS_preDrugList.length}}条</div>
+    <div style="padding-right:20px;color:red;font-size:16px;">合计:￥{{INSTRUMENTS_preDrugListtotal.toFixed(2)}}</div>
+</div>
+
+</div>
+
+
+ 
+<div v-for="(item,index) in INSTRUMENTS_preDrugList" class="flex  flex-align-center">
+
+  <div>
+ <div style="text-align:center;font-size:15px;margin-right: 10px;">   {{index+1}}</div>
+<div @click="deletePreDrug(index,item)" class="shanchukuai flex  flex-align-center flex-pack-center"><i class="iconfont icon-iconfontshanchu3"></i></div>
+    </div>
+
+<div class="flex-1" style="border: 1px solid #c8c6c6;margin-bottom:10px;padding:5px;">
+
+
+
+<div class="flex flex-pack-justify flex-align-center" style="color: #999;">
+<div>{{item.codeId}} </div>
+<div>{{item.createDate}} </div>
+</div>
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="font-size: 16px;color: #000;">{{item.drugName}}({{item.productName}})</span>
+ <span style="">￥{{item.price}} <span style="font-size: 16px;color: #000;"><span>×</span>{{item.quantity}}</span></span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <span style="color: #999;font-weight: 600;">{{item.specification}}</span>
+ <!-- <span style="">{{item.packingUnit}}</span> -->
+ <span style="color: red;font-size: 16px;">￥{{item.shouldpay}}</span>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">{{item.manufacturer}}</div>
+ <div class="flex-1" style="text-align:center">{{item.partnerName}}</div>
+</div>
+
+
+<div class="flex flex-pack-justify flex-align-center">
+ <div class="flex-1" style="">使用说明：{{item.instructions}}</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 								</dl>
 							</div>
 						</li>
@@ -897,389 +1107,21 @@
 			</div>
 
 
+
+
     </el-tab-pane>
   </el-tabs>
+
+
+  
   </el-col>
   </el-row>
+
+
+
+
 <div>
-
-
 </div>
-
-
-  <el-tabs v-model="drugType" @tab-click="handleClick">
-  
-    <el-tab-pane  label="西药" name="WESTERN">
-
-      <div style="text-align:right;">西药药品合计：<span style="color:red" >￥{{WESTERN_preDrugListtotal.toFixed(2)}}</span></div>
-<div style="height:25px;"></div>
-
-<el-table border
-    :data="WESTERN_preDrugList"
-    stripe
-    style="width: 100%">
-
-   
-  <el-table-column  fixed="left"
-      prop="codeId"
-      label="药品编码">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="drugName"
-      label="通用名">
-   </el-table-column>
-
-  <el-table-column
-      prop="productName"
-      label="商品名">
-   </el-table-column>
-
-  <el-table-column
-      prop="partnerName"
-      label="供应商">
-   </el-table-column>
-
-  <el-table-column
-      prop="packingUnit"
-      label="单位">
-   </el-table-column>
-   
-  <el-table-column
-      prop="dosageforms"
-      label="剂型">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="specification"
-      label="药品规格">
-   </el-table-column>
-
-     <el-table-column width="180" 
-      prop="manufacturer"
-      label="厂商">
-   </el-table-column>
-
- <el-table-column
-      prop="usages"
-      label="用法">
-   </el-table-column>
- 
-   
- <el-table-column
-      prop="dosage"
-      label="用量">
-   </el-table-column>
-
-  <el-table-column
-      prop="instructions"
-      label="使用说明">
-   </el-table-column>
-
-  <el-table-column
-      prop="frequency"
-      label="频次">
-   </el-table-column>
-
-  <el-table-column
-      prop="quantity"
-      label="数量">
-   </el-table-column>
-
-  <el-table-column
-      prop="price"
-      label="药品价格">
-   </el-table-column>
-   
-  <el-table-column
-      prop="shouldpay"
-      label="药品合计">
-   </el-table-column>
-
-  <el-table-column
-      prop="createDate"
-      label="提交时间">
-   </el-table-column>
-
-   <el-table-column label="操作" fixed="right"  width="100">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-        type="text" icon="el-icon-delete" 
-          @click="deletePreDrug(scope.$index, scope.row)" >删除</el-button>
-   </template>
-    </el-table-column>
-
-</el-table>
-      </el-tab-pane>
-        <el-tab-pane  label="中药" name="CHINESE">
-<div>
-
-<el-form label-width="120px" inline="true">
-  	<el-form-item label="是否代煎：" >
-  <el-radio  :label="0" v-model="isReplaceDecocting">不代煎</el-radio>
-  <el-radio  :label="1"   v-model="isReplaceDecocting">代煎</el-radio>
-				</el-form-item>	
-  	<el-form-item label="用法用量：">
-<div class="flex everyNum">
-<div>共</div>
-<div><el-input size="mini" type="text" placeholder="输入数量" v-model="allDosage"/></div>
-<div>剂，每日</div>
-<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everydayDosage"/></div>
-<div>剂，1剂分</div>
-<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everytimeDosage"/></div>
-<div>次服用</div>
-</div>
-	  </el-form-item>	
-</el-form>
-</div>
-      <div style="text-align:right;" class="flex flex-align-center flex-end-justify">代煎费：
-        <span><el-input size="mini" type="text" placeholder="输入代煎费" v-model="replaceDecoctingMoneyOne"/></span>/剂
-        <span style="color:red" >￥
-          {{replaceDecoctingMoney}}
-        </span></div> 
-      <div style="text-align:right;">中药药品合计：<span style="color:red" >￥{{CHINESE_preDrugListtotal.toFixed(2)}}</span></div>
-<div style="height:25px;"></div>
-<el-table border
-    :data="CHINESE_preDrugList"
-    stripe
-    style="width: 100%">
-
-  <el-table-column  fixed="left"
-      prop="codeId"
-      label="药品编码">
-   </el-table-column>
-
-  <el-table-column 
-      prop="drugName"
-      label="药材名称">
-   </el-table-column>
-
-  <el-table-column
-      prop="productName"
-      label="别名">
-   </el-table-column>
-
-  <el-table-column
-      prop="producingArea"
-      label="产地">
-   </el-table-column>
-
-  <el-table-column
-      prop="typeName"
-      label="类名">
-   </el-table-column>
-   
-  <el-table-column
-      prop="manufacturer"
-      label="供应商">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="packingUnit"
-      label="单位">
-   </el-table-column>
-   
-  <el-table-column
-      prop="decoctingType"
-      label="煎煮方式">
-   </el-table-column>
-
-    <el-table-column
-      prop="chineseType"
-      label="类型">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="instructions"
-      label="使用说明">
-   </el-table-column>
-
-  <el-table-column
-      prop="quantity"
-      label="数量">
-   </el-table-column>
-
-  <el-table-column
-      prop="price"
-      label="药品价格">
-   </el-table-column>
-   
-  <el-table-column
-      prop="shouldpay"
-      label="药品合计">
-   </el-table-column>
-
-  <el-table-column
-      prop="createDate"
-      label="提交时间">
-   </el-table-column>
-
-   <el-table-column label="操作" fixed="right"  width="100">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-        type="text" icon="el-icon-delete" 
-          @click="deletePreDrug(scope.$index, scope.row)" >删除</el-button>
-   </template>
-    </el-table-column>
-
-</el-table>
-
-
-
-
-
-    </el-tab-pane>
-    <el-tab-pane  label="膏方" name="PASTE_PRESCRIPTION">
-<div>
-<el-form label-width="120px" inline="true">
-
-  	<el-form-item label="用法用量：">
-<div class="flex everyNum">
-<div>每日</div>
-<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everydayTime"/></div>
-<div>次，1次</div>
-<div><el-input size="mini" type="text" placeholder="输入数量" v-model="everytimes"/></div>
-<div>克，约服</div>
-<div><el-input size="mini" type="text" placeholder="输入数量" v-model="howManyDay" /></div>
-<div>天</div>
-</div>
-	  </el-form-item>	
-
-
-  	<el-form-item>
-<div class="flex everyNum">
-      膏方制作费：5kg内410元；以上80元/kg
-</div>
-	  </el-form-item>	
-</el-form>
-<div style="padding-left:36px;font-size:15.8px">选择要添加的辅料：</div>
-<el-form label-width="120px">
-  	<el-form-item label="糖类：">
-      <div class="flex">
-        <div class="lanbelBox"  v-for="(n,index) in sugarTypeList" :class="sugarType[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'sugarType')">{{n}}</div>
-</div>
-  	</el-form-item>
-
-
-      	<el-form-item label="代糖：">
-      <div class="flex">
-        <div class="lanbelBox"  v-for="(n,index) in aspartameList" :class="aspartame[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'aspartame')">{{n}}</div>
-</div>
-  	</el-form-item>
-
-
-      	<el-form-item label="其他：">
-      <div class="flex">
-        <div class="lanbelBox"  v-for="(n,index) in otherAccessoriesList" :class="otherAccessories[index]==n?'lanbelBox_active':'lanbelBox_notactive'"  @click="sugarTypechange(n,index,'otherAccessories')">{{n}}</div>
-</div>
-  	</el-form-item>
-
-
-
-
-
-</el-form>
-</div>
-
-      <div style="text-align:right;">制作费：<span style="color:red" >￥{{makeMoney}}</span></div>
-      <div style="text-align:right;">膏方药品合计：<span style="color:red" >￥{{PASTE_preDrugListtotal.toFixed(2)}}</span></div>
-
-
-<div style="height:25px;"></div>
-<el-table border
-    :data="PASTE_preDrugList"
-    stripe
-    style="width: 100%">
-
-  <el-table-column  fixed="left"
-      prop="codeId"
-      label="药品编码">
-   </el-table-column>
-
-  <el-table-column 
-      prop="drugName"
-      label="药材名称">
-   </el-table-column>
-
-  <el-table-column
-      prop="productName"
-      label="别名">
-   </el-table-column>
-
-  <el-table-column
-      prop="producingArea"
-      label="产地">
-   </el-table-column>
-
-  <el-table-column
-      prop="typeName"
-      label="类名">
-   </el-table-column>
-   
-  <el-table-column
-      prop="manufacturer"
-      label="供应商">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="packingUnit"
-      label="单位">
-   </el-table-column>
-   
-
-    <el-table-column
-      prop="chineseType"
-      label="类型">
-   </el-table-column>
-
-
-  <el-table-column
-      prop="instructions"
-      label="使用说明">
-   </el-table-column>
-
-  <el-table-column
-      prop="quantity"
-      label="数量">
-   </el-table-column>
-
-  <el-table-column
-      prop="price"
-      label="药品价格">
-   </el-table-column>
-   
-  <el-table-column
-      prop="shouldpay"
-      label="药品合计">
-   </el-table-column>
-
-  <el-table-column
-      prop="createDate"
-      label="提交时间">
-   </el-table-column>
-
-   <el-table-column label="操作" fixed="right"  width="100">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-        type="text" icon="el-icon-delete" 
-          @click="deletePreDrug(scope.$index, scope.row)" >删除</el-button>
-   </template>
-    </el-table-column>
-
-</el-table>
-
-
-
-    </el-tab-pane>
-  </el-tabs>
 
 
 <!-- <div style="text-align:right;padding:15px">
@@ -1306,8 +1148,8 @@
   </div>
 
   <div v-else>治疗服务费：<span style="color:red" >￥{{serviceMoney}}</span></div>
-      <div>药品合计：<span style="color:red" >￥{{parseFloat(CHINESE_preDrugListtotal + WESTERN_preDrugListtotal+PASTE_preDrugListtotal).toFixed(2)}}</span></div>
-  <div >合计：<span style="color:red" >￥{{ parseFloat(CHINESE_preDrugListtotal + WESTERN_preDrugListtotal+PASTE_preDrugListtotal+parseFloat(replaceDecoctingMoney)+parseFloat(makeMoney)+parseFloat(serviceMoney)).toFixed(2)  }}</span></div>
+      <div>药品合计：<span style="color:red" >￥{{parseFloat(CHINESE_preDrugListtotal + WESTERN_preDrugListtotal+PASTE_preDrugListtotal+INSTRUMENTS_preDrugListtotal).toFixed(2)}}</span></div>
+  <div >合计：<span style="color:red" >￥{{ parseFloat(CHINESE_preDrugListtotal + WESTERN_preDrugListtotal+PASTE_preDrugListtotal+INSTRUMENTS_preDrugListtotal+parseFloat(replaceDecoctingMoney)+parseFloat(makeMoney)+parseFloat(serviceMoney)).toFixed(2)  }}</span></div>
 </div>
 
 <div style="    display: flex;
@@ -1333,7 +1175,7 @@
 </div>
 
 
-<div style="height: 500 px;    overflow: auto;" v-bouncing="noMessage_loading">
+<div style="height: 500px;    overflow: auto;" v-bouncing="noMessage_loading">
 
 <div class="flex flex-pack-center  flex-align-center" style="height:100%" v-if="noMessage_model">
   <i class="iconfont icon-shangxin" style="font-size:90px"></i>
@@ -1384,6 +1226,9 @@
     </div>
     <div>
     <el-checkbox label="PASTE_PRESCRIPTION" :disabled="PASTE_preDrugList.length == 0">膏方</el-checkbox>
+    </div>
+      <div>
+    <el-checkbox label="INSTRUMENTS" :disabled="INSTRUMENTS_preDrugList.length == 0">器械</el-checkbox>
     </div>
   </el-checkbox-group>
 
@@ -1954,8 +1799,14 @@ export default class AddGoods extends Vue {
     if (this.drugType == "PASTE_PRESCRIPTION") {
       this.drug["preDrugType"] = "PASTE_PRESCRIPTION";
     }
+    if (this.drugType == "INSTRUMENTS") {
+      this.drug["preDrugType"] = "INSTRUMENTS";
+    }
+
     this.loading = true;
-    indexApi.docreateDrug(this.drug).then(res => {
+  // prescribeDoctorId
+
+    indexApi.docreateDrug(Object.assign(this.drug,{prescribeDoctorId:this.presId ?this.prodetail['docterId'] : this.createForm.docterId})).then(res => {
       this.loading = false;
       if (res["retCode"]) {
         if (this.pres_type == "BACK_HANDWORK") {
@@ -1980,6 +1831,7 @@ export default class AddGoods extends Vue {
   CHINESE_preDrugList = [];
   PASTE_preDrugList = [];
   WESTERN_preDrugList = [];
+  INSTRUMENTS_preDrugList = [];
   queryPresDrug() {
     indexApi.queryPresDrug({ preId: this.presId }).then(res => {
       if (res["retCode"]) {
@@ -1994,6 +1846,9 @@ export default class AddGoods extends Vue {
 
         this.WESTERN_preDrugList = res.data.data.filter(item => {
           return item.preDrugType == "WESTERN_MEDICINE";
+        });
+        this.INSTRUMENTS_preDrugList = res.data.data.filter(item => {
+          return item.preDrugType == "INSTRUMENTS";
         });
 
         // this.presscriptionMoney = res.data.drugMoney;
@@ -2216,6 +2071,10 @@ export default class AddGoods extends Vue {
       count++;
       PreDrugType.push("PASTE_PRESCRIPTION");
     }
+        if (this.INSTRUMENTS_preDrugList.length > 0) {
+      count++;
+      PreDrugType.push("INSTRUMENTS");
+    }
     if (count == 0) {
       this.$alert("至少添加一条药品信息");
       return;
@@ -2258,7 +2117,6 @@ export default class AddGoods extends Vue {
     let a = list.map(item => {
       return item.prescriptionDrugId;
     });
-
     this.after_vaild(a);
   }
 
@@ -2833,9 +2691,9 @@ export default class AddGoods extends Vue {
 
   get CHINESE_preDrugListtotal() {
     let CHINESE_preDrugList = this.CHINESE_preDrugList.map(item => {
-      return item.shouldpay;
+      return item.price * (item.showQuantity||item.quantity) ;
     });
-    if (CHINESE_preDrugList.length > 0) {
+    if (CHINESE_preDrugList.length > 0 && this.allDosage) {
       return (
         CHINESE_preDrugList.reduce((total, num) => {
           return total + num;
@@ -2864,6 +2722,19 @@ export default class AddGoods extends Vue {
     });
     if (PASTE_preDrugList.length > 0) {
       return PASTE_preDrugList.reduce((total, num) => {
+        return total + num;
+      });
+    } else {
+      return 0;
+    }
+  }
+  get INSTRUMENTS_preDrugListtotal() {
+    let INSTRUMENTS_preDrugList = this.INSTRUMENTS_preDrugList.map(item => {
+      return item.shouldpay;
+    });
+
+    if (INSTRUMENTS_preDrugList.length > 0) {
+      return INSTRUMENTS_preDrugList.reduce((total, num) => {
         return total + num;
       });
     } else {
@@ -3102,58 +2973,18 @@ export default class AddGoods extends Vue {
   width: 100px;
   animation: myframes1 0.2s;
 }
+.shanchukuai{
+      width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    margin-right:10px;
+}
+.shanchukuai:hover{
+  background-color: #fafafa;
+}
+
 </style>
 <style >
-@charset "utf-8";
-/* CSS Document */
-body,
-div,
-dl,
-dt,
-dd,
-ul,
-ol,
-li,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-pre,
-code,
-form,
-fieldset,
-legend,
-input,
-button,
-textarea,
-select,
-p,
-blockquote,
-th,
-td,
-hr {
-  margin: 0px;
-  padding: 0px;
-}
-body {
-  font-size: 12px;
-  line-height: 1.5;
-  font-family: 微软雅黑;
-  background: #fff;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: arial, "hiragino sans gb", "microsoft yahei", "Simsun",
-    sans-serif;
-  font-size: 100%;
-  font-weight: normal;
-}
 input,
 textarea,
 select,
@@ -3272,6 +3103,7 @@ hr {
 }
 
 .voice_2 ul li {
+  font-size: 12px;
   float: left;
   display: inline;
   min-height: 790px;
@@ -3354,11 +3186,12 @@ hr {
   line-height: 25px;
 }
 .voice_2 .unfold {
-  width: 500px;
+  width: 400px;
   height: 100%;
   position: absolute;
   top: 0px;
   left: 0px;
+  overflow-y :auto;
 }
 .voice_2 .unfold dl {
   /* margin: 50px 60px 0px 60px; */
@@ -3382,4 +3215,35 @@ hr {
   color: #fff;
   margin-left: 40px;
 }
+</style>
+<style lang="scss" scoped>
+
+$div-widthMap: (
+  null  : 100px,
+  300px : 200px,
+  768px : 300px,
+  1024px: 400px,
+  1280px: 400px,
+  1680px: 400px,
+);
+
+@mixin handleWidth($widthMap) {
+  @each $key, $widthItem in $widthMap {
+    @if $key == null {
+      width: $widthItem;
+    }
+    @else {
+      @media screen and (min-width: $key)  {
+        width: $widthItem;
+      }
+    }
+  }
+}
+
+.less_test {
+  @include handleWidth($div-widthMap);
+}
+
+
+
 </style>

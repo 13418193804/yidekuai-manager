@@ -221,20 +221,7 @@ export default new Router({
       position: 'menu',
       menu_grade: 1,
       children: [
-        // {
-        //   path: '/drug',
-        //   promissId: 'PERecc2af8eb68a48fcb68bbc782bab1554',
-        //   icon: require('../assets/menu/药丸 (1).png'),
-        //   select_icon: require('../assets/menu/药丸.png'),
-        //   name: '药品库管理',
-        //   component: r => require.ensure([], () => r(require('@/components/drug/drug')))
-        // },
-        // {
-        //   path: '/requiredrug',
-        //   name: '找药管理',
-        //   component: r => require.ensure([], () => r(require('@/components/drug/requiredrug')))
-        // },
-
+   
 
 
         {
