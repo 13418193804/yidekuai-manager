@@ -1656,7 +1656,11 @@ export const addDrugPartner = (model) => {
             .then(res => res);
     }
 
-    
+    /**
+     * 
+     * 业务单下载
+     * 
+     */
 
   export const getOrderExport = (presId) => {
     
@@ -1664,10 +1668,42 @@ export const addDrugPartner = (model) => {
           token: sessionStorage.getItem("token"),
           merchantUserId: sessionStorage.getItem("userId"),
       }
-      console.log()
   window.open(`${base}/order/exportOrderExcel?presId=${presId}`)
   };
 
+  
+    /**
+     * 
+     * 处方ID 批量导出业务单
+     * 
+     */
+
+  export const getBatchOperateOrderExport = (presIds) => {
+    
+      let params = {
+          token: sessionStorage.getItem("token"),
+          merchantUserId: sessionStorage.getItem("userId"),
+      }
+  window.open(`${base}/order/exportOrderExcelBatch?presIds=${presIds}`)
+  };
+
+
+    /**
+     * 
+     * 时间 批量导出业务单
+     * 
+     */
+
+    export const getBatchOperateOrderExportByTime = (startTime,endTime) => {
+        
+          let params = {
+              token: sessionStorage.getItem("token"),
+              merchantUserId: sessionStorage.getItem("userId"),
+          }
+      window.open(`${base}/order/exportOrderExcelBatchByTime?startTime=${startTime}&endTime=${endTime}`)
+      };
+    
+  
   /**
    * 转方价格查询
    */  

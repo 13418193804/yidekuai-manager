@@ -17,8 +17,12 @@ import './common/js/bouncing'
 import './common/js/directives'//v-dialogDrag 拖动模态窗
 import * as indexApi from './api/indexApi'
 
+import VueAwesomeSwiper from 'vue-awesome-swiper'
 
+// require styles
+import 'swiper/dist/css/swiper.css'
 
+Vue.use(VueAwesomeSwiper, /* { default global options } */)
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false
@@ -86,12 +90,12 @@ Vue.directive('promiss', {
       return
     }
     for (let n in binding.modifiers) {
-console.log(router.app['_route'].meta[n])
+      console.log(router.app['_route'].meta[n])
       if (!router.app['_route'].meta[n]) {
         el.style.display = 'none';
       }
     }
-    
+
   },
   update: function (el, binding) {
 
@@ -113,6 +117,7 @@ console.log(router.app['_route'].meta[n])
 new Vue({
   el: '#app',
   router,
+  //  store,
   components: { App },
   template: '<App/>'
 })

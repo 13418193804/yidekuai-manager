@@ -49,7 +49,7 @@
 </div>
 
 
-<remindertable ref="remindertable" :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
 
     <el-tab-pane   :label="'待收货订单（'+ORDER_WAIT_RECVGOODS+'）'"  name="ORDER_WAIT_RECVGOODS">
@@ -85,7 +85,7 @@
   </el-col>
 </el-row>
 </div>
-<remindertable ref="remindertable" :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
     <el-tab-pane   :label="'待付款订单（'+ORDER_WAIT_PAY+'）'"  name="ORDER_WAIT_PAY">
  <div style="padding-bottom:20px;">
@@ -119,7 +119,7 @@
   </el-col>
 </el-row>
 </div>
-<remindertable ref="remindertable" :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder" payStatus="ORDER_WAIT_PAY"></remindertable>
+<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder" payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
     <el-tab-pane   :label="'待开发票（'+invoice+'）'"  name="rework" >
@@ -238,17 +238,55 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
 
    </el-tab-pane>
 
   </el-tabs>
 
-		<el-col :span="24" class="toolbar">
-			<el-pagination :current-page="page+1" layout="prev, pager, next" :page-size="pageSize" :total="total" @current-change="onPageChange">
-			</el-pagination>
-		</el-col>
+		<el-col :span="24" class="toolbar flex flex-pack-justify" >
+      
+           <div >
+      <el-select
+        size="small"
+        v-model="operateType" placeholder="批量操作">
+        <el-option
+          v-for="item in operateOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
 
+        <el-date-picker v-if="operateType =='time_export'"  style="margin-left: 20px"
+      v-model="exportTime" size="small"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
+
+      <el-button
+        style="margin-left: 20px"
+        class="search-button"
+        @click="handleBatchOperate()"
+        type="primary"
+        size="small">
+        确定
+      </el-button>
+    </div>
+
+			<el-pagination background :current-page="page+1"
+       layout="total, sizes,prev, pager, next" 
+       :page-size="pageSize"  @size-change="handleSizeChange"
+        :page-sizes="[10,20,50,100]" 
+        :total="total" @current-change="onPageChange">
+			</el-pagination>
+
+
+		</el-col>
 
 
 
@@ -364,6 +402,10 @@ export default class AddGoods extends Vue {
     this.getOrderList();
   }
   orderList = [];
+  handleSizeChange(size){
+this.pageSize = size
+    this.getOrderList();
+}
   consigneeAddress = "";
   handleClick(e) {
    this.rderStatus = "";
@@ -456,6 +498,63 @@ this.rderStatus ="";
   }
 
 
+operateOptions =[
+  {
+    value:'export',
+    label:"业务单导出（检索 + 选中）"
+  },
+   {
+    value:'time_export',
+    label:"业务单导出（时间）"
+  }
+]
+operateType = ""
+
+
+multipleSelection = []
+setMultipleSelection(multipleSelection){
+this.multipleSelection = multipleSelection
+}
+
+exportTime = []
+
+  handleBatchOperate(){
+        
+if(this.operateType == 'export'){
+  if(this.multipleSelection==null||this.multipleSelection.length<1){
+          this.$message({  
+            message: '请选择要操作的订单',
+            type: 'warning',
+            duration: 1000
+          });
+          return;
+        }
+ let presIds =   this.multipleSelection.map(item=>{
+    return item.presId
+  }).join(',')
+ indexApi.getBatchOperateOrderExport(presIds);
+}
+if(this.operateType == 'time_export'  )
+{
+
+if(this.exportTime==null || this.exportTime.length == 0){
+  this.$message({  
+            message: '请指定时间',
+            type: 'warning',
+            duration: 1000
+          });
+          return;
+}else{
+     let startTime =      moment(this.exportTime[0]).format("YYYY-MM-DD") + " 00:00:00"
+      let endTime =     moment(this.exportTime[1]).format("YYYY-MM-DD") + " 23:59:59"
+ indexApi.getBatchOperateOrderExportByTime(startTime,endTime);
+
+
+}
+
+
+}
+  }
   mounted() {
     // this.allPrescription();
     this.queryProvinceList();

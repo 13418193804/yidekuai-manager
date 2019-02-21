@@ -142,7 +142,6 @@
 
 <h4 v-if="row.presState != 'NOT_TRANSLATED_PRESCRIPTION'">药品信息</h4>
 
-
   <el-tabs v-model="drugType"  v-if="row.presState != 'NOT_TRANSLATED_PRESCRIPTION'">
     <el-tab-pane  label="中药" name="CHINESE" v-if="CHINESE_preDrugList.length>0">
 <el-table border

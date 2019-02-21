@@ -23,6 +23,15 @@
     </el-card>
     <img src="../assets/login_center_bg.png" :class="ydkManager =='test'?'login-center-layout_test':'login-center-layout'" class="">
 
+
+       <div style="    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    position: absolute;
+    bottom: 10px;
+    font-size: 14px;
+    width: 100%;"><span class="beian" @click="openlist">粤ICP备18079735号-1</span></div>
+
 </div>
 
 </template>
@@ -75,7 +84,10 @@ export default class Login extends Vue {
   doGoto() {
     this.$router.push("/portal");
   }
+  openlist(){
+   window.location.href = `http://www.miitbeian.gov.cn`
 
+  }
   loading = false;
 
   doLogin() {
@@ -94,7 +106,6 @@ export default class Login extends Vue {
         sessionStorage.setItem("token", res.data.tokenid);
         sessionStorage.setItem("userId", res.data.User[0].userId);
         sessionStorage.setItem("merchantUserId", res.data.User[0].userId);
-        sessionStorage.setItem("loginName", res.data.User[0].userName);
         sessionStorage.setItem("name", res.data.User[0].name);
 
         if (res.data.User[0].adminState == "1") {
@@ -219,5 +230,12 @@ export default class Login extends Vue {
 }
 .color_manager:hover {
   background-color: #c30d23 !important;
+}
+.beian{
+  cursor: pointer;
+}
+.beian:hover{
+  color: rgb(195, 13, 35) ;
+     text-decoration: underline;
 }
 </style>

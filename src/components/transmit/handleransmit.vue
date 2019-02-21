@@ -1199,7 +1199,7 @@
   <div  style="line-height: 20px;" class="textLabel">
     <div class="textLabel">{{item.name}}</div>
     <div>{{item.phone}}</div>
-    <div v-if="item.docterId">
+    <div v-if="item.doctorId">
      <div class="textLabel" style="text-align:left;">医院：<span style=" color: #8492a6; font-size: 13px">{{item.hospitalName}}</span></div>
     <div class="textLabel" style="text-align:left;">科室：<span style=" color: #8492a6; font-size: 13px">{{item.docterDept}}</span></div>
 </div>

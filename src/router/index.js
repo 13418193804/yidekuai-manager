@@ -263,6 +263,13 @@ export default new Router({
           name: 'drugcenter',
           component: r => require.ensure([], () => r(require('@/components/drug/drugcenter')))
         },
+        {
+          path: '/prescirptionOrderInfo',
+          name: 'prescirptionOrderInfo',
+          component: r => require.ensure([], () => r(require('@/components/common/prescirptionOrderInfo')))
+        },
+        
+
         { path: '/portal', component: Portal, name: '首页' },
       ]
     },

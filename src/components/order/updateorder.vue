@@ -908,7 +908,6 @@ export default class AddGoods extends Vue {
       })
       .then(res => {
         if (res["retCode"]) {
-          console.log("修改后执行什么更新呢？");
           this.$emit("getOrderList");
           this.$emit("getOrderDetail", this.order.presId);
         } else {

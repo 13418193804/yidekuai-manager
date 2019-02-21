@@ -38,7 +38,7 @@
    </el-table-column>
 
   <el-table-column
-      label="操作时间"  width="230">
+      label="操作时间"  width="240">
   <template slot-scope="scope">
           <div>
      开方时间： {{scope.row.createDate}}
@@ -212,10 +212,10 @@
    <el-table-column label="操作"   width="220">
       <template slot-scope="scope">
 
- 
+ <!-- @click="changeModel(scope.$index, scope.row)"  -->
         <el-button
           size="mini"
-          @click="changeModel(scope.$index, scope.row)" >处方详情</el-button>
+           @click="goPrescirptionOrderInfo(scope.row)">处方详情</el-button>
         
    <!-- <el-button
           size="mini"
@@ -1015,6 +1015,8 @@ export default class AddGoods extends Vue {
   model = false;
   prescriptioninfoObj = {};
   preImageList = [];
+
+
   changeModel(index, row) {
     this.row = row;
     this.prescriptioninfoObj = row;
@@ -1046,6 +1048,18 @@ export default class AddGoods extends Vue {
   cityList = [];
   countryList = [];
   updated() {}
+
+
+    goPrescirptionOrderInfo(row){
+    
+    let routeData = (<any>this.$router).resolve({
+   name: "prescirptionOrderInfo",
+   query:{resource:'prescirption',key: row.presId}
+});
+window.open(routeData.href, '_blank');
+  }
+
+
   mounted() {
     console.log(this.table)
     this.queryProvinceList();

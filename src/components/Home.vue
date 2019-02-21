@@ -16,8 +16,8 @@
 			<el-col :span="10">
 
         
-
-				<div class="tools" @click.prevent="doCollapse">
+ <!-- @click.prevent="doCollapse" -->
+				<div class="tools">
 					<i class="iconfont icon-caidan1 hamburger" :class="{'is-active':!collapsed}" style="    font-size: 25px;"></i>
 				</div>
 
@@ -75,7 +75,7 @@ import MenuComponent from "./Menu.vue";
 })
 export default class Home extends Vue {
   sysName = "医德快管理平台";
-  collapsed = false;
+  collapsed = true;
   sysUserAvatar = "";
   sysUserName = sessionStorage.name;
   roleName = "";
