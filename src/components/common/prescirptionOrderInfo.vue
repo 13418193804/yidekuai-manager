@@ -2,7 +2,9 @@
     <div v-bouncing="loading" class="detail-container">
 
 
-<div style="height:20px;"></div>
+<div style="height:20px;">
+  <el-button size="mini" @click="back()">返回</el-button>
+</div>
   
 <div class="flex  flex-align-center flex-pack-center">
 
@@ -935,54 +937,8 @@
     </md-card-media>
   </md-card>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 </el-card>
@@ -1588,7 +1544,9 @@ showShipInfo(item) {
         }
       });
   }
-
+back(){
+  this.$router.go(-1);
+}
   mounted() {
       // resource = order 
       // presId = key

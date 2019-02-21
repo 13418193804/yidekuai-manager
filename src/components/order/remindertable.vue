@@ -1227,18 +1227,25 @@ operateType
   }
 
   goPrescirptionOrderInfo(row){
-      let time = new Date().getTime();
+      let time:any = new Date().getTime();
       if(this.pagetype == 'reminder' && time%2==0){
         time += 1
       }
   if(this.pagetype == 'after' && time%2!==0){
         time += 1
       }
-    let routeData = (<any>this.$router).resolve({
-   name: "prescirptionOrderInfo",
+
+this.$router.push({name: "prescirptionOrderInfo",
    query:{resource:'order',t:time,key: row.presId}
-});
-window.open(routeData.href, '_blank');
+   })
+ 
+
+      
+//     let routeData = (<any>this.$router).resolve({
+//    name: "prescirptionOrderInfo",
+//    query:{resource:'order',t:time,key: row.presId}
+// });
+// window.open(routeData.href, '_blank');
   }
 
   getOrderDetail(presId, send = null) {
