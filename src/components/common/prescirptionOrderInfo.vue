@@ -1,7 +1,6 @@
 <template>
     <div v-bouncing="loading" class="detail-container">
 
-
 <div style="height:20px;">
   <el-button size="mini" @click="back()">返回</el-button>
 </div>
@@ -82,7 +81,7 @@
             {{prescription.createDate}}
             </el-col>
           <el-col class="form-border font-small" :span="9">
-           开方医生：
+           开方医生：{{prescription['docterName']}}
             </el-col>
         </el-row>
     <el-row>
@@ -168,6 +167,14 @@
           <el-col class="form-border font-small" :span="9" :style="pagetype ==='reminder'?'line-height: 2.1;':''">
 付款时间：{{order.payTime}}
             </el-col>
+        </el-row>
+
+
+
+
+    <el-row v-if=" order.presState ==  'GIVEUP_PRESCRIPTION'&& detailModel == 'order'">
+          <el-col :span="6" class="form-border form-left-bg font-small">弃单备注</el-col>
+          <el-col class="form-border font-small" :span="18">{{order.giveupReason||'　'}}</el-col>
         </el-row>
 
 
@@ -342,7 +349,7 @@
   
     <md-card-media>
       <!-- swiper -->
-      <swiper :options="swiperOption" style="height: auto">
+      <swiper class="swiper-no-swiping" :options="swiperOption" style="height: auto">
 
 
 
@@ -1009,6 +1016,7 @@ payModeEnum = ""
             el: '.swiper-pagination',
             clickable: true
           },
+          noSwiping : true,
           navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev'
@@ -1181,10 +1189,13 @@ prescription = null
   WESTERN_preDrugList = [];
   INSTRUMENTS_preDrugList = [];
   queryPresDrugback(presId , presState){
+
+
  if (
       presState == "REJECT_AUDIT_PRESCRIPTION" || presState == "NOT_TRANSLATED_PRESCRIPTION" || 
       presState == "REJECT_TRANSLATED_PRESCRIPTION"
     ) {
+      
       indexApi.queryPresDrug({ preId: presId }).then(res => {
         if (res["retCode"]) {
           this.preDrugList = res.data.data;
@@ -1212,6 +1223,8 @@ prescription = null
         }
       });
     } else {
+      console.log('--2',presState)
+      
       indexApi
         .queryPresDrugback({
           preId: presId
@@ -1219,7 +1232,6 @@ prescription = null
         .then(res => {
           if (res["retCode"]) {
             this.preDrugList = res.data;
-
 
             this.CHINESE_preDrugList = res.data.filter(item => {
               return item.preDrugType == "CHINESE_MEDICINE";
@@ -1284,6 +1296,7 @@ chcangeCorpperModel(){
     this.$nextTick(() => {
       this.preImageList = [];
     this.queryPresDetatil(presState=>{
+
 this.queryPresDrugback(this.presId,presState)
   });
         this.getPrePic(this.presId);
@@ -1554,15 +1567,9 @@ back(){
 this.resource = this.$route.query.resource 
 this.presId = this.$route.query.key
 
-  if(this.resource == 'prescirption'){
-this.getInfo()
-      }
-  if(this.resource == 'order'){
 this.getInfo()
     this.getOrderDetail(this.presId);
 this.pagetype =  (<any>this.$route.query).t % 2 == 0 ? 'after':'reminder';
-      }
-
   }
   }
 }

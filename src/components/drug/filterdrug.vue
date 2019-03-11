@@ -730,7 +730,8 @@
 
 
 			<el-form-item label="克/份" prop="unitG">
-              					<el-input v-model.number="CHINESE_addDrug.unitG"  placeholder="请输入克/份" style="max-width:400px;min-width:200px" ></el-input>
+        <el-input-number v-model="CHINESE_addDrug.unitG" :precision="2" :step="0.1" :max="10" :min="0.01"  placeholder="请输入克/份"></el-input-number>
+              					<!-- <el-input v-model.number="CHINESE_addDrug.unitG"  placeholder="请输入克/份" style="max-width:400px;min-width:200px" ></el-input> -->
 				</el-form-item>	
     
          		<el-form-item label="煎煮方式：" prop="decoctingType">
@@ -1272,7 +1273,7 @@ export default class AddGoods extends Vue {
   CHINESE_Model = false;
   change_CHINESE_Model(type, row) {
     this.type = type;
-    this.CHINESE_addDrug = { drugType: "CHINESE", synchronousFlag: "1" };
+    this.CHINESE_addDrug = { drugType: "CHINESE", synchronousFlag: "1",unitG:0.01 };
     this.queryAllPartner();
     this.CHINESE_Model = true;
     if (row) {

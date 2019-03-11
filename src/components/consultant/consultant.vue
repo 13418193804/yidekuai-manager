@@ -1043,11 +1043,6 @@ children:'children',
 
 
 
-
-
-
-
-
  <el-dialog  :visible.sync="viewBig"  title="顾问二维码">
    <div style="text-align:center;">
      <div class="flex flex-pack-center">

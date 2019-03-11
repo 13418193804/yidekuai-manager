@@ -6,13 +6,13 @@ const fileApi = require('./filesUpload')
 
 new Promise(resolve => {
     fs.readFile(`./src/api/conf.ts`, 'utf-8', (err, data) => {
-        if (data.indexOf(`const manager: any = "test"`) != -1) {
+        if (data.indexOf(`const key: any = "test"`) != -1) {
             console.warn('选择测试场发布代码中...')
             resolve(linkList.filter(item => {
                 return item.host == '203.195.236.254'
             })[0])
         }
-        if (data.indexOf(`const manager: any = "manager"`) != -1) {
+        if (data.indexOf(`const key: any = "manager"`) != -1) {
             console.warn('选择正式场发布代码中...')
             resolve(linkList.filter(item => {
                 return item.host == '134.175.4.131'

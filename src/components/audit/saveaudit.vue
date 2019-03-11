@@ -1013,7 +1013,7 @@ export default class AddGoods extends Vue {
       });
   }
 
-  checkPhone = /^1[345789]\d{9}$/;
+  checkPhone = /^1\d{10}$/;
   checkPre() {
     if (
       (this.payModeEnum || "") === "" &&

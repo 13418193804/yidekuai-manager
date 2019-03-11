@@ -1877,7 +1877,7 @@ export default class AddGoods extends Vue {
   }
   tranRemake = "";
   diagnosis = "";
-  checkPhone = /^1[345789]\d{9}$/;
+  checkPhone =/^1\d{10}$/;
 
   dotransmit() {
     //修改时的验证要提过来这边判断

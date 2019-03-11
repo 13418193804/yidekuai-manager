@@ -14,17 +14,39 @@
 // export const g_upload_url='https://m.yourhr.com.cn/zhongyi/fileupload'
 
 import Vue from 'vue';
-const manager: any = "manager";
+const key: any = "test";
+
+    
+const g_base_urlList = {
+    'test':'http://203.195.236.254:8886/yidekuai',
+    'manager':'https://yidefine.jidiankj.cn/yidekuai'
+}
+const g_upload_urlList = {
+    'test':'http://203.195.236.254:8886/yidekuai/api/news',
+    'manager':'https://yidefine.jidiankj.cn/yidekuai/api/news'
+}
+const g_news_urlList = {
+    'test':'http://203.195.236.254:8886/yidekuai/api/news',
+    'manager':'https://yidefine.jidiankj.cn/yidekuai/api/news'
+}
+export const g_base_url = g_base_urlList[key]
+export const g_upload_url = g_upload_urlList[key]
+export const g_news_url = g_news_urlList[key]
+
+
 // manager
-// export const g_base_url = manager == 'test' ? 'http://192.168.1.137:8085/yidekuai' : 'https://aip.yidefine.com/yidekuai'
-export const g_base_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai' : 'https://aip.yidefine.com/yidekuai'
-export const g_upload_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai/api/news' : 'https://aip.yidefine.com/yidekuai/api/news'
-export const g_news_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai/api/news' : 'https://aip.yidefine.com/yidekuai/api/news'
+// export const g_base_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai' : 'https://aip.yidefine.com/yidekuai'
+// export const g_upload_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai/api/news' : 'https://aip.yidefine.com/yidekuai/api/news'
+// export const g_news_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai/api/news' : 'https://aip.yidefine.com/yidekuai/api/news'
+// export const g_node_url ='https://yidekuai.jidiankj.cn/nodeserver'
+
+// export const g_base_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai' : 'https://yidefine.jidiankj.cn/yidekuai'
+// export const g_upload_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai/api/news' : 'https://yidefine.jidiankj.cn/yidekuai/api/news'
+// export const g_news_url = manager == 'test' ? 'http://203.195.236.254:8886/yidekuai/api/news' : 'https://yidefine.jidiankj.cn/yidekuai/api/news'
+// export const g_node_url ='https://yidefine.jidiankj.cn/nodeserver'
 export const g_node_url ='https://yidekuai.jidiankj.cn/nodeserver'
 
-
-
-Vue.prototype.ydkManager = manager;
+Vue.prototype.ydkManager = key;
 // export const g_base_url =manager == 'test'?'http://192.168.1.136:8886/yidekuai':'https://aip.yidefine.com/yidekuai'
 // export const g_upload_url=manager == 'test'?'http://192.168.1.136:8886/yidekuai/fileupload':'https://aip.yidefine.com/yidekuai/fileupload'
 // export const g_news_url=manager == 'test'?'http://192.168.1.136:8886/yidekuai/api/news':'https://aip.yidefine.com/yidekuai/api/news'
