@@ -21,8 +21,24 @@
                                     <el-tag v-if="scope.row.doctorStatus=='AUDIT_NOT_PASS'" type="text">未通过</el-tag>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="resourceAdviserName" label="来源顾问"></el-table-column>
-                            <el-table-column prop="resourceAdviserPhone" label="顾问手机"></el-table-column>
+                            <el-table-column label="医生所属">
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.ydkFlag==1&&scope.row.zdkFlag==1">医德快</span>
+                                    <span v-if="scope.row.ydkFlag==0&&scope.row.zdkFlag==1">痔德快</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="来源顾问">
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.resourceAdviserName">{{scope.row.resourceAdviserName}}</span>
+                                    <span v-else-if="scope.row.zdkResourceAdviserName">{{scope.row.zdkResourceAdviserName}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="顾问手机" width="120">
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.resourceAdviserPhone">{{scope.row.resourceAdviserPhone}}</span>
+                                    <span v-else-if="scope.row.zdkResourceAdviserPhone">{{scope.row.zdkResourceAdviserPhone}}</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column prop="hospitalDepartment" label="所在科室"></el-table-column>
                             <el-table-column prop="hspCode" label="医院机构代码" width="150"></el-table-column>
                             <el-table-column prop="doctorGood" label="医生擅长" width="120" show-overflow-tooltip></el-table-column>
@@ -113,13 +129,30 @@
                                     <span v-if="scope.row.doctorTitle=='CHIEF_PHYSICIAN'">主任医师</span>
                                 </template>
             </el-table-column>
-            <el-table-column prop="resourceAdviserName" label="来源顾问"></el-table-column>
-            <el-table-column prop="resourceAdviserPhone" label="顾问手机"></el-table-column>
+            <el-table-column label="医生所属">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.ydkFlag==1&&scope.row.zdkFlag==1">医德快</span>
+                    <span v-if="scope.row.ydkFlag==0&&scope.row.zdkFlag==1">痔德快</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="来源顾问">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.resourceAdviserName">{{scope.row.resourceAdviserName}}</span>
+                    <span v-else-if="scope.row.zdkResourceAdviserName">{{scope.row.zdkResourceAdviserName}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="顾问手机" width="120">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.resourceAdviserPhone">{{scope.row.resourceAdviserPhone}}</span>
+                    <span v-else-if="scope.row.zdkResourceAdviserPhone">{{scope.row.zdkResourceAdviserPhone}}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="resource" label="来源">
                 <template slot-scope="scope">
                     <span v-if="scope.row.resource=='H5'">医生注册</span>
                     <span v-if="scope.row.resource=='yjkexport'">平台录入</span>
                     <span v-if="scope.row.resource=='other'">平台录入</span>
+                    <span v-if="scope.row.resource=='Backstage'">平台录入</span>
                 </template>
             </el-table-column>
             <el-table-column prop="doctorStatus" label="使用状态">
@@ -235,6 +268,8 @@
                         <div style="text-align:left;">咨询价格：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.consultingFee?formLabeldetails.consultingFee:'0'}}元</span></div>
                         <div v-if="formLabeldetails.age" style="text-align:left;">年龄：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.age}}</span></div>
                         <div v-if="formLabeldetails.dsex" style="text-align:left;">性别：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails.dsex}}</span></div>
+                        <div v-if="formLabeldetails.ydkFlag==1&&formLabeldetails.zdkFlag==1" style="text-align:left;">医生所属：<span style=" color: #8492a6; font-size: 13px">医德快</span></div>
+                        <div v-if="formLabeldetails.ydkFlag==0&&formLabeldetails.zdkFlag==1" style="text-align:left;">医生所属：<span style=" color: #8492a6; font-size: 13px">痔德快</span></div>
                     </div>
 
                     <div style="width:100%;height: 100%;overflow: hidden;min-height: 385px;margin-left:15px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
@@ -257,6 +292,10 @@
                 <div v-if="formLabeldetails.resourceAdviserName" style="padding-left:30px;">
                     <div style="padding:5px 0;">来源顾问：{{formLabeldetails.resourceAdviserName}}</div>
                     <div style="padding:5px 0;">顾问手机：{{formLabeldetails.resourceAdviserPhone}}</div>
+                </div>
+                <div v-if="!formLabeldetails.resourceAdviserName&&formLabeldetails.zdkResourceAdviserName" style="padding-left:30px;">
+                    <div style="padding:5px 0;">来源顾问：{{formLabeldetails.zdkResourceAdviserName}}</div>
+                    <div style="padding:5px 0;">顾问手机：{{formLabeldetails.zdkResourceAdviserPhone}}</div>
                 </div>
 
                 <div class="min_title" v-if="formLabeldetails.idCard||formLabeldetails.idCardFront||formLabeldetails.idCardBack||formLabeldetails.pharmacistCertificateNum||formLabeldetails.pharmacistCertificateFront||formLabeldetails.qualificationCertificateNum||formLabeldetails.qualificationCertificateFront">证件信息</div>
@@ -301,6 +340,8 @@
                         <div style="text-align:left;">咨询价格：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.consultingFee?formLabeldetails1.consultingFee:'0'}}元</span></div>
                         <div v-if="formLabeldetails1.age" style="text-align:left;">年龄：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.age}}</span></div>
                         <div v-if="formLabeldetails1.dsex" style="text-align:left;">性别：<span style=" color: #8492a6; font-size: 13px">{{formLabeldetails1.dsex}}</span></div>
+                        <div v-if="formLabeldetails1.ydkFlag==1&&formLabeldetails1.zdkFlag==1" style="text-align:left;">医生所属：<span style=" color: #8492a6; font-size: 13px">医德快</span></div>
+                        <div v-if="formLabeldetails1.ydkFlag==0&&formLabeldetails1.zdkFlag==1" style="text-align:left;">医生所属：<span style=" color: #8492a6; font-size: 13px">痔德快</span></div>
                     </div>
 
                     <div style="width:100%;height: 100%;overflow: hidden;min-height: 385px;margin-left:15px;position: relative;border: 1px dashed rgb(204, 171, 171);border-radius: 11px;">
@@ -331,6 +372,10 @@
                 <div v-if="formLabeldetails1.resourceAdviserName" style="padding-left:30px;">
                     <div style="padding:5px 0;">来源顾问：{{formLabeldetails1.resourceAdviserName}}</div>
                     <div style="padding:5px 0;">顾问手机：{{formLabeldetails1.resourceAdviserPhone}}</div>
+                </div>
+                <div v-if="!formLabeldetails1.resourceAdviserName&&formLabeldetails1.zdkResourceAdviserName" style="padding-left:30px;">
+                    <div style="padding:5px 0;">来源顾问：{{formLabeldetails1.zdkResourceAdviserName}}</div>
+                    <div style="padding:5px 0;">顾问手机：{{formLabeldetails1.zdkResourceAdviserPhone}}</div>
                 </div>
 
                 <div class="min_title" v-if="formLabeldetails1.idCard||formLabeldetails1.idCardFront||formLabeldetails1.idCardBack||formLabeldetails1.pharmacistCertificateNum||formLabeldetails1.pharmacistCertificateFront||formLabeldetails1.qualificationCertificateNum||formLabeldetails1.qualificationCertificateFront">证件信息</div>

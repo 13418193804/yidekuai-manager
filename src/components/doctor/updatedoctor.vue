@@ -41,6 +41,17 @@
                     </el-option>
             </el-select>
         </el-form-item>
+        <el-form-item label="医生所属" prop="doctorTitle">  
+            <el-select v-model="formLabelAlign.ydkFlag">
+                    <el-option
+                    v-for="item in flaglist"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    >
+                    </el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="医生擅长" prop="doctorGood">
             <el-input type="textarea" autosize v-model="formLabelAlign.doctorGood"></el-input>
         </el-form-item>
@@ -168,6 +179,17 @@
             <el-select v-model="formLabelAlign1.doctorTitle" placeholder="请选择职称" clearable>
                     <el-option
                     v-for="item in doctortitlelist"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    >
+                    </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="医生所属" prop="doctorTitle">  
+            <el-select v-model="formLabelAlign1.ydkFlag">
+                    <el-option
+                    v-for="item in flaglist"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
@@ -462,6 +484,7 @@ updateloading=false;
           sex:'',
           age:'',
           picture:'',
+          ydkFlag:'',
 }
 // ASSISTANT_PHYSICIAN,//住院医师
 //     ATTENDING_DOCTOR,//主治医师
@@ -472,6 +495,10 @@ doctortitlelist:any=[
     {id:'ATTENDING_DOCTOR',name:'主治医师'},
     {id:'DEPUTY_CHIEF_PHYSICIAN',name:'副主任医师'},
     {id:'CHIEF_PHYSICIAN',name:'主任医师'}
+]
+flaglist:any=[
+    {id:'1',name:'医德快'},
+    {id:'0',name:'痔得快'},
 ]
 addshow(){
     this.dialogFormVisible=true
@@ -624,6 +651,7 @@ notPassupdatedoctor(){
           this.formLabelAlign1.qualificationCertificateNum=row.qualificationCertificateNum
           this.pictureUrl=row.picture
           this.selecthospitallist=[{hospitalCode:row.hspCode,hospitalName:row.hospitalName}]
+          this.formLabelAlign1.ydkFlag=row.ydkFlag
             if(row.consultingFee==0){
                 this.formLabelAlign1['consultingFee']='0';
             }
@@ -673,7 +701,7 @@ notPassupdatedoctor(){
         a.resetFields();
         this.dialogFormVisible1 = false;
         this.updateloading=false;
-        this.formLabelAlign1={name: '',phone: '',hospitalId:'',hospitalName: '',hospitalDepartment: '',departmentId:[],departmentName:'',doctorBrief: '',doctorGood: '',consultingFee: '',prescriptionNum:'',orderNum:'',orderMoney:'',doctorPatientNum:'',remark:'',doctorTitle:'',idCard:'',pharmacistCertificateNum:'',qualificationCertificateNum:'',}
+        this.formLabelAlign1={name: '',phone: '',hospitalId:'',hospitalName: '',hospitalDepartment: '',departmentId:[],departmentName:'',doctorBrief: '',doctorGood: '',consultingFee: '',prescriptionNum:'',orderNum:'',orderMoney:'',doctorPatientNum:'',remark:'',doctorTitle:'',idCard:'',pharmacistCertificateNum:'',qualificationCertificateNum:'',ydkFlag:'',}
         }
 
         idCardFrontUrl='';
@@ -857,6 +885,7 @@ notPassupdatedoctor(){
           qualificationCertificateNum:'',
                                   sex:'',
                         age:'',
+        ydkFlag:'1',
         };
 
     adddoctor(){
@@ -958,6 +987,7 @@ notPassupdatedoctor(){
                 qualificationCertificateNum:'',
                                         sex:'',
                         age:'',
+                        ydkFlag:'1',
                 };
                 this.idCardFrontUrl='';
                 this.idCardBackUrl='';
@@ -981,7 +1011,7 @@ notPassupdatedoctor(){
         let a:any=this.$refs[formName];
         a.resetFields();
         this.dialogFormVisible = false;
-        this.formLabelAlign={name: '',phone: '',hospitalId:'',hospitalName: '',hospitalDepartment: '',departmentId:[],departmentName:'',doctorBrief: '',doctorGood: '',consultingFee: '',prescriptionNum:'',orderNum:'',orderMoney:'',doctorPatientNum:'',remark:'',resource:'',adviserPhone:'',adviserName:'',doctorTitle:'',idCard:'',pharmacistCertificateNum:'',qualificationCertificateNum:'',sex:'',age:'',};
+        this.formLabelAlign={name: '',phone: '',hospitalId:'',hospitalName: '',hospitalDepartment: '',departmentId:[],departmentName:'',doctorBrief: '',doctorGood: '',consultingFee: '',prescriptionNum:'',orderNum:'',orderMoney:'',doctorPatientNum:'',remark:'',resource:'',adviserPhone:'',adviserName:'',doctorTitle:'',idCard:'',pharmacistCertificateNum:'',qualificationCertificateNum:'',sex:'',age:'',ydkFlag:'1',};
         this.idCardFrontUrl='';
         this.idCardBackUrl='';
         this.pharmacistCertificateFrontUrl='';

@@ -86,7 +86,8 @@ export const adddoctor = (form,hospital,department,idCardFront,idCardBack,pharma
         qualificationCertificateNum:form.qualificationCertificateNum,
         age:form.age,
         sex:form.sex,
-        picture:picture,        
+        picture:picture,       
+        ydkFlag:form.ydkFlag, 
     }
     return Api.requestForm2('/api/doctor/adddoctorother', params)
         .then(res => res);
@@ -119,6 +120,7 @@ export const updatedoctor = (form,hospital,department,idCardFront,idCardBack,pha
         sex:form.sex,
         age:form.age,
         picture:picture,
+        ydkFlag:form.ydkFlag,
     }
     return Api.requestForm2('/api/doctor/updatedoctor', params)
         .then(res => res);
@@ -264,6 +266,7 @@ export const notPassupdatedoctor = (form,hospital,department,idCardFront,idCardB
         sex:form.sex,
         age:form.age,
         picture:picture,
+        ydkFlag:form.ydkFlag,
     }
     return Api.requestForm2('/api/doctor/adviserPerfectDoc', params)
         .then(res => res);
