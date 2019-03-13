@@ -271,7 +271,6 @@ export default class AddGoods extends Vue {
     } else {
       sysApi.doRoleUpdate(this.obj).then(res => {
         if (res["retCode"]) {
-          console.log();
           this.changePermissionIds(this.obj["id"]);
           this.$message("修改成功");
           this.model = !this.model;

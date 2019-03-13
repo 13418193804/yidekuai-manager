@@ -654,7 +654,7 @@
           logistics:item.logistics,
           consigneePhone:item.consigneePhone
         })">物流追踪</el-button>
-            <el-button type="text" style="padding:0;"  @click="recvGood(item.waybillNumber)" v-if="item.shipStatus !=='ORDER_END_GOODS'">确认收货</el-button>
+            <el-button type="text" style="padding:0;"  @click="recvGood(item.waybillNumber,item.expressDetailId)" v-if="item.shipStatus !=='ORDER_END_GOODS'">确认收货</el-button>
           </el-col>
         </el-row>
 </div>
@@ -1444,7 +1444,9 @@ pagetype:any = null
   /**
    * 确认收货
    */
-  recvGood(waybillNumber) {
+  recvGood(waybillNumber,expressDetailId) {
+
+      console.log(expressDetailId)
     // expressDetailId
     this.$confirm("确认收货?", "提示", {
       confirmButtonText: "确定",
@@ -1453,9 +1455,9 @@ pagetype:any = null
     })
       .then(() => {
         let data = {
-          pres_id: this.order.presId,
-          //  order_detail_id:  item.expressDetailId,
-          waybill_number: waybillNumber,
+          // pres_id: this.order.presId,
+           expressDetailId:  expressDetailId,
+          // waybill_number: waybillNumber,
           ship_status: "ORDER_END_GOODS"
         };
 
