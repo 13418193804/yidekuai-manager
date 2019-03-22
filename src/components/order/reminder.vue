@@ -46,13 +46,13 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
+<remindertable @getSessionStatus="getSessionStatus" ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
     <el-tab-pane   :label="'在线开方24h内（'+online+'）'"  name="online">
 
 
-<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
+<remindertable @getSessionStatus="getSessionStatus" ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="'PENDING'"  payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
 
@@ -148,7 +148,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="''"></remindertable>
+<remindertable @getSessionStatus="getSessionStatus" ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="reminder" :patModel="''"></remindertable>
 
    </el-tab-pane>
 
@@ -380,6 +380,7 @@ this.pageSize = size
       if (res["retCode"]) {
         this.orderList = res.data.data;
         this.total = res.data.page.total;
+        this.handleScroll()
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -388,6 +389,25 @@ this.pageSize = size
       }
     });
   }
+  getSessionStatus(callback){
+callback({
+  fatherStatus:this.reminderVEnums,
+  page:this.page,
+  scrollTop:document.getElementById('scrollView').scrollTop.toString(),
+  flag:'rminder_'
+
+})
+}
+handleScroll(){
+    if((sessionStorage.rminder_scrollTop||'')!==''){
+      this.$nextTick(()=>{
+          document.getElementById('scrollView').scrollTop  = parseInt(sessionStorage.rminder_scrollTop)
+          sessionStorage.removeItem('rminder_page')
+          sessionStorage.removeItem('rminder_scrollTop')
+          sessionStorage.removeItem('rminder_fatherStatus')
+          })
+    }
+}
   online = 0;
   PENDING = 0;
   queryOrderCount() {
@@ -463,6 +483,10 @@ if(this.exportTime==null || this.exportTime.length == 0){
   }
   mounted() {
     // this.allPrescription();
+        if((sessionStorage.rminder_fatherStatus||'') !== '' ){
+      this.reminderVEnums = sessionStorage.rminder_fatherStatus
+      this.page = parseInt(sessionStorage.rminder_page)
+    }
     this.getOrderList();
   }
 }

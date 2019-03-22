@@ -7,7 +7,7 @@
 
 
 
-    <div class="main ">
+    <div id="scrollView">
 
         	<div :class="ydkManager =='test'?'header1':'header'" >
 			<!-- <el-col @click.prevent="doCollapse" :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
@@ -209,7 +209,7 @@ img {
   cursor: pointer;
 }
 
-.main {
+#scrollView {
   background: #f1f2f7;
   height: -webkit-fill-available;
   overflow: auto;

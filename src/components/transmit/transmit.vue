@@ -42,7 +42,7 @@
   </el-col>
 </el-row>
 </div>
-<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList"  :operationType="operationType">
+<transmittable @getSessionStatus="getSessionStatus"  @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList"  :operationType="operationType">
 </transmittable>
     </el-tab-pane>
 
@@ -98,13 +98,13 @@
 </el-row>
 </div>
 
-<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType" >
+<transmittable @getSessionStatus="getSessionStatus"  @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType" >
 </transmittable>
 
     </el-tab-pane>
     <el-tab-pane :label="'在线开方24h内（'+online+'）'" name="name2">
 
-      <transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
+      <transmittable @getSessionStatus="getSessionStatus"  @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
 </transmittable>
 
     </el-tab-pane>
@@ -157,7 +157,7 @@
 </el-row>
 </div>
 
-<transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
+<transmittable @getSessionStatus="getSessionStatus"  @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
 </transmittable>
     </el-tab-pane>
 
@@ -306,6 +306,7 @@ export default class AddGoods extends Vue {
         this.prescriptionList = res.data.list;
 
         this.total = res.data.page.total;
+        this.handleScroll()
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -314,6 +315,30 @@ export default class AddGoods extends Vue {
       }
     });
   }
+
+
+getSessionStatus(callback){
+callback({
+  fatherStatus:this.prescriptionEnums1,
+  page:this.page,
+  scrollTop:document.getElementById('scrollView').scrollTop.toString(),
+  flag:'tran_'
+})
+}
+handleScroll(){
+    if((sessionStorage.tran_scrollTop||'')!==''){
+      this.$nextTick(()=>{
+          document.getElementById('scrollView').scrollTop  = parseInt(sessionStorage.tran_scrollTop)
+          sessionStorage.removeItem('tran_page')
+          sessionStorage.removeItem('tran_scrollTop')
+          sessionStorage.removeItem('tran_fatherStatus')
+          })
+    }
+}
+
+
+
+
   //  NOT_TRANSLATED_PRESCRIPTION,            //未转方
   // ALREADY_TRANSLATED_PRESCRIPTION,        //已转方
   // FAIL_TRANSLATED_PRESCRIPTION,        //转方失败
@@ -325,6 +350,10 @@ export default class AddGoods extends Vue {
   // REJECT_AUDIT_PRESCRIPTION,//审方退回
 
   mounted() {
+        if((sessionStorage.tran_fatherStatus||'') !== '' ){
+      this.prescriptionEnums1 = sessionStorage.tran_fatherStatus
+      this.page = parseInt(sessionStorage.tran_page)
+    }
     this.allPrescription();
     this.getprescriptionList();
     // Vue.component(

@@ -1227,17 +1227,31 @@ operateType
   }
 
   goPrescirptionOrderInfo(row){
-      let time:any = new Date().getTime();
+ this.$emit('getSessionStatus',({
+   page,
+   scrollTop,
+   fatherStatus,
+   flag
+ })=>{
+  sessionStorage.setItem(`${flag}page`,page)
+   sessionStorage.setItem(`${flag}scrollTop`,scrollTop)
+   sessionStorage.setItem(`${flag}fatherStatus`,fatherStatus)
+ let time:any = new Date().getTime();
       if(this.pagetype == 'reminder' && time%2==0){
         time += 1
       }
   if(this.pagetype == 'after' && time%2!==0){
         time += 1
       }
-
 this.$router.push({name: "prescirptionOrderInfo",
-   query:{resource:'order',t:time,key: row.presId}
+   query:{resource:'order',
+   t:time,key: row.presId,
+scrollTop:scrollTop,
+fatherStatus:fatherStatus,
+page:page
+   }
    })
+})
  
 
       

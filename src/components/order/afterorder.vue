@@ -49,7 +49,7 @@
 </div>
 
 
-<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable @getSessionStatus="getSessionStatus"  ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
 
     <el-tab-pane   :label="'待收货订单（'+ORDER_WAIT_RECVGOODS+'）'"  name="ORDER_WAIT_RECVGOODS">
@@ -85,7 +85,7 @@
   </el-col>
 </el-row>
 </div>
-<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable @getSessionStatus="getSessionStatus"  ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
     </el-tab-pane>
     <el-tab-pane   :label="'待付款订单（'+ORDER_WAIT_PAY+'）'"  name="ORDER_WAIT_PAY">
  <div style="padding-bottom:20px;">
@@ -119,7 +119,7 @@
   </el-col>
 </el-row>
 </div>
-<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder" payStatus="ORDER_WAIT_PAY"></remindertable>
+<remindertable @getSessionStatus="getSessionStatus"  ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="200" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder" payStatus="ORDER_WAIT_PAY"></remindertable>
     </el-tab-pane>
 
     <el-tab-pane   :label="'待开发票（'+invoice+'）'"  name="rework" >
@@ -150,7 +150,7 @@
 </el-row>
 </div>
 
-<remindertable  ref="remindertable" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="rework" ></remindertable>
+<remindertable @getSessionStatus="getSessionStatus"   ref="remindertable" :cowWidth="260" :orderList="orderList" @getOrderList="getOrderList" pagetype="rework" ></remindertable>
   
     </el-tab-pane>
 
@@ -238,7 +238,7 @@
 </el-row>
 </div>
 
-<remindertable ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
+<remindertable @getSessionStatus="getSessionStatus"  ref="remindertable" :operateType="operateType" @setMultipleSelection="setMultipleSelection"  :cowWidth="260" :provinceList="provinceList" :orderList="orderList" @getOrderList="getOrderList" pagetype="afterorder"></remindertable>
 
    </el-tab-pane>
 
@@ -438,6 +438,7 @@ this.rderStatus ="";
           if (res["retCode"]) {
             this.orderList = res.data.data;
             this.total = res.data.page.total;
+              this.handleScroll()
           } else {
             if (!res["islogin"]) {
               this.$alert(res["message"]);
@@ -464,10 +465,9 @@ this.rderStatus ="";
               // this.$emit('updateYdkPrescriptionStatusNum','NEW_ORDER');
             this.queryOrderCount();
         if (res["retCode"]) {
- 
           this.orderList = res.data.data;
-          
           this.total = res.data.page.total;
+              this.handleScroll()
         } else {
           if (!res["islogin"]) {
             this.$alert(res["message"]);
@@ -476,6 +476,24 @@ this.rderStatus ="";
       });
   }
 
+getSessionStatus(callback){
+callback({
+  fatherStatus:this.reminderVEnums,
+  page:this.page,
+  scrollTop:document.getElementById('scrollView').scrollTop.toString(),
+    flag:'after_'
+})
+}
+handleScroll(){
+    if((sessionStorage.after_scrollTop||'')!==''){
+      this.$nextTick(()=>{
+          document.getElementById('scrollView').scrollTop  = parseInt(sessionStorage.after_scrollTop)
+          sessionStorage.removeItem('after_page')
+          sessionStorage.removeItem('after_scrollTop')
+          sessionStorage.removeItem('after_fatherStatus')
+          })
+    }
+}
   invoice = 0;
   NEW_ORDER = 0;
   ORDER_WAIT_RECVGOODS= 0;
@@ -509,17 +527,13 @@ operateOptions =[
   }
 ]
 operateType = ""
-
-
 multipleSelection = []
 setMultipleSelection(multipleSelection){
 this.multipleSelection = multipleSelection
 }
 
 exportTime = []
-
   handleBatchOperate(){
-        
 if(this.operateType == 'export'){
   if(this.multipleSelection==null||this.multipleSelection.length<1){
           this.$message({  
@@ -557,6 +571,10 @@ if(this.exportTime==null || this.exportTime.length == 0){
   }
   mounted() {
     // this.allPrescription();
+    if((sessionStorage.after_fatherStatus||'') !== '' ){
+      this.reminderVEnums = sessionStorage.after_fatherStatus
+      this.page = parseInt(sessionStorage.after_page)
+    }
     this.queryProvinceList();
     this.getOrderList();
   }

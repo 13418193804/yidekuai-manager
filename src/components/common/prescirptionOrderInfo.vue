@@ -211,7 +211,7 @@
 
   <el-row v-if="prescription.preDrugType&& prescription.preDrugType.indexOf('PASTE_PRESCRIPTION')!==-1">
           <el-col :span="6" class="form-border form-left-bg font-small">膏方辅料</el-col>
-          <!-- <el-col class="form-border font-small" :span="18">{{list2string(prescription.otherAccessories,prescription.aspartame,prescription.sugarType)}}</el-col> -->
+          <el-col class="form-border font-small" :span="18">{{list2string(prescription.otherAccessories,prescription.aspartame,prescription.sugarType)}}</el-col>
         </el-row>
         
           <el-row v-if="prescription.prescriptionType != 'ONLINE'">
@@ -1261,10 +1261,12 @@ prescription = null
     list2string(...list) {
     let a = [];
     for (let n in list) {
-      if (list[n]) {
-        for (let j in JSON.parse(list[n])) {
+      if (list[n] && list[n].indexOf('[') !== -1&& list[n].indexOf(']') !== -1) {
+          for (let j in JSON.parse(list[n])) {
           a.push(JSON.parse(list[n])[j]);
         }
+      }else{
+        a= list.filter(item=>{return item})
       }
     }
     return a.join(",");

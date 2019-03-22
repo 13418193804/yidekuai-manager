@@ -1557,10 +1557,12 @@ export default class AddGoods extends Vue {
     list2string(...list) {
     let a = [];
     for (let n in list) {
-      if (list[n]) {
-        for (let j in list[n].split(',')) {
-          a.push(list[n].split(',')[j]);
+      if (list[n] && list[n].indexOf('[') !== -1&& list[n].indexOf(']') !== -1) {
+          for (let j in JSON.parse(list[n])) {
+          a.push(JSON.parse(list[n])[j]);
         }
+      }else{
+        a= list.filter(item=>{return item})
       }
     }
     return a.join(",");

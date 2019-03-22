@@ -715,7 +715,6 @@ export default class AddGoods extends Vue {
     for (let i in this.fileList) {
       let url = this.fileList[i].url;
       if (url == file.url) {
-        console.log("find ...");
         this.fileList.splice(i, 1);
         break;
       }
@@ -1051,12 +1050,25 @@ export default class AddGoods extends Vue {
 
 
     goPrescirptionOrderInfo(row){
-    
-    let routeData = (<any>this.$router).resolve({
+       this.$emit('getSessionStatus',({
+   page,
+   scrollTop,
+   fatherStatus,
+   flag
+ })=>{
+   sessionStorage.setItem(`${flag}page`,page)
+   sessionStorage.setItem(`${flag}scrollTop`,scrollTop)
+   sessionStorage.setItem(`${flag}fatherStatus`,fatherStatus)
+  this.$router.push({
    name: "prescirptionOrderInfo",
-   query:{resource:'prescirption',key: row.presId}
+   query:{resource:'prescirption',
+   key: row.presId,
+   scrollTop:scrollTop,
+fatherStatus:fatherStatus,
+page:page
+}
 });
-window.open(routeData.href, '_blank');
+ })
   }
 
 

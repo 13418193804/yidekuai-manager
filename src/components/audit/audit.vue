@@ -59,11 +59,11 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
  
 </div>
 
-<transmittable ref="transmittable" @getprescriptionList="getprescriptionList" :table="prescriptionList"  :operationType="operationType">
+<transmittable @getSessionStatus="getSessionStatus"  ref="transmittable" @getprescriptionList="getprescriptionList" :table="prescriptionList"  :operationType="operationType">
 </transmittable>
     </el-tab-pane>
    <el-tab-pane :label="'在线开方24h内（'+online+'）'" name="name3">
-      <transmittable @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
+      <transmittable @getSessionStatus="getSessionStatus"  @getprescriptionList="getprescriptionList" ref="transmittable"  :table="prescriptionList" :operationType="operationType">
 </transmittable>
 
     </el-tab-pane>
@@ -128,7 +128,7 @@ REJECT_AUDIT_PRESCRIPTION,             //审方退回 -->
 </div>
 
 
-<transmittable ref="transmittable" @getprescriptionList="getprescriptionList" :table="prescriptionList" :prescriptionEnums="prescriptionEnums" :operationType="operationType">
+<transmittable @getSessionStatus="getSessionStatus"  ref="transmittable" @getprescriptionList="getprescriptionList" :table="prescriptionList" :prescriptionEnums="prescriptionEnums" :operationType="operationType">
 </transmittable>
     </el-tab-pane>
 
@@ -274,6 +274,7 @@ export default class AddGoods extends Vue {
         console.log(res.data);
         this.prescriptionList = res.data.list;
         this.total = res.data.page.total;
+                this.handleScroll()
       } else {
         if (!res["islogin"]) {
           this.$alert(res["message"]);
@@ -282,7 +283,32 @@ export default class AddGoods extends Vue {
       }
     });
   }
+
+  getSessionStatus(callback){
+callback({
+  fatherStatus:this.prescriptionEnums1,
+  page:this.page,
+  scrollTop:document.getElementById('scrollView').scrollTop.toString(),
+  flag:'audit_'
+})
+}
+handleScroll(){
+    if((sessionStorage.audit_scrollTop||'')!==''){
+      this.$nextTick(()=>{
+          document.getElementById('scrollView').scrollTop  = parseInt(sessionStorage.audit_scrollTop)
+          sessionStorage.removeItem('audit_page')
+          sessionStorage.removeItem('audit_scrollTop')
+          sessionStorage.removeItem('audit_fatherStatus')
+          })
+    }
+}
+
+
   mounted() {
+          if((sessionStorage.audit_fatherStatus||'') !== '' ){
+      this.prescriptionEnums1 = sessionStorage.audit_fatherStatus
+      this.page = parseInt(sessionStorage.audit_page)
+    }
     this.allPrescription();
     this.getprescriptionList();
   }
