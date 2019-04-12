@@ -249,8 +249,8 @@
         <el-row>
           <el-col v-for="(item,index) in detailInfo[1].children" :span="item.key =='diagnose'?8:4" class="table-cell-title"  > {{item.name}}</el-col>
         </el-row>
-             <el-row>
-          <el-col  v-for="(item,index) in detailInfo[1].children"  :span="item.key =='diagnose'?8:4" class="table-cell" >{{prescription[item.key] }}</el-col>
+             <el-row class="flex">
+          <el-col  v-for="(item,index) in detailInfo[1].children"  :span="item.key =='diagnose'?8:4" class="table-cell-2 flex  flex-align-center flex-pack-center" >{{prescription[item.key] }}</el-col>
         </el-row>
 </div>
 
@@ -264,8 +264,8 @@
         <el-row>
           <el-col v-for="(item,index) in detailInfo[0].children" :span="item.key =='diagnose'?8:4" class="table-cell-title"  > {{item.name}}</el-col>
         </el-row>
-             <el-row>
-          <el-col  v-for="(item,index) in detailInfo[0].children"  :span="item.key =='diagnose'?8:4" class="table-cell" >{{prescription[item.key] }}</el-col>
+             <el-row class="flex">
+          <el-col  v-for="(item,index) in detailInfo[0].children"  :span="item.key =='diagnose'?8:4" class="table-cell-2 flex  flex-align-center flex-pack-center" >{{prescription[item.key] }}</el-col>
         </el-row>
 </div>
 
@@ -282,10 +282,10 @@
           <el-col  :span="6" class="table-cell-title"  >收货电话</el-col>
           <el-col  :span="13" class="table-cell-title"  >收货地址</el-col>
         </el-row>
-             <el-row>
-          <el-col  :span="5" class="table-cell" >{{order.consigneeName||'　'}}</el-col>
-          <el-col  :span="6" class="table-cell" >{{order.consigneePhone||'　'}}</el-col>
-          <el-col  :span="13" class="table-cell" >{{order.province}}　{{order.city}}　{{order.area}} 　{{order.consigneeAddress}}</el-col>
+             <el-row class="flex">
+          <el-col  :span="5" class="table-cell-2 flex  flex-align-center flex-pack-center" >{{order.consigneeName||'　'}}</el-col>
+          <el-col  :span="6" class="table-cell-2 flex  flex-align-center flex-pack-center" >{{order.consigneePhone||'　'}}</el-col>
+          <el-col  :span="13" class="table-cell-2 flex  flex-align-center flex-pack-center" >{{order.province}}　{{order.city}}　{{order.area}} 　{{order.consigneeAddress}}</el-col>
        
         </el-row>
 
@@ -1606,6 +1606,16 @@ this.pagetype =  (<any>this.$route.query).t % 2 == 0 ? 'after':'reminder';
 
   .table-cell {
     height: 60px;
+    line-height: 40px;
+    border-right: 1px solid #DCDFE6;
+    border-bottom: 1px solid #DCDFE6;
+    padding: 10px;
+    font-size: 14px;
+    color: #606266;
+    text-align: center;
+    overflow: hidden;
+  }
+    .table-cell-2 {
     line-height: 40px;
     border-right: 1px solid #DCDFE6;
     border-bottom: 1px solid #DCDFE6;
