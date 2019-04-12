@@ -72,10 +72,7 @@
 </div>
   <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList1="drugList1"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
     </el-tab-pane>
-   
-   
     <el-tab-pane  label="器械" name="INSTRUMENTS">
-  
      <div style="padding-bottom:20px;">
 <el-row :gutter="10">
   <el-col :xs="16" :sm="12" :md="8" :lg="5" :xl="5">
@@ -93,9 +90,7 @@
 </div>
   <filterdrug ref="filterdrug" @getGrugList="getGrugList" :drugList3="drugList3"  @allDrug="allDrug" :drugType="drugType"></filterdrug>
     </el-tab-pane>
-   
   </el-tabs>
-
 <el-col :span="24" class="toolbar">
 			<el-pagination layout="prev, pager, next" :current-page="page+1"   :page-size="pageSize" :total="total" @current-change="onPageChange">
 			</el-pagination>

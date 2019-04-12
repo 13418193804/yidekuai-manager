@@ -2402,6 +2402,16 @@ export default class AddGoods extends Vue {
   value9 = [];
   list = [];
   drugList = [];
+
+  drugTypeEnum = 
+    {
+      'WESTERN':'WESTERN_MEDICINE',
+      'WESTERN_MEDICINE':'WESTERN_MEDICINE',
+      'CHINESE':'CHINESE_MEDICINE',
+      'CHINESE_MEDICINE':'CHINESE_MEDICINE',
+      'PASTE_PRESCRIPTION':'PASTE_PRESCRIPTION',
+      'INSTRUMENTS':'INSTRUMENTS',
+    }
   getDrugList(query) {
     //  this.drug.commonName
 
@@ -2414,7 +2424,8 @@ export default class AddGoods extends Vue {
       .getGrugList({
         keyFName: query,
         preId: this.presId,
-        drugType: drugType
+        drugType: drugType,
+        preDrugType:this.drugTypeEnum[this.drugType]
       })
       .then(res => {
         if (res["retCode"]) {

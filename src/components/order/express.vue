@@ -345,7 +345,6 @@
 
 
     <el-tab-pane   label="未发货"  name="send_goods" v-if="type =='send'">
-     
         <div style="margin-top: 10px;">
  <div>
     <el-radio-group v-model="send_obj.splitFlag"  size="small" @change="splitFlagChange">

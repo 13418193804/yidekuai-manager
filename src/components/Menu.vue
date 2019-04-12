@@ -48,7 +48,7 @@ import menu from "../router";
 import * as indexApi from "../api/indexApi";
 @Component
 export default class Menu extends Vue {
-  collapsed = true;
+  collapsed = false;
   sysUserAvatar = "";
   sysUserName = "";
   styleString = "230px";

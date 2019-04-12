@@ -14,7 +14,7 @@
 // export const g_upload_url='https://m.yourhr.com.cn/zhongyi/fileupload'
 
 import Vue from 'vue';
-const key: any = "test";
+const key: any = "manager";
 
     
 const g_base_urlList = {

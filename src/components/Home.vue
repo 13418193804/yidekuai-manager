@@ -14,13 +14,9 @@
 				{{collapsed?'':sysName}}
 			</el-col> -->
 			<el-col :span="10">
-
-        
- <!-- @click.prevent="doCollapse" -->
-				<div class="tools">
-					<i class="iconfont icon-caidan1 hamburger" :class="{'is-active':!collapsed}" style="    font-size: 25px;"></i>
+				<div class="tools"  >
+					<i class="iconfont icon-caidan1 hamburger" @click.prevent="doCollapse" :class="{'is-active':!collapsed}" style="    font-size: 25px;"></i>
 				</div>
-
 			</el-col>
       
 			<el-col :span="4" class="userinfo" style="white-space: nowrap;">
@@ -39,7 +35,7 @@
 
 			<section class="content-container">
 					<el-col :span="24" class="content-wrapper" >
-<div>{{getDateFun}} </div>
+              <div>{{getDateFun}} </div>
 						<transition name="fade" mode="out-in">
 							<router-view  @updateYdkPrescriptionStatusNum="updateYdkPrescriptionStatusNum"></router-view>
 						</transition>
@@ -75,7 +71,7 @@ import MenuComponent from "./Menu.vue";
 })
 export default class Home extends Vue {
   sysName = "医德快管理平台";
-  collapsed = true;
+  collapsed = false;
   sysUserAvatar = "";
   sysUserName = sessionStorage.name;
   roleName = "";

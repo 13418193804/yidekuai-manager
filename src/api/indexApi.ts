@@ -1320,7 +1320,7 @@ export const getInterrDetail = (model) => {
     }
 
     Object.assign(params, model)
-    return Api.requestForm2('/api/news/getInterrDetailLimit', params)
+    return Api.requestForm2('/api/news/getInterrDetailByMiniLimit', params)
         .then(res => res);
 }
 

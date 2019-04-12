@@ -229,25 +229,14 @@ sex
 
 <div v-bouncing="moreObj.loading">
     <div style="text-align:center;">
-      <div class="flex  flex-align-center flex-pack-center" style="margin-bottom: 20px;">
-        <div class="flex">
-          <div class="button-banben " :class="userType == 'MEMBER' ? 'huanzhe-active':'huanzhe'" @click="handleUserType('MEMBER')">
-          患者端</div>
-          <div class="button-banben " :class="userType == 'DOCTOR' ? 'yisheng-active':'yisheng'" @click="handleUserType('DOCTOR')">
-          医生端</div>
-        </div>
-      </div>
-
       <span style="cursor: pointer;color: #5151f5;user-select:none;" v-if="!finished" @click="moreObj.onPageChange">加载更多</span>
       <span style="color: #a6a6be;user-select:none;" v-if="finished">没有更多消息</span>
     </div>
   <div v-for="(item,index) in moreObj.detailList"  style="margin-top:15px;">
 
-<div class="flex"  :style="( item.inType == '会员' &&userType == 'MEMBER') || (item.inType == '医生' &&userType == 'DOCTOR')  ? 'flex-direction: row-reverse;':''" style="padding-right: 50px;padding-left: 50px;padding-bottom: 5px;font-size: 12px;color: #999;" v-if="item.newsType !== 'NOTICE'">{{item.createtime}}</div>
-        <div class="flex" v-if="item.newsType !== 'NOTICE'" 
-        :style="( item.inType == '会员' &&userType == 'MEMBER') || (item.inType == '医生' &&userType == 'DOCTOR')  ? 'flex-direction: row-reverse;':''">
-
-          <div class="cricle flex  flex-align-center flex-pack-center" :style="item.inType == '会员'?'background:#37d8d5;' :' background: #f00;'">{{item.inType}}</div>
+<div style="padding-left: 50px;padding-bottom: 5px;font-size: 12px;color: #999;" v-if="item.newsType !== 'NOTICE'">{{item.createtime}}</div>
+        <div class="flex" v-if="item.newsType !== 'NOTICE'">
+          <div class="cricle flex  flex-align-center flex-pack-center" :style="item.inType == '会员'?'background:#37d8d5' :' background: #f00'">{{item.inType}}</div>
           <div class="content" :style="item.inType == '会员'?'background:#91e9f5' :' background: #e77e7e'">
             <div >
                 <div v-if="(item.content||'')!==''">{{item.content}}</div>
@@ -373,7 +362,6 @@ moreObj={
   page:0,
   pageSize:10,
   total:0,
-  lastNum:null,
   row:{},
   detailList:[],
    onPageChange: () => {
@@ -393,34 +381,28 @@ cleangetInterrDetail(row){
   this.finished = false
       this.getInterrDetail(row);
 }
-
-userType= "MEMBER"
-// DOCTOR
-
 getInterrDetail(row){
 
     this.moreObj.loading = true;
     this.moreObj.model = true;
     this.moreObj.row = row;
-
+    console.log(this.moreObj.pageSize)
     indexApi
       .getInterrDetail({
          interrid :row.interrogationId,
         page: this.moreObj.page,
-        userType: this.userType,
-        lastNum:this.moreObj.lastNum,
         pageSize: this.moreObj.pageSize
       })
       .then(res => {
         this.moreObj.loading = false;
         if (res["retCode"]) {
-  
-            if(res.data.detail.length == this.moreObj.pageSize){
+         
+            if(res.data.list.length == this.moreObj.pageSize){
               this.finished = false 
             }else{
               this.finished = true
             }
-          this.moreObj.detailList = res.data.detail;
+          this.moreObj.detailList = res.data.list;
           this.moreObj.total = res.data.page.total;
         } else {
           if (!res["islogin"]) {
@@ -428,19 +410,18 @@ getInterrDetail(row){
           }
         }
       });
-}
 
-handleUserType (userType){
-  if(  this.userType == userType){
-    return
-  }
-  this.userType = userType
- this.moreObj.lastNum = null
-      this.getInterrDetail(this.moreObj.row);
 
 }
+
+
+
+
+
   mounted() {
-    this.queryOnlineList()
+
+this.queryOnlineList()
+
   }
 }
 </script>
@@ -471,38 +452,9 @@ handleUserType (userType){
     color: #fff;
 }
 .content{
-      word-break: break-word;
     border-radius: 5px;
     padding: 10px;
     margin-left: 10px;
-    margin-right: 10px;
     color:#000;
-}
-.button-banben{
-  user-select:none;
-      cursor: pointer;
-          color: #fff;
-          padding: 7px;
-          border-radius: 5px;
-}
-
-.huanzhe {
-background: #37d8d5;
-}
-.huanzhe:hover{
-  opacity:0.9
-}
-.huanzhe-active{
-background: #1ebbb8;
-}
-
-.yisheng{
-background: #e77e7e;
-}
-.yisheng:hover{
-background: #bd7070;
-}
-.yisheng-active{
-background: #bd7070;
 }
 </style>

@@ -52,7 +52,8 @@
    <el-table-column show-overflow-tooltip
       label="订单" min-width="230">
 <template slot-scope="scope">
-  
+<div v-if="scope.row.preDrugType && scope.row.preDrugType.indexOf('PASTE_PRESCRIPTION') != -1">制作费：{{scope.row.makeMoney}}</div>
+<div v-if="scope.row.preDrugType && scope.row.preDrugType.indexOf('CHINESE_MEDICINE') != -1">代煎费：{{scope.row.replaceDecoctingMoney}}</div>
 <div>服务费：{{scope.row.serviceMoney}}</div>
 <div>药品金额：{{scope.row.presscriptionMoney}}</div>
 <div>订单金额：{{scope.row.orderMoney}}</div>
@@ -1110,6 +1111,10 @@ operateType
 
   sendGoods(row) {
     let a: any = this.$refs.updateorder;
+  a.CHINESE_selection = [];
+  a.WESTERN_selection = [];
+  a.PASTE_selection = [];
+  a.INSTRUMENTS_selection = []
     a.send_model = true;
     a.loading = true;
     this.presId = row.presId;
